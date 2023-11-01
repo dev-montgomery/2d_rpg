@@ -35,16 +35,24 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 
 const draw = () => {
-  // Draw the ocean background and map
-  const ocean = ctx.createPattern(resources.images.water.image, 'repeat');
-  ctx.fillStyle = ocean;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  console.log('water')
+  // Draw the ocean background
+  const water = resources.images.water; 
 
+  if (water.isLoaded) {
+    const ocean = ctx.createPattern(water.image, 'repeat');
+
+    ctx.fillStyle = ocean;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  };
+  
+  // Draw map
   const genus = resources.images.genus;
-  ctx.drawImage(genus.image, (canvas.width - 1024) / 2, (canvas.height - 512) / 2);
-}
+   
+  if (genus.isLoaded) {
+    ctx.drawImage(genus.image, (canvas.width - 1024) / 2, (canvas.height - 512) / 2);
+  };
+};
 
 setTimeout(() => {
   draw()
-}, 300)
+}, 300);

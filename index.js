@@ -1,5 +1,5 @@
 import { resources } from './src/resources.js';
-// import { Sprite } from './src/Sprite.js';
+import { Sprite } from './src/Sprite.js';
 
 // Create a 2d context
 const canvas = document.querySelector('canvas');
@@ -8,33 +8,34 @@ const ctx = canvas.getContext('2d');
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
-// const draw = () => {
-//   // Draw the ocean background
-//   const water = resources.images.water; 
+const zones = Object.keys(resources.zone);
+const spritesheet = new Image();
+spritesheet.src = './assets/spritesheet-genus.png';
 
-//   if (water.isLoaded) {
-//     const ocean = ctx.createPattern(water.image, 'repeat');
+const draw = () => {
+  // Draw the ocean background
+  for (let y = 0 ; y < canvas.height ; y+= 96) {
+    for (let x = 0 ; x < canvas.width ; x+= 160) {
+      ctx.drawImage(
+        spritesheet,
+        0, // source x
+        193, // source y
+        161, // source width
+        96, // source height
+        x, // where to draw
+        y,
+        192, // draw this size width
+        160 // draw this size height
+      );
+    };
+  };
 
-//     ctx.fillStyle = ocean;
-//     ctx.fillRect(0, 0, canvas.width, canvas.height);
-//   };
-  
-//   // Draw the map
-//   const genus = resources.images.genus;
-   
-//   if (genus.isLoaded) {
-//     ctx.drawImage(genus.image, (canvas.width - 1024) / 2, (canvas.height - 512) / 2);
-//   };
-// };
+  // Draw the map
+  console.log(zones)
+  console.log(resources.mapData.genus01.layers)
 
-// // Draw player
-// const player = new Sprite({
-//   resource: resources.images.player,
-//   xFrames: 2,
-//   yFrames: 2,
-//   frame: 1
-// });
+};
 
-// setTimeout(() => {
-//   draw()
-// }, 300);
+setTimeout(() => {
+  draw()
+}, 300);

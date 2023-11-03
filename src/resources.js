@@ -1,25 +1,33 @@
 class Resources {
   constructor() {
-    // Everything to upload
+    // Retrieve all map JSON
     this.toLoad = {
-      water: './assets/water.png',
-      genus: './assets/genus/genus_01.png'
+      genus01: './assets/map_data/genus/genus_01.json',
+      // genus02: '../assets/map_data/genus/genus_02.json',
     };
-    
-    // Resources bucket of images
-    this.images = {};
 
-    // Load each image
+    this.spritesheet = new Image();
+    this.spritesheet.src = './assets/genus_spritesheet.png';
+
+    // Resource bucket of json data
+    this.mapData = {};
+
+    // Fetch and load json map data
     Object.keys(this.toLoad).forEach(key => {
-      const img = new Image();
-      img.src = this.toLoad[key];
-      this.images[key] = {
-        image: img,
-        isLoaded: false
-      };
-      img.onload = () => {
-        this.images[key].isLoaded = true;
-      };
+      fetch(this.toLoad[key])
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('404 json response');
+        }
+        return response.json();
+      })
+      .then(data => {
+        this.mapData[key] = data;
+        console.log(this.mapData)
+      })
+      .catch(error => {
+        console.error('Fetch error', error);
+      });      
     });
   };
 };

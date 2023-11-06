@@ -4,54 +4,97 @@ import { Sprite } from './src/Sprite.js';
 // Create a 2d context
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
-
-canvas.width = 2500;
-canvas.height = 1700;
+const frameSize = 32;
+canvas.width = 68 * frameSize;
+canvas.height = 30 * frameSize;
 
 // Draw the map
-// const area = Object.keys(resources.mapsToLoad)
-const updateMap = () => {
-  let currentArea = resources.mapData.genus01.layers
-  console.log(currentArea)
-  currentArea.forEach(tileLayer => {
-    tileLayer.data.forEach(tile => {
-      console.log(tile)
-      // ctx.drawImage(
-      //   resources.spritesheet,
-      //   sx,
-      //   sy,
-      //   32,
-      //   32,
-      //   dx,
-      //   dy,
-      //   50,
-      //   50
-      // )
-    })
-  })
-
-
-}
-
 const draw = () => {
-  // Draw the ocean background
-  for (let y = 0 ; y < canvas.height ; y+= 149) {
-    for (let x = 0 ; x < canvas.width ; x+= 249) {
-      ctx.drawImage(
-        resources.spritesheet,
-        0, // source x
-        192, // source y
-        32 * 5, // source width
-        32 * 3, // source height
-        x, // where to draw
-        y,
-        50 * 5, // draw this size width
-        50 * 3 // draw this size height
-      );
+  // Create the Ocean First
+  const drawOcean = () => {
+    const generateRandomOceanTiles = (min, max) => {
+      const oceanTiles = [frameSize * 0,frameSize *  1, frameSize * 2, frameSize * 3, frameSize * 4, frameSize * 5, frameSize * 6, frameSize * 7, frameSize * 8];
+  
+      return oceanTiles[Math.floor((Math.random() * (max - min)) + min)]
     };
+    
+    for (let y = 0 ; y < canvas.height ; y+= frameSize) {
+      for (let x = 0 ; x < canvas.width ; x+= frameSize) {
+        ctx.drawImage(
+          resources.spritesheet,
+          generateRandomOceanTiles(0, 5), // source x 0 - 128
+          generateRandomOceanTiles(6, 9), // source y 192 - 256
+          frameSize, // source width
+          frameSize, // source height
+          x, // where to draw
+          y,
+          frameSize, // draw this size width
+          frameSize // draw this size height
+        );
+      };
+    }
   };
 
-  updateMap();
+  // Generate Map
+  // const findTileInSpritesheet = (tileNumber) => {
+  //   const spritesheetWidth = 20;
+    
+  //   let row = 0;
+  //   let remainder = tileNumber;
+
+  //   if (tileNumber > spritesheetWidth) {
+  //     row = Math.floor(tileNumber / spritesheetWidth);
+  //     remainder = tileNumber % spritesheetWidth;
+  //   };
+
+  //   let sx = remainder === 0 ? 0 : (remainder - 1) * 32;
+  //   let sy = row * 32;
+  //   return [sx, sy];
+  // }
+  
+  const generateMap = (currentArea = resources.mapData.genus01.layers) => {
+    console.log(currentArea)
+    for (let layer = 0 ; layer < currentArea.length ; layer++) {
+      // let dx = 0, dy = 0;
+      
+      for (let tileNumber = 0 ; tileNumber < currentArea[layer].data.length ; tileNumber++) {
+        const tile = currentArea[layer].data[tileNumber];
+        if (tile)
+        // let sy = 0, sx = tile;
+        
+        // if (tile > resources.spritesheet.width) {
+        //   sy = Math.floor(tile / resources.spritesheet.width);
+        //   sx = tile % resources.spritesheet.width;
+        // };
+
+        // if (dx === 20) {
+        //   dx = 0;
+        //   dy++;
+        // }
+        // sx = sx === 0 ? 0 : sx - 1;
+        
+        // ctx.drawImage(
+        //   resources.spritesheet,
+        //   sx * frameSize,
+        //   sy * frameSize,
+        //   frameSize,
+        //   frameSize,
+        //   dx,
+        //   dy,
+        //   frameSize,
+        //   frameSize
+        //   )
+        //   dx += frameSize;
+      }
+    }
+  }
+
+  // setInterval(() => {
+  //   drawOcean();
+  // }, 2000)
+
+  drawOcean();
+  generateMap();
 };
 
 setTimeout(() => {

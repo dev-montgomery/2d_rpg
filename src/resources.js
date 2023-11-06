@@ -8,6 +8,7 @@ class Resources {
 
     this.spritesheet = new Image();
     this.spritesheet.src = './assets/spritesheet-genus.png';
+    this.spritesheet.width = 20; 
 
     // Resource bucket of json data
     this.mapData = {};

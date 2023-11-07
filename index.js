@@ -23,6 +23,8 @@ const draw = () => {
           if (sx > resources.spritesheet.width) {
             sx = (sx % resources.spritesheet.width) - 1;
             sy = Math.floor(tileID / resources.spritesheet.width);
+          } else {
+            sx--;
           };
           
           ctx.drawImage(

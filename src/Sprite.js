@@ -81,13 +81,13 @@ const drawOcean = () => {
 //   return [sx, sy];
 // }
 
-const generateMap = (currentArea = resources.mapData.genus01.layers) => {
-  console.log(currentArea)
-  for (let layer = 0 ; layer < currentArea.length ; layer++) {
+// const generateMap = (currentArea = resources.mapData.genus01.layers) => {
+  // console.log(currentArea)
+  // for (let layer = 0 ; layer < currentArea.length ; layer++) {
     // let dx = 0, dy = 0;
     
-    for (let tileNumber = 0 ; tileNumber < currentArea[layer].data.length ; tileNumber++) {
-      const tile = currentArea[layer].data[tileNumber];
+    // for (let tileNumber = 0 ; tileNumber < currentArea[layer].data.length ; tileNumber++) {
+      // const tile = currentArea[layer].data[tileNumber];
       // if (tile)
       // let sy = 0, sx = tile;
       
@@ -114,9 +114,9 @@ const generateMap = (currentArea = resources.mapData.genus01.layers) => {
       //   frameSize
       //   )
       //   dx += frameSize;
-    }
-  }
-}
+    // }
+  // }
+// }
 
 // setInterval(() => {
 //   drawOcean();

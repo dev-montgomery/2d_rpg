@@ -24,7 +24,7 @@ class Resources {
       })
       .then(data => {
         this.mapData[key] = data;
-        console.log(this.mapData[key])
+        // console.log(this.mapData[key])
       })
       .catch(error => {
         console.error('Fetch error', error);

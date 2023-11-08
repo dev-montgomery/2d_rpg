@@ -11,17 +11,24 @@ canvas.height = innerHeight;
 
 const player = new Player();
 
+const keys = {
+  right: { pressed: false },
+  left: { pressed: false },
+  up: { pressed: false }
+};
+
 setTimeout(() => {
   resources.ocean(ctx, canvas);
   resources.createMap(ctx);
-  player.init(ctx)
+  player.update(ctx)
 }, 300)
 
 // function animate () {
 //   requestAnimationFrame(animate);
-//   console.log('go')
+//   ctx.clearRect(0, 0, canvas.width, canvas.height);
 //   resources.ocean(ctx, canvas);
 //   resources.createMap(ctx);
+//   player.draw(ctx);
 // }
 
 // animate();

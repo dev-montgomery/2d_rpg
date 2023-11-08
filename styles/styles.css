@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+
+.player-info-container {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  font-size: 1.2rem;
+}
+
+.player-info-container .player-slots, .player-inventory {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid red;
+}
+
+.player-info-container .slot {
+  text-align: center;
+  border: 1px solid red;
+  width: 50px;
+  height: 50px;
+  padding: 1rem;
+}
+
+.radar-container {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  border: 1px solid red;
+  width: 200px;
+  height: 80%;
+}

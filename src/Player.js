@@ -18,14 +18,14 @@ export class Player {
       x: 0,
       y: 0
     };
-    this.currentFrame = this.sprite.direction.forward;
+    this.currentDirection = this.sprite.direction.forward;
   };
 
   draw = (ctx) => {
     this.isLoaded && ctx.drawImage(
       this.sprite,
-      this.currentFrame.x,
-      this.currentFrame.y,
+      this.currentDirection.x,
+      this.currentDirection.y,
       this.pixelSize,
       this.pixelSize,
       this.dx,

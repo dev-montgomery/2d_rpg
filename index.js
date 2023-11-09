@@ -10,18 +10,17 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 
 // Generate the map... starting with a lame shimmering ocean
-let lastShimmerRender = 201;
-const shimmerInterval = 200;
+// let lastShimmerInterval = 200;
 
 const createOcean = () => {
-  lastShimmerRender += 1;
+  // lastShimmerRender += 1;
 
   const randomTile = (min, max) => {
     const tiles = [0, 32, 64, 96, 128, 160, 192, 224, 256];
     return tiles[Math.floor((Math.random() * (max - min)) + min)];
   };
   
-  if (lastShimmerRender > shimmerInterval) {
+  // if (lastShimmerRender > shimmerInterval) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let dy = 0 ; dy < canvas.height ; dy+= 32) {
       for (let dx = 0 ; dx < canvas.width ; dx+= 32) {
@@ -38,8 +37,8 @@ const createOcean = () => {
         );
       };
     }
-    lastShimmerRender = 0;
-  }
+    // lastShimmerRender = 0;
+  // }
 };
 
 // Create the current map
@@ -79,23 +78,81 @@ const createMap = (currentMap = resources.mapData.genus01.layers) => {
   });
 };
 
-const player = new Player();
+const player = new Player;
 
-const keys = {
-  right: { pressed: false },
-  left: { pressed: false },
+const directions = {
   up: { pressed: false },
-  down: { pressed: false}
-};
+  down: { pressed: false },
+  left: { pressed: false },
+  right: { pressed: false }
+}
+
+setTimeout(() => {
+  if (resources.mapData.isLoaded) createOcean();
+}, 300)
 
 function animate () {
   requestAnimationFrame(animate);
   if (resources.mapData.isLoaded) {
-    createOcean();
     createMap();
   }
   player.update(ctx);
 }
+
+const chatbox = false;
+
+// Event Listeners for player mobility
+addEventListener('keydown', (e) => {
+  if (!chatbox) {
+    switch(e.key) {
+      case 'w' :
+        directions.up.pressed = true;
+        player.currentDirection = player.sprite.direction.backward;
+        player.move.y = -32;
+        break;
+      case 's' :
+        directions.down.pressed = true;
+        player.currentDirection = player.sprite.direction.forward;
+        player.move.y = 32;
+        break;
+      case 'a' :
+        directions.left.pressed = true;
+        player.currentDirection = player.sprite.direction.left;
+        player.move.x = -32;
+        break;
+      case 'd' :
+        directions.right.pressed = true;
+        player.currentDirection = player.sprite.direction.right;
+        player.move.x = 32;
+        break;
+      default: break;
+    }
+  }
+});
+
+addEventListener('keyup', (e) => {
+  if (!chatbox) {
+    switch(e.key) {
+      case 'w' :
+        directions.up.pressed = false;
+        player.move.y = 0;
+        break;
+      case 's' :
+        directions.down.pressed = false;
+        player.move.y = 0;
+        break;
+      case 'a' :
+        directions.left.pressed = false;
+        player.move.x = 0;
+        break;
+      case 'd' :
+        directions.right.pressed = false;
+        player.move.x = 0;
+        break;
+      default: break;
+    }
+  }
+});
 
 animate();
 

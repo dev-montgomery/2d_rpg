@@ -1,41 +1,43 @@
 export class Player {
-  constructor(
-    sprite,
-    sx,
-    sy,
-    sWidth,
-    sHeight,
-    dx,
-    dy,
-    lastX,
-    lastY
-  ) {
+  constructor() {
     this.sprite = new Image();
     this.sprite.src = './assets/spritesheet-npcs.png';
     this.sprite.onload = () => {
       this.isLoaded = true;
     };
-    this.sx = sx ?? 0;
-    this.sy = sy ?? 0;
-    this.sWidth = sWidth ?? 32;
-    this.sHeight = sHeight ?? 32;
-    this.dx = dx ?? 704; // Draw starting location x
-    this.dy = dy ?? 608; // Draw starting location y
-    this.lastX = lastX;
-    this.lastY = lastY;
+    this.sprite.direction = {
+      forward: { x: 0, y: 0 },
+      backward: { x: 0, y: 32 },
+      right: { x: 32, y: 0 },
+      left: { x: 32, y: 32 }
+    }
+    this.pixelSize = 32;
+    this.dx = 704; // Draw starting location x
+    this.dy = 608; // Draw starting location y
+    this.move = {
+      x: 0,
+      y: 0
+    };
+    this.currentDirection = this.sprite.direction.forward;
   };
 
-  init = (ctx, sx, sy, sWidth, sHeight) => {
+  draw = (ctx) => {
     this.isLoaded && ctx.drawImage(
       this.sprite,
-      this.sx,
-      this.sy,
-      this.sWidth,
-      this.sHeight,
+      this.currentDirection.x,
+      this.currentDirection.y,
+      this.pixelSize,
+      this.pixelSize,
       this.dx,
       this.dy,
-      this.sWidth,
-      this.sHeight
+      this.pixelSize,
+      this.pixelSize
     );
+  };
+
+  update = (ctx) => {
+    this.dx += this.move.x;
+    this.dy += this.move.y;  
+    this.draw(ctx);
   };
 };

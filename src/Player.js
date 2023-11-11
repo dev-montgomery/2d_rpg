@@ -12,8 +12,8 @@ export class Player {
       left: { x: 32, y: 32 }
     }
     this.pixelSize = 32;
-    this.dx = 704; // Draw starting location x
-    this.dy = 608; // Draw starting location y
+    this.dx = 100; // Draw starting location in the middle of the map
+    this.dy = 100;
     this.move = {
       x: 0,
       y: 0
@@ -33,11 +33,5 @@ export class Player {
       this.pixelSize,
       this.pixelSize
     );
-  };
-
-  update = (ctx) => {
-    this.dx += this.move.x;
-    this.dy += this.move.y;  
-    this.draw(ctx);
   };
 };

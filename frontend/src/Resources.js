@@ -25,9 +25,11 @@ export class Resources {
       });      
     });
 
-    // Resource bucket of player json data
-    this.playerData = {};
+    // Load Player | Create Player
+    this.loadPlayerData();
+  };  
 
+  loadPlayerData() {
     fetch('./assets/player_data/player.json')
     .then(response => {
       if (!response.ok) {
@@ -42,7 +44,28 @@ export class Resources {
     .catch(error => {
       console.error('Error loading player json', error);
     });
-  };  
+  };
+
+  playerExists(playername) {
+    return this.playerData.some(player => player.name === playername);
+  };
+
+  createPlayer(playername) {
+    if (this.playerExists(playername)) {
+      console.log(`Player ${playername} already exists`);
+      return null;
+    };
+
+    const newPlayer = {
+      id: this.playerData.length + 1,
+      name: playername
+    };
+
+    this.playerData.push(newPlayer);
+
+    console.log(`${playername} created`)
+    return newPlayer;
+  };
 };
 
 export const resources = new Resources();

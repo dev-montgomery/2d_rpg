@@ -1,129 +1,184 @@
-import { resources } from './src/Resources.js';
-import { Player } from './src/Player.js';
+import { Resources } from './src/Resources.js';
+import { Sprite } from './src/Classes.js';
 
-// Instantiate canvas and 2d context
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
-const player = new Player();
+const resources = new Resources();
 
-// Draw Map | Update Map
-const drawMap = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
-  canvas.width = resources.mapData.isLoaded && currentMap[0].width * resources.frameSize;
-  canvas.height = resources.mapData.isLoaded && currentMap[0].height * resources.frameSize;
-  
+canvas.width = 1600;
+canvas.height = 960;
+
+ctx.fillStyle = 'white';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+const mapSpriteSheet = {
+  image: new Image(),
+  src: './assets/spritesheet-genus.png',
+  width: 20,
+  height: 20,
+  frameSize: 32
+};
+
+mapSpriteSheet.onload = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+  console.log(currentMap)
   // let oceanTiles = [];
-
-  currentMap.forEach(layer => {
-    let dx = 0
-    let dy = 0
-    console.log(dx, dy)  
-    layer.data.forEach(tileID => {
-      if (tileID > 0) {
-        // if (tileID === ocean tileID) {
-        //   oceanTiles.push(tileID)
-        // } else {
-
-        // }
-        let sx = tileID -1, sy = 0;
-
-        if (sx > resources.spritesheet.width) {
-          sx = (sx % resources.spritesheet.width);
-          sy = Math.floor(tileID / resources.spritesheet.width);
-        };
-
-        ctx.drawImage(
-          resources.spritesheet,
-          sx * resources.frameSize,
-          sy * resources.frameSize,
-          resources.frameSize,
-          resources.frameSize,
-          dx * resources.frameSize,
-          dy * resources.frameSize,
-          resources.frameSize,
-          resources.frameSize
-        );
-      };
-      if (dx === 50) {
-        dy++;
-        dx = 0;
-      };
-      dx++;
-    });
-    // Do something with oceantiles
-  });
+    // currentMap.forEach(layer => {
+    //   let dx = 0;
+    //   let dy = 0;
+    //   console.log(dx, dy)  
+    //   layer.data.forEach(tileID => {
+    //     if (tileID > 0) {
+    //       // if (tileID === ocean tileID) {
+    //       //   oceanTiles.push(tileID)
+    //       // } else {
+  
+    //       // }
+    //       let sx = tileID -1, sy = 0;
+  
+    //       if (sx > resources.spritesheet.width) {
+    //         sx = (sx % resources.spritesheet.width);
+    //         sy = Math.floor(tileID / resources.spritesheet.width);
+    //       };
+  
+    //       ctx.drawImage(
+    //         resources.spritesheet,
+    //         sx * resources.frameSize,
+    //         sy * resources.frameSize,
+    //         resources.frameSize,
+    //         resources.frameSize,
+    //         dx * resources.frameSize,
+    //         dy * resources.frameSize,
+    //         resources.frameSize,
+    //         resources.frameSize
+    //       );
+    //     };
+    //     if (dx === 50) {
+    //       dy++;
+    //       dx = 0;
+    //     };
+    //     dx++;
+    //   });
+    //   // Do something with oceantiles
+    // });   
 };
+// Draw Map | Update Map
+// const drawMap = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+//   // canvas.width = resources.mapData.isLoaded && currentMap[0].width * resources.frameSize;
+//   // canvas.height = resources.mapData.isLoaded && currentMap[0].height * resources.frameSize;
+//   // console.log(canvas.width, canvas.height)
+//   // let oceanTiles = [];
 
-const directions = {
-  up: { pressed: false },
-  down: { pressed: false },
-  left: { pressed: false },
-  right: { pressed: false }
-};
+//   currentMap.forEach(layer => {
+//     let dx = 0;
+//     let dy = 0;
+//     console.log(dx, dy)  
+//     layer.data.forEach(tileID => {
+//       if (tileID > 0) {
+//         // if (tileID === ocean tileID) {
+//         //   oceanTiles.push(tileID)
+//         // } else {
+
+//         // }
+//         let sx = tileID -1, sy = 0;
+
+//         if (sx > resources.spritesheet.width) {
+//           sx = (sx % resources.spritesheet.width);
+//           sy = Math.floor(tileID / resources.spritesheet.width);
+//         };
+
+//         ctx.drawImage(
+//           resources.spritesheet,
+//           sx * resources.frameSize,
+//           sy * resources.frameSize,
+//           resources.frameSize,
+//           resources.frameSize,
+//           dx * resources.frameSize,
+//           dy * resources.frameSize,
+//           resources.frameSize,
+//           resources.frameSize
+//         );
+//       };
+//       if (dx === 50) {
+//         dy++;
+//         dx = 0;
+//       };
+//       dx++;
+//     });
+//     // Do something with oceantiles
+//   });
+// };
+
+// const directions = {
+//   up: { pressed: false },
+//   down: { pressed: false },
+//   left: { pressed: false },
+//   right: { pressed: false }
+// };
 
 function animate () {
   requestAnimationFrame(animate);
-  // ctx.clearRect(0, 0, canvas.width, canvas.height);  
-  resources.mapData.isLoaded && drawMap();
-  player.draw(ctx);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);  
+  
+
 };
 
-const chatbox = false;
+// const chatbox = false;
 
-// Event Listeners for player mobility
-addEventListener('keydown', (e) => {
-  if (!chatbox) {
-    switch(e.key) {
-      case 'w' :
-        directions.up.pressed = true;
-        player.currentDirection = player.sprite.direction.backward;
-        player.move.y = -1;
-        break;
-      case 's' :
-        directions.down.pressed = true;
-        player.currentDirection = player.sprite.direction.forward;
-        player.move.y = 1;
-        break;
-      case 'a' :
-        directions.left.pressed = true;
-        player.currentDirection = player.sprite.direction.left;
-        player.move.x = -1;
-        break;
-      case 'd' :
-        directions.right.pressed = true;
-        player.currentDirection = player.sprite.direction.right;
-        player.move.x = 1;
-        break;
-      default: break;
-    };
-  };
-});
+// // Event Listeners for player mobility
+// addEventListener('keydown', (e) => {
+//   if (!chatbox) {
+//     switch(e.key) {
+//       case 'w' :
+//         directions.up.pressed = true;
+//         player.currentDirection = player.sprite.direction.backward;
+//         player.move.y = -1;
+//         break;
+//       case 's' :
+//         directions.down.pressed = true;
+//         player.currentDirection = player.sprite.direction.forward;
+//         player.move.y = 1;
+//         break;
+//       case 'a' :
+//         directions.left.pressed = true;
+//         player.currentDirection = player.sprite.direction.left;
+//         player.move.x = -1;
+//         break;
+//       case 'd' :
+//         directions.right.pressed = true;
+//         player.currentDirection = player.sprite.direction.right;
+//         player.move.x = 1;
+//         break;
+//       default: break;
+//     };
+//   };
+// });
 
-addEventListener('keyup', (e) => {
-  if (!chatbox) {
-    switch(e.key) {
-      case 'w' :
-        directions.up.pressed = false;
-        player.move.y = 0;
-        break;
-      case 's' :
-        directions.down.pressed = false;
-        player.move.y = 0;
-        break;
-      case 'a' :
-        directions.left.pressed = false;
-        player.move.x = 0;
-        break;
-      case 'd' :
-        directions.right.pressed = false;
-        player.move.x = 0;
-        break;
-      default: break;
-    };
-  };
-});
+// addEventListener('keyup', (e) => {
+//   if (!chatbox) {
+//     switch(e.key) {
+//       case 'w' :
+//         directions.up.pressed = false;
+//         player.move.y = 0;
+//         break;
+//       case 's' :
+//         directions.down.pressed = false;
+//         player.move.y = 0;
+//         break;
+//       case 'a' :
+//         directions.left.pressed = false;
+//         player.move.x = 0;
+//         break;
+//       case 'd' :
+//         directions.right.pressed = false;
+//         player.move.x = 0;
+//         break;
+//       default: break;
+//     };
+//   };
+// });
 
-addEventListener('resize', drawMap);
+// addEventListener('resize', drawMap);
 
 animate();
 

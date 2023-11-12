@@ -6,7 +6,7 @@
   image-rendering: pixelated;
 }
 
-.player-info-container {
+/* .player-info-container {
   position: absolute;
   top: 2rem;
   left: 2rem;
@@ -37,4 +37,4 @@
   border: 1px solid red;
   width: 200px;
   height: 80%;
-}
+} */

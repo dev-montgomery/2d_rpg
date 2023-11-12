@@ -1,28 +1,18 @@
 export class Resources {
   constructor() {
-    // Retrieve all map json
-    this.mapsToLoad = {
+    this.mapJsonToLoad = {
       genus01: './assets/map_data/genus/genus_01.json',
       // genus02: './assets/map_data/genus/genus_02.json',
     };
 
-    this.spritesheet = new Image();
-    this.spritesheet.src = './assets/spritesheet-genus.png';
-    this.spritesheet.width = 20; 
-    this.frameSize = 32;
-    this.spritesheet.onload = () => {
-      this.isLoaded = true;
-    };
-
-    // Resource bucket of json data
+    // Resource bucket of map json data
     this.mapData = {};
 
-    // Fetch and load json into mapData
-    Object.keys(this.mapsToLoad).forEach(key => {
-      fetch(this.mapsToLoad[key])
+    Object.keys(this.mapJsonToLoad).forEach(key => {
+      fetch(this.mapJsonToLoad[key])
       .then(response => {
         if (!response.ok) {
-          throw new Error('404 json');
+          throw new Error('Fetch map json error');
         }
         return response.json();
       })
@@ -31,8 +21,26 @@ export class Resources {
         this.mapData.isLoaded = true;
       })
       .catch(error => {
-        console.error('Fetch error', error);
+        console.error('Error loading map json', error);
       });      
+    });
+
+    // Resource bucket of player json data
+    this.playerData = {};
+
+    fetch('./assets/player_data/player.json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Fetch player json error');
+      }
+      return response.json();
+    })
+    .then(data => {
+      this.playerData = data;
+      this.playerData.isLoaded = true;
+    })
+    .catch(error => {
+      console.error('Error loading player json', error);
     });
   };  
 };

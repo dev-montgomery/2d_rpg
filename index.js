@@ -10,6 +10,19 @@ canvas.height = 960;
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+// Handle form input
+let formInput = "";
+
+const saveFormInputData = e => {
+  e.preventDefault();
+  const inputData = document.getElementById('input').value;
+  formInput = inputData;
+};
+
+document.getElementById('login').addEventListener('submit', saveFormInputData);
+
+// --------
+
 const genus = {
   image: new Image(),
   src: './assets/spritesheet-genus.png',
@@ -22,12 +35,12 @@ genus.onload = (currentMap = resources.mapData.isLoaded && resources.mapData.gen
   console.log(currentMap)
 };
 
-function animate () {
-  requestAnimationFrame(animate);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);  
-};
+// function animate () {
+//   requestAnimationFrame(animate);
+//   ctx.clearRect(0, 0, canvas.width, canvas.height);  
+// };
 
-animate();
+// animate();
   // let oceanTiles = [];
     // currentMap.forEach(layer => {
     //   let dx = 0;

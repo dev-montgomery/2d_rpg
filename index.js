@@ -1,10 +1,8 @@
-import { Resources } from './src/Resources.js';
+import { resources } from './src/Resources.js';
 import { Sprite } from './src/Classes.js';
 
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
-
-const resources = new Resources();
 
 canvas.width = 1600;
 canvas.height = 960;
@@ -12,7 +10,31 @@ canvas.height = 960;
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-const mapSpriteSheet = {
+// Player login and handle form submission
+const form = document.querySelector('.form-container');
+const player = new Sprite();
+let loggedIn = false;
+
+const initPlayerData = e => {
+  e.preventDefault();
+  const playerName = document.getElementById('login-form-input').value;
+  loggedIn = true;
+
+  player.data = resources.createPlayer(playerName);
+  console.log(player)
+
+  form.style.display = 'none';
+};
+
+document.getElementById('login-form').addEventListener('submit', initPlayerData);
+
+// --------
+window.addEventListener('beforeunload', e => {
+  // run a function to save json to backend
+});
+
+// --------
+const genus = {
   image: new Image(),
   src: './assets/spritesheet-genus.png',
   width: 20,
@@ -20,8 +42,16 @@ const mapSpriteSheet = {
   frameSize: 32
 };
 
-mapSpriteSheet.onload = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+genus.onload = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
   console.log(currentMap)
+};
+
+// function animate () {
+//   requestAnimationFrame(animate);
+//   ctx.clearRect(0, 0, canvas.width, canvas.height);  
+// };
+
+// animate();
   // let oceanTiles = [];
     // currentMap.forEach(layer => {
     //   let dx = 0;
@@ -61,7 +91,7 @@ mapSpriteSheet.onload = (currentMap = resources.mapData.isLoaded && resources.ma
     //   });
     //   // Do something with oceantiles
     // });   
-};
+
 // Draw Map | Update Map
 // const drawMap = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
 //   // canvas.width = resources.mapData.isLoaded && currentMap[0].width * resources.frameSize;
@@ -115,13 +145,6 @@ mapSpriteSheet.onload = (currentMap = resources.mapData.isLoaded && resources.ma
 //   left: { pressed: false },
 //   right: { pressed: false }
 // };
-
-function animate () {
-  requestAnimationFrame(animate);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);  
-  
-
-};
 
 // const chatbox = false;
 
@@ -179,9 +202,6 @@ function animate () {
 // });
 
 // addEventListener('resize', drawMap);
-
-animate();
-
 
 // player movement
 // make player center of screen

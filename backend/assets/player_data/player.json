@@ -1,5 +1,6 @@
-{"player":{
-  "exists":false,
+{"playerlist":[
+],
+  "newplayer":{
   "lvls":{
     "lvl":0,
     "mglvl":0

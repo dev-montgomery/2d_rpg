@@ -6,6 +6,45 @@
   image-rendering: pixelated;
 }
 
+body {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.form-container {
+  margin: 30px auto;
+  max-width: 400px;
+  padding: 20px;
+  background: #ccc;
+  border-radius: 2mm;
+  /* height: 100vh; */
+}
+
+#login-form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#login-form label {
+  font-size: 1.5rem;
+  margin-right: 5px;
+}
+
+#login-form #login-form-input {
+  padding: 0.5rem;
+  border: none;
+  
+  border-bottom: 1px solid #ccc;
+}
+
+#login-form #login-form-btn {
+  border: none;
+  background: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
 /* .player-info-container {
   position: absolute;
   top: 2rem;

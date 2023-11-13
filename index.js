@@ -1,5 +1,5 @@
 import { resources } from './src/Resources.js';
-// import { Sprite } from './src/Classes.js';
+import { Sprite } from './src/Classes.js';
 
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
@@ -10,19 +10,30 @@ canvas.height = 960;
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// Handle form input
-let formInput = "";
+// Player login and handle form submission
+const form = document.querySelector('.form-container');
+const player = new Sprite();
+let loggedIn = false;
 
-const saveFormInputData = e => {
+const initPlayerData = e => {
   e.preventDefault();
-  const inputData = document.getElementById('input').value;
-  formInput = inputData;
+  const playerName = document.getElementById('login-form-input').value;
+  loggedIn = true;
+
+  player.data = resources.createPlayer(playerName);
+  console.log(player)
+
+  form.style.display = 'none';
 };
 
-document.getElementById('login').addEventListener('submit', saveFormInputData);
+document.getElementById('login-form').addEventListener('submit', initPlayerData);
 
 // --------
+window.addEventListener('beforeunload', e => {
+  // run a function to save json to backend
+});
 
+// --------
 const genus = {
   image: new Image(),
   src: './assets/spritesheet-genus.png',

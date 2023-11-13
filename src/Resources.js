@@ -1,7 +1,7 @@
 export class Resources {
   constructor() {
     this.mapJsonToLoad = {
-      genus01: './assets/map_data/genus/genus_01.json',
+      genus01: './backend/assets/map_data/genus/genus_01.json',
       // genus02: './assets/map_data/genus/genus_02.json',
     };
 
@@ -30,7 +30,7 @@ export class Resources {
   };  
 
   loadPlayerData() {
-    fetch('./assets/player_data/player.json')
+    fetch('./backend/assets/player_data/player.json')
     .then(response => {
       if (!response.ok) {
         throw new Error('Fetch player json error');
@@ -47,23 +47,25 @@ export class Resources {
   };
 
   playerExists(playername) {
-    return this.playerData.some(player => player.name === playername);
+    return this.playerData.playerlist.some(player => player.name === playername);
   };
 
   createPlayer(playername) {
     if (this.playerExists(playername)) {
-      console.log(`Player ${playername} already exists`);
-      return null;
+      console.log(`Logged in as ${playername}.`);
+      const returningPlayer = this.playerData.playerlist.find(player => player.name === playername);
+      return returningPlayer;
     };
 
     const newPlayer = {
-      id: this.playerData.length + 1,
-      name: playername
+      id: this.playerData.playerlist.length + 1,
+      name: playername,
+      performance: this.playerData.newplayer
     };
-
-    this.playerData.push(newPlayer);
-
-    console.log(`${playername} created`)
+    
+    this.playerData.playerlist.push(newPlayer);
+    console.log(`${playername} created.`)
+    console.log(`Logged in as ${playername}.`);
     return newPlayer;
   };
 };

@@ -1,33 +1,27 @@
 export class Sprite {
-  constructor({
-    image,
-    sprite,
-    drawTo
-    }) {
-    this.image = new Image();
-    this.image.src = '../assets/spritesheet-npcs.png';
-    this.sprite = {
-      forward: { sx, sy },
-      backward: { sx, sy },
-      right: { sx, sy },
-      left: { sx, sy }
+  constructor() {
+      this.image = new Image();
+      this.image.src = './backend/assets/spritesheet-npcs.png';
+      // this.sPosition = {
+      //   sx: sx && 0,
+      //   sy: sy && 0
+      // };
+      // this.dPosition = {
+      //   dx: dx && 0,
+      //   dy: dy && 0
+      // };
+      this.pixelSize = 32;
     };
-    this.drawTo = {
-      dx,
-      dy
-    };
-    this.pixels = 32;
-
-    this.image.onload = () => {
+    
+    draw = () => {
       ctx.drawImage(
         this.image,
-        this.sprite.forward.x,
-        this.sprite.forward.y,
-        this.pixels,
-        this.drawto.x,
-        this.drawto.y,
-        this.pixels
-      )
-    }
-  };
+        this.sPosition.x,
+        this.sPosition.y,
+        this.pixelSize,
+        this.dPosition.x,
+        this.dPosition.y,
+        this.pixelSize
+      );
+    };
 };

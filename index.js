@@ -1,16 +1,17 @@
 import { resources } from './src/Resources.js';
 import { Sprite } from './src/Classes.js';
 
+// Create canvas and context
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
 canvas.width = 1600;
-canvas.height = 960;
+canvas.height = 960;Instantiate
 
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// Player login and handle form submission
+// Handle form to create and/or "login" as existing player
 const form = document.querySelector('.form-container');
 const player = new Sprite();
 let loggedIn = false;
@@ -21,19 +22,39 @@ const initPlayerData = e => {
   loggedIn = true;
 
   player.data = resources.createPlayer(playerName);
-  console.log(player)
 
-  form.style.display = 'none';
+  // form.style.display = 'none';
 };
 
 document.getElementById('login-form').addEventListener('submit', initPlayerData);
 
-// --------
-window.addEventListener('beforeunload', e => {
-  // run a function to save json to backend
+// POST player data to backend json file upon browser close
+const updatePlayerData = async () => {
+  resources.playerData.isLoaded = false;
+  const playerdata = resources.playerData;
+  
+  try {
+    const response = await fetch('http://localhost:4000/playerdata', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(playerdata)
+    });
+  
+    const completed = await response.json();
+  } catch(error) {
+    console.error('Error saving player data.', error);
+  };
+};
+// will need to determine if player is in combat before logging out.
+addEventListener('beforeunload', e => {
+  e.preventDefault();
+  updatePlayerData();
 });
-
 // --------
+
+// After player "login", populate the background and map
 const genus = {
   image: new Image(),
   src: './assets/spritesheet-genus.png',

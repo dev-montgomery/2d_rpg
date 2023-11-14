@@ -6,7 +6,7 @@ const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
 canvas.width = 1600;
-canvas.height = 960;Instantiate
+canvas.height = 960;
 
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -14,12 +14,10 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 // Handle form to create and/or "login" as existing player
 const form = document.querySelector('.form-container');
 const player = new Sprite();
-let loggedIn = false;
 
 const initPlayerData = e => {
   e.preventDefault();
   const playerName = document.getElementById('login-form-input').value;
-  loggedIn = true;
 
   player.data = resources.createPlayer(playerName);
 

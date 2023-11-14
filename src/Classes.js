@@ -3,12 +3,12 @@ export class Sprite {
       this.image = new Image();
       this.image.src = './backend/assets/spritesheet-npcs.png';
       // this.sPosition = {
-      //   sx: sx && 0,
-      //   sy: sy && 0
+      //   sx,
+      //   sy
       // };
       // this.dPosition = {
-      //   dx: dx && 0,
-      //   dy: dy && 0
+      //   dx,
+      //   dy
       // };
       this.pixelSize = 32;
     };

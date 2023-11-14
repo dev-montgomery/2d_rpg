@@ -1,0 +1,303 @@
+{"items":{
+  "containers":{
+    "depot":{
+      "slots":50
+    },
+    "backpack":{
+      "price":"50 gold",
+      "slots":18,
+      "capacity":0.5
+    },
+    "enchanted-backpack":{
+      "price":"1000 gold",
+      "slots":50,
+      "capacity":0.5
+    }
+  },
+  "armors":{
+    "necklaces":{
+      "fanged":{
+        "offense":1
+      },
+      "silver":{
+        "offense":1,
+        "defense":1
+      }
+    },
+    "helmets":{
+      "hood":{
+        "defense":1,
+        "capacity":0.5
+      },
+      "leather":{
+        "defense":2,
+        "capacity":0.75
+      },
+      "chainmail":{
+        "defense":3,
+        "capacity":1
+      }
+    },
+    "mainhand":{
+      "fist":{
+        "cestus":{
+          "offense":1,
+          "speed":2,
+          "capacity":0.5
+        },
+        "tiger-claws":{
+          "offense":1.5,
+          "speed":2,
+          "capacity":0.75
+        }
+      },
+      "blade":{
+        "dagger":{
+          "offense":1,
+          "speed":1,
+          "capacity":0.75
+        },
+        "sword":{
+          "offense":2,
+          "speed":1,
+          "capacity":1.25
+        }
+      },
+      "ax":{
+        "hatchet":{
+          "offense":1.25,
+          "speed":1,
+          "capacity":1
+        },
+        "double-edged":{
+          "offense":2.25,
+          "speed":1,
+          "capacity":1.5
+        }
+      },
+      "blunt":{
+        "femur":{
+          "offense":1,
+          "speed":1,
+          "capacity":1
+        },
+        "mace":{
+          "offense":1.5,
+          "speed":0.75,
+          "capacity":1.75
+        }
+      },
+      "distance":{
+        "throwing-knives":{
+          "offense":0.75,
+          "speed":1.5,
+          "capacity":0.25
+        },
+        "spear":{
+          "offense":3,
+          "speed":1,
+          "capacity":1.25
+        }
+      }
+    },
+    "chest":{
+      "tunic":{
+
+      },
+      "vest":{
+
+      },
+      "chainmail":{
+
+      }
+    },
+    "offhand":{
+      "targe":{
+
+      },
+      "kite":{
+
+      },
+      "heater":{
+
+      }
+    },
+    "legs":{
+      "pants":{
+
+      },
+      "leather":{
+
+      },
+      "chainmail":{
+
+      }
+    },
+    "feet":{
+      "shoes":{
+
+      },
+      "boots":{
+
+      },
+      "chainmail":{
+
+      }
+    }
+  },
+  "tools":{
+    "fishing-pole":{
+
+    },
+    "shovel":{
+
+    },
+    "rope":{
+
+    },
+    "sundial":{
+
+    },
+    "backpack-label":{
+
+    },
+    "envelope":{
+
+    },
+    "parcel":{
+
+    },
+    "torch":{
+
+    }
+  },
+  "currency":{
+    "gold":{
+
+    },
+    "platinum":{
+
+    }
+  },
+  "consumables":{
+    "fish":{
+      "silver":{
+
+      },
+      "red":{
+
+      },
+      "pink":{
+
+      }
+    },
+    "cheeses":{
+      "wheel":{
+
+      },
+      "moldy-wheel":{
+
+      }
+    },
+    "bread":{
+
+    },
+    "fruit":{
+      "apple":{
+
+      }
+    },
+    "flask":{
+      "empty-flask":{
+
+      },
+      "anti-venom":{
+
+      },
+      "health":{
+
+      },
+      "magic":{
+
+      }
+    }
+  },
+  "rubbish":{
+    "broken-shovel":{
+
+    },
+    "black-stone":{
+
+    },
+    "broken-sword":{
+
+    },
+    "broken-targe":{
+
+    },
+    "fishbones":{
+
+    },
+    "broken-flask":{
+
+    },
+    "torch-stub":{
+
+    }
+  },
+  "literature":{
+    "genus-equipment":{
+
+    },
+    "genus-spells":{
+
+    },
+    "genus-monsters":{
+
+    },
+    "house-knight":{
+
+    },
+    "house-archer":{
+
+    },
+    "house-sorcerer":{
+
+    },
+    "house-druid":{
+
+    },
+    "illud":{
+
+    },
+    "history":{
+      "book-of-heremal":{
+        "race":"human"
+      },
+      "book-of-andani":{
+        "race":"elven"
+      },
+      "book-of-fennra":{
+        "race":"minos"
+      },
+      "book-of-okrek":{
+        "race":"oric"
+      },
+      "book-of-trollic":{
+        "race":"troll"
+      },
+      "book-of-tirin":{
+        "race":"oathesworn"
+      },
+      "tales-of-genus":{
+
+      }
+    },
+    "scroll":{
+
+    },
+    "nova-scroll":{
+
+    }
+  }
+}}

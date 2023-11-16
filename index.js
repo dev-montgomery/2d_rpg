@@ -1,4 +1,4 @@
-import { resources } from './src/Resources.js';
+import { resources } from './src/resources.js';
 import { Sprite } from './src/Classes.js';
 
 // Create canvas and context
@@ -26,9 +26,8 @@ const initPlayerData = e => {
 
 document.getElementById('login-form').addEventListener('submit', initPlayerData);
 
-// POST player data to backend json file upon browser close
+// POST player data to backend json file
 const updatePlayerData = async () => {
-  resources.playerData.isLoaded = false;
   const playerdata = resources.playerData;
   
   try {
@@ -46,9 +45,11 @@ const updatePlayerData = async () => {
   };
 };
 // will need to determine if player is in combat before logging out.
+// Saves player data when the browser window is closed.
 addEventListener('beforeunload', e => {
   e.preventDefault();
-  updatePlayerData();
+  resources.playerData.isLoaded = false;
+  updatePlayerData(); 
 });
 // --------
 

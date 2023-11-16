@@ -2,14 +2,6 @@ export class Sprite {
   constructor() {
       this.image = new Image();
       this.image.src = './backend/assets/spritesheet-npcs.png';
-      // this.sPosition = {
-      //   sx,
-      //   sy
-      // };
-      // this.dPosition = {
-      //   dx,
-      //   dy
-      // };
       this.pixelSize = 32;
     };
     

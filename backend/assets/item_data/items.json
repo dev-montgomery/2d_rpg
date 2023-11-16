@@ -4,12 +4,18 @@
       "slots":50
     },
     "backpack":{
-      "price":"50 gold",
       "slots":18,
       "capacity":0.5
     },
-    "enchanted-backpack":{
-      "price":"1000 gold",
+    "labledbackpack":{
+      "slots":18,
+      "capacity":0.5
+    },
+    "enchantedbackpack":{
+      "slots":50,
+      "capacity":0.5
+    },
+    "labeledenchantedbackpack":{
       "slots":50,
       "capacity":0.5
     }
@@ -33,7 +39,7 @@
         "defense":2,
         "capacity":0.75
       },
-      "chainmail":{
+      "coif":{
         "defense":3,
         "capacity":1
       }
@@ -45,7 +51,7 @@
           "speed":2,
           "capacity":0.5
         },
-        "tiger-claws":{
+        "tigerclaws":{
           "offense":1.5,
           "speed":2,
           "capacity":0.75
@@ -63,13 +69,13 @@
           "capacity":1.25
         }
       },
-      "ax":{
+      "axe":{
         "hatchet":{
           "offense":1.25,
           "speed":1,
           "capacity":1
         },
-        "double-edged":{
+        "broadaxe":{
           "offense":2.25,
           "speed":1,
           "capacity":1.5
@@ -88,7 +94,7 @@
         }
       },
       "distance":{
-        "throwing-knives":{
+        "throwingknives":{
           "offense":0.75,
           "speed":1.5,
           "capacity":0.25
@@ -126,10 +132,10 @@
       "pants":{
 
       },
-      "leather":{
+      "leggings":{
 
       },
-      "chainmail":{
+      "chainmaillegs":{
 
       }
     },
@@ -140,13 +146,13 @@
       "boots":{
 
       },
-      "chainmail":{
+      "chausses":{
 
       }
     }
   },
   "tools":{
-    "fishing-pole":{
+    "fishingpole":{
 
     },
     "shovel":{
@@ -158,7 +164,7 @@
     "sundial":{
 
     },
-    "backpack-label":{
+    "label":{
 
     },
     "envelope":{
@@ -173,15 +179,15 @@
   },
   "currency":{
     "gold":{
-
+      "capacity":0.1
     },
     "platinum":{
-
+      "capacity":0.1
     }
   },
   "consumables":{
     "fish":{
-      "silver":{
+      "blue":{
 
       },
       "red":{
@@ -195,7 +201,7 @@
       "wheel":{
 
       },
-      "moldy-wheel":{
+      "moldywheel":{
 
       }
     },
@@ -208,96 +214,123 @@
       }
     },
     "flask":{
-      "empty-flask":{
-
+      "empty":{
+        "capacity":0.25
       },
-      "anti-venom":{
-
+      "antivenom":{
+        "capacity":0.5
       },
       "health":{
-
+        "capacity":0.5
       },
       "magic":{
-
+        "capacity":0.5
       }
     }
   },
   "rubbish":{
-    "broken-shovel":{
-
+    "brokenshovel":{
+      "capacity":1
     },
-    "black-stone":{
-
+    "brokensword":{
+      "capacity":1
     },
-    "broken-sword":{
-
+    "brokentarge":{
+      "capacity":1.25
     },
-    "broken-targe":{
-
+    "brokenflask":{
+      "capacity":0.15
+    },
+    "blackstone":{
+      "capacity":0.5
     },
     "fishbones":{
-
+      "capacity":0.1
     },
-    "broken-flask":{
-
+    "torchstub":{
+      "capacity":0.25
     },
-    "torch-stub":{
-
+    "moldybook":{
+      "capacity":0.50
+    }
+  },
+  "decor":{
+    "azaleayellow":{
+      "capacity":0.05
+    },
+    "azaleaorange":{
+      "capacity":0.05
+    },
+    "azaleared":{
+      "capacity":0.05
+    },
+    "azaleablue":{
+      "capacity":0.05
     }
   },
   "literature":{
-    "genus-equipment":{
-
+    "genusequipmentalmanac":{
+      "capacity":0.25
     },
-    "genus-spells":{
-
+    "genusspellsalmanac":{
+      "capacity":0.25
     },
-    "genus-monsters":{
-
+    "genusmonsters":{
+      "capacity":0.25
     },
-    "house-knight":{
-
+    "knight":{
+      "capacity":0.25
     },
-    "house-archer":{
-
+    "archer":{
+      "capacity":0.25
     },
-    "house-sorcerer":{
-
+    "sorcerer":{
+      "capacity":0.25
     },
-    "house-druid":{
-
+    "druid":{
+      "capacity":0.25
     },
     "illud":{
-
+      "capacity":0.25
     },
-    "history":{
-      "book-of-heremal":{
-        "race":"human"
-      },
-      "book-of-andani":{
-        "race":"elven"
-      },
-      "book-of-fennra":{
-        "race":"minos"
-      },
-      "book-of-okrek":{
-        "race":"oric"
-      },
-      "book-of-trollic":{
-        "race":"troll"
-      },
-      "book-of-tirin":{
-        "race":"oathesworn"
-      },
-      "tales-of-genus":{
-
-      }
+    "islandsofgenus":{
+      "capacity":0.25
+    },
+    "taleofthetrollking":{
+      "capacity":0.25
+    },
+    "theofaresoftrolls":{
+      "capacity":0.25
+    },
+    "bookofheremal":{
+      "race":"human",
+      "capacity":0.25
+    },
+    "bookofandani":{
+      "race":"elven",
+      "capacity":0.25
+    },
+    "bookoffennra":{
+      "race":"minos",
+      "capacity":0.25
+    },
+    "bookofokrek":{
+      "race":"oric",
+      "capacity":0.25
+    },
+    "bookofyuckk":{
+      "race":"trollic",
+      "capacity":0.25
+    },
+    "bookoftirin":{
+      "race":"oathesworn",
+      "capacity":0.25
     },
     "scroll":{
-
+      "capacity":0.1
     },
-    "nova-scroll":{
-
+    "novascroll":{
+      "capacity":0.1
     }
   }
 }}

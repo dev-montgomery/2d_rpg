@@ -69,37 +69,36 @@ addEventListener('beforeunload', e => {
 // --------
 
 // After player "login", populate the background and map
-const genus = {
-  image: new Image(),
-  src: './backend/assets/genus-map-resources.png',
-  width: 25,
-  height: 25,
-  frameSize: 32
-};
-
 const drawGenus = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
-  // const loadSize = { x:20, y:20 };
-  currentMap.forEach(layer => {
-    layer.data.forEach(tileID => {
+  const genus = new Image();
+  genus.src = './backend/assets/genus-map-resources.png';
+  genus.size = 32;
 
-      if (tileID > 0) {
-        const row = tileID % 40;
-        const col = Math.floor(tileID / 40);
-        
-        ctx.drawImage(
-          genus.image,
-          col * genus.frameSize,
-          row * genus.frameSize,
-          genus.frameSize,
-          genus.frameSize,
-          col,
-          row,
-          genus.frameSize,
-          genus.frameSize
-        )
-      }
+  genus.onload = () => {
+    currentMap.forEach(layer => {
+      layer.data.forEach((tileID, i) => {
+
+        if (tileID > 0) {
+          const sx = (tileID - 1) % 40;
+          const sy = Math.floor(tileID / 40);
+          const dx = i % 40;
+          const dy = Math.floor(i / 40);
+          
+          ctx.drawImage(
+            genus,
+            sx * genus.size,
+            sy * genus.size,
+            genus.size,
+            genus.size,
+            dx * genus.size,
+            dy * genus.size,
+            genus.size,
+            genus.size
+          )
+        }
+      })
     })
-  })
+  }
 };
 
 setTimeout(() => {

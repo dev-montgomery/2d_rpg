@@ -8,6 +8,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = 1920;
 canvas.height = 1920;
 
+// ------ eventually use own fantasy background image
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -35,6 +36,7 @@ const initPlayerData = e => {
 
   player.data = resources.createPlayer(playerName);
 
+  // ------ eventually style smoother transition
   form.style.display = 'none';
   form.closed = true;
 };
@@ -59,61 +61,56 @@ const updatePlayerData = async () => {
     console.error('Error saving player data.', error);
   };
 };
-// will need to determine if player is in combat before logging out.
+// ------ will need to determine if player is in combat before logging out.
 // Saves player data when the browser window is closed.
 addEventListener('beforeunload', e => {
   e.preventDefault();
   resources.playerData.isLoaded = false;
   updatePlayerData(); 
 });
-// --------
 
 // After player "login", populate the background and map
-const genus = {
-  image: new Image(),
-  src: './backend/assets/genus-map-resources.png',
-  width: 25,
-  height: 25,
-  frameSize: 32
+const genus = new Image();
+genus.src = './backend/assets/genus-map-resources.png';
+genus.pixelSize = 32;
+genus.spritesheetWidth = 25;
+genus.onload = () => {
+  genus.loaded = true;
 };
 
 const drawGenus = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
-  // const loadSize = { x:20, y:20 };
   currentMap.forEach(layer => {
-    layer.data.forEach(tileID => {
-
+    layer.data.forEach((tileID, i) => {
       if (tileID > 0) {
-        const row = tileID % 40;
-        const col = Math.floor(tileID / 40);
+        const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize;
+        const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize;
+        const dx = i % 40 * genus.pixelSize;
+        const dy = Math.floor(i / 40) * genus.pixelSize;
         
         ctx.drawImage(
-          genus.image,
-          col * genus.frameSize,
-          row * genus.frameSize,
-          genus.frameSize,
-          genus.frameSize,
-          col,
-          row,
-          genus.frameSize,
-          genus.frameSize
-        )
-      }
-    })
-  })
+          genus,
+          sx,
+          sy,
+          genus.pixelSize,
+          genus.pixelSize,
+          dx,
+          dy,
+          genus.pixelSize,
+          genus.pixelSize
+        );
+      };
+    });
+  });
 };
 
-setTimeout(() => {
-  drawGenus();
-  player.draw(ctx);    
-}, 300);
 function animate () {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // form.closed && genus.onload();
+  form.closed && genus.loaded && drawGenus();
   form.closed && player.draw(ctx);  
 };
 
-// animate();
+animate();
  
 const directions = {
   up: { pressed: false },
@@ -156,7 +153,7 @@ addEventListener('keydown', (e) => {
 });
 
 addEventListener('keyup', (e) => {
-  if (!chatbox) {
+  if (form.closed && !chatbox) {
     switch(e.key) {
       case 'w' :
         directions.up.pressed = false;
@@ -192,8 +189,7 @@ addEventListener('keyup', (e) => {
 // npcs
 // stairs map update
 // attack functions
-// determine skills and lvl algorythems
-// learn how to spell algorithyms
+// determine skills and lvl algorithms
 
 
 // let lastShimmerInterval = 200;

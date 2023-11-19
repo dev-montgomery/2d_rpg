@@ -5,15 +5,29 @@ import { Sprite } from './src/Classes.js';
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = 1600;
-canvas.height = 960;
+canvas.width = 1920;
+canvas.height = 1920;
 
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+const screen = {};
+screen.width = innerWidth;
+screen.height = innerHeight;
+
 // Handle form to create and/or "login" as existing player
 const form = document.querySelector('.form-container');
-const player = new Sprite();
+form.closed = false;
+
+const player = new Sprite({
+  origin: {
+    downward: { sx: 0, sy: 0 },
+    upward: { sx: 0, sy: 32 },
+    rightward: { sx: 32, sy: 0 },
+    leftward: { sx: 32, sy: 32 }
+  },
+  destination: { dx: (screen.width/2) - 16, dy: (screen.height/2) - 16 }
+});
 
 const initPlayerData = e => {
   e.preventDefault();
@@ -21,7 +35,8 @@ const initPlayerData = e => {
 
   player.data = resources.createPlayer(playerName);
 
-  // form.style.display = 'none';
+  form.style.display = 'none';
+  form.closed = true;
 };
 
 document.getElementById('login-form').addEventListener('submit', initPlayerData);
@@ -56,175 +71,113 @@ addEventListener('beforeunload', e => {
 // After player "login", populate the background and map
 const genus = {
   image: new Image(),
-  src: './assets/spritesheet-genus.png',
-  width: 20,
-  height: 20,
+  src: './backend/assets/genus-map-resources.png',
+  width: 25,
+  height: 25,
   frameSize: 32
 };
 
-genus.onload = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
-  console.log(currentMap)
+const drawGenus = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+  // const loadSize = { x:20, y:20 };
+  currentMap.forEach(layer => {
+    layer.data.forEach(tileID => {
+
+      if (tileID > 0) {
+        const row = tileID % 40;
+        const col = Math.floor(tileID / 40);
+        
+        ctx.drawImage(
+          genus.image,
+          col * genus.frameSize,
+          row * genus.frameSize,
+          genus.frameSize,
+          genus.frameSize,
+          col,
+          row,
+          genus.frameSize,
+          genus.frameSize
+        )
+      }
+    })
+  })
 };
 
-// function animate () {
-//   requestAnimationFrame(animate);
-//   ctx.clearRect(0, 0, canvas.width, canvas.height);  
-// };
+setTimeout(() => {
+  drawGenus();
+  player.draw(ctx);    
+}, 300);
+function animate () {
+  requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // form.closed && genus.onload();
+  form.closed && player.draw(ctx);  
+};
 
 // animate();
-  // let oceanTiles = [];
-    // currentMap.forEach(layer => {
-    //   let dx = 0;
-    //   let dy = 0;
-    //   console.log(dx, dy)  
-    //   layer.data.forEach(tileID => {
-    //     if (tileID > 0) {
-    //       // if (tileID === ocean tileID) {
-    //       //   oceanTiles.push(tileID)
-    //       // } else {
-  
-    //       // }
-    //       let sx = tileID -1, sy = 0;
-  
-    //       if (sx > resources.spritesheet.width) {
-    //         sx = (sx % resources.spritesheet.width);
-    //         sy = Math.floor(tileID / resources.spritesheet.width);
-    //       };
-  
-    //       ctx.drawImage(
-    //         resources.spritesheet,
-    //         sx * resources.frameSize,
-    //         sy * resources.frameSize,
-    //         resources.frameSize,
-    //         resources.frameSize,
-    //         dx * resources.frameSize,
-    //         dy * resources.frameSize,
-    //         resources.frameSize,
-    //         resources.frameSize
-    //       );
-    //     };
-    //     if (dx === 50) {
-    //       dy++;
-    //       dx = 0;
-    //     };
-    //     dx++;
-    //   });
-    //   // Do something with oceantiles
-    // });   
+ 
+const directions = {
+  up: { pressed: false },
+  down: { pressed: false },
+  left: { pressed: false },
+  right: { pressed: false }
+};
 
-// Draw Map | Update Map
-// const drawMap = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
-//   // canvas.width = resources.mapData.isLoaded && currentMap[0].width * resources.frameSize;
-//   // canvas.height = resources.mapData.isLoaded && currentMap[0].height * resources.frameSize;
-//   // console.log(canvas.width, canvas.height)
-//   // let oceanTiles = [];
+const chatbox = false;
+let lastKeyPressed = '';
 
-//   currentMap.forEach(layer => {
-//     let dx = 0;
-//     let dy = 0;
-//     console.log(dx, dy)  
-//     layer.data.forEach(tileID => {
-//       if (tileID > 0) {
-//         // if (tileID === ocean tileID) {
-//         //   oceanTiles.push(tileID)
-//         // } else {
+// Event Listeners for player mobility
+addEventListener('keydown', (e) => {
+  // if (lastKeyPressed === e.key) 
+  if (form.closed && !chatbox) {
+    switch(e.key) {
+      case 'w' :
+        directions.up.pressed = true;
+        lastKeyPressed = 'w';
+        player.direction = player.origin.upward;
+        break;
+      case 's' :
+        directions.down.pressed = true;
+        lastKeyPressed = 's';
+        player.direction = player.origin.downward;
+        break;
+      case 'a' :
+        directions.left.pressed = true;
+        lastKeyPressed = 'a';
+        player.direction = player.origin.leftward;
+        break;
+      case 'd' :
+        directions.right.pressed = true;
+        lastKeyPressed = 'd';
+        player.direction = player.origin.rightward;
+        break;
+      default: break;
+    };
+  };
+});
 
-//         // }
-//         let sx = tileID -1, sy = 0;
-
-//         if (sx > resources.spritesheet.width) {
-//           sx = (sx % resources.spritesheet.width);
-//           sy = Math.floor(tileID / resources.spritesheet.width);
-//         };
-
-//         ctx.drawImage(
-//           resources.spritesheet,
-//           sx * resources.frameSize,
-//           sy * resources.frameSize,
-//           resources.frameSize,
-//           resources.frameSize,
-//           dx * resources.frameSize,
-//           dy * resources.frameSize,
-//           resources.frameSize,
-//           resources.frameSize
-//         );
-//       };
-//       if (dx === 50) {
-//         dy++;
-//         dx = 0;
-//       };
-//       dx++;
-//     });
-//     // Do something with oceantiles
-//   });
-// };
-
-// const directions = {
-//   up: { pressed: false },
-//   down: { pressed: false },
-//   left: { pressed: false },
-//   right: { pressed: false }
-// };
-
-// const chatbox = false;
-
-// // Event Listeners for player mobility
-// addEventListener('keydown', (e) => {
-//   if (!chatbox) {
-//     switch(e.key) {
-//       case 'w' :
-//         directions.up.pressed = true;
-//         player.currentDirection = player.sprite.direction.backward;
-//         player.move.y = -1;
-//         break;
-//       case 's' :
-//         directions.down.pressed = true;
-//         player.currentDirection = player.sprite.direction.forward;
-//         player.move.y = 1;
-//         break;
-//       case 'a' :
-//         directions.left.pressed = true;
-//         player.currentDirection = player.sprite.direction.left;
-//         player.move.x = -1;
-//         break;
-//       case 'd' :
-//         directions.right.pressed = true;
-//         player.currentDirection = player.sprite.direction.right;
-//         player.move.x = 1;
-//         break;
-//       default: break;
-//     };
-//   };
-// });
-
-// addEventListener('keyup', (e) => {
-//   if (!chatbox) {
-//     switch(e.key) {
-//       case 'w' :
-//         directions.up.pressed = false;
-//         player.move.y = 0;
-//         break;
-//       case 's' :
-//         directions.down.pressed = false;
-//         player.move.y = 0;
-//         break;
-//       case 'a' :
-//         directions.left.pressed = false;
-//         player.move.x = 0;
-//         break;
-//       case 'd' :
-//         directions.right.pressed = false;
-//         player.move.x = 0;
-//         break;
-//       default: break;
-//     };
-//   };
-// });
+addEventListener('keyup', (e) => {
+  if (!chatbox) {
+    switch(e.key) {
+      case 'w' :
+        directions.up.pressed = false;
+        break;
+      case 's' :
+        directions.down.pressed = false;
+        break;
+      case 'a' :
+        directions.left.pressed = false;
+        break;
+      case 'd' :
+        directions.right.pressed = false;
+        break;
+      default: break;
+    };
+  };
+});
 
 // addEventListener('resize', drawMap);
 
 // player movement
-// make player center of screen
 // map update beyond axis
 // create collision areas
 

@@ -6,12 +6,13 @@ const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+// Screen size for high-dpi displays
+const scaleFactor = window.devicePixelRatio;
+canvas.width = 832 * scaleFactor;
+canvas.height = 704 * scaleFactor;
+ctx.scale(scaleFactor, scaleFactor);
 
-// ------ eventually use own fantasy background image
-ctx.fillStyle = 'white';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+// ------ eventually use fantasy background image
 
 // Handle form to create and/or "login" as existing player
 const form = document.querySelector('.form-container');
@@ -68,22 +69,25 @@ addEventListener('beforeunload', e => {
 
 // After player "login", populate the background and map
 const genus = new Image();
-genus.src = './backend/assets/genus-map-resources-32.png';
+genus.src = './backend/assets/map_data/genus/genus-map-resources-32.png';
 genus.pixelSize = 32;
 genus.spritesheetWidth = 25;
+genus.mapSize = { row: 60, col: 100 };
 genus.scale = 1;
 genus.onload = () => {
   genus.loaded = true;
 };
 
-const drawGenus = (currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+const drawGenus = (playerLocation = {x: 87, y: 55}, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+ let range = ''; // 13 spaces 6 - 1 - 6 | 11 spaces 5 - 1 - 5
+ console.log( range, playerLocation)
   currentMap.forEach(layer => {
     layer.data.forEach((tileID, i) => {
       if (tileID > 0) {
         const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize;
         const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize;
-        const dx = i % 40 * genus.pixelSize * genus.scale;
-        const dy = Math.floor(i / 40) * genus.pixelSize * genus.scale;
+        const dx = i % genus.mapSize.col * genus.pixelSize * genus.scale;
+        const dy = Math.floor(i / genus.mapSize.col) * genus.pixelSize * genus.scale;
         
         ctx.drawImage(
           genus,

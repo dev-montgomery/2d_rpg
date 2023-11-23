@@ -1,7 +1,7 @@
 export class Sprite {
   constructor({origin, destination}) {
       this.image = new Image();
-      this.image.src = './backend/assets/spritesheet-npcs.png';
+      this.image.src = './backend/assets/player_data/spritesheet-npcs.png';
       this.origin = origin;
       this.destination = destination;
       this.position = { px: 29, px: 24 };

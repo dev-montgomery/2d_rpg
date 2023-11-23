@@ -11,9 +11,12 @@
 }
 
 body {
-  /* min-width: 100vw;
-  min-height: 100vh;
-  min-height: 100dvh; */
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  height: 100dvh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -43,7 +46,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 /* CSS Styles */
 canvas {
-  /* transform:scale(3) */
+  border: 1px solid black;
 }
 .form-container {
   position: absolute;

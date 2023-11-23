@@ -1,7 +1,7 @@
 export class Resources {
   constructor() {
     this.mapJsonToLoad = {
-      genus01: './backend/assets/map_data/genus/genus_01.json',
+      genus01: './backend/assets/map_data/genus/genus_surface.json',
       // genus02: './assets/map_data/genus/genus_02.json',
     };
 

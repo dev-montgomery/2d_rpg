@@ -4,17 +4,14 @@ import { Sprite } from './src/Classes.js';
 // Create canvas and context
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 
-canvas.width = 1920;
-canvas.height = 1920;
+canvas.width = innerWidth;
+canvas.height = innerHeight;
 
 // ------ eventually use own fantasy background image
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-const screen = {};
-screen.width = innerWidth;
-screen.height = innerHeight;
 
 // Handle form to create and/or "login" as existing player
 const form = document.querySelector('.form-container');
@@ -27,7 +24,7 @@ const player = new Sprite({
     rightward: { sx: 32, sy: 0 },
     leftward: { sx: 32, sy: 32 }
   },
-  destination: { dx: (screen.width/2) - 16, dy: (screen.height/2) - 16 }
+  destination: { dx: canvas.width * 0.5 - 16, dy: canvas.height * 0.5 - 16}
 });
 
 const initPlayerData = e => {
@@ -71,9 +68,10 @@ addEventListener('beforeunload', e => {
 
 // After player "login", populate the background and map
 const genus = new Image();
-genus.src = './backend/assets/genus-map-resources.png';
+genus.src = './backend/assets/genus-map-resources-32.png';
 genus.pixelSize = 32;
 genus.spritesheetWidth = 25;
+genus.scale = 1;
 genus.onload = () => {
   genus.loaded = true;
 };
@@ -84,8 +82,8 @@ const drawGenus = (currentMap = resources.mapData.isLoaded && resources.mapData.
       if (tileID > 0) {
         const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize;
         const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize;
-        const dx = i % 40 * genus.pixelSize;
-        const dy = Math.floor(i / 40) * genus.pixelSize;
+        const dx = i % 40 * genus.pixelSize * genus.scale;
+        const dy = Math.floor(i / 40) * genus.pixelSize * genus.scale;
         
         ctx.drawImage(
           genus,
@@ -95,8 +93,8 @@ const drawGenus = (currentMap = resources.mapData.isLoaded && resources.mapData.
           genus.pixelSize,
           dx,
           dy,
-          genus.pixelSize,
-          genus.pixelSize
+          genus.pixelSize * genus.scale,
+          genus.pixelSize * genus.scale
         );
       };
     });

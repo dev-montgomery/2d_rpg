@@ -1,5 +1,9 @@
-* {
+/* CSS RESET */
+*, *::before, *::after {
   box-sizing: border-box;
+}
+
+* {
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -7,11 +11,40 @@
 }
 
 body {
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
+  /* min-width: 100vw;
+  min-height: 100vh;
+  min-height: 100dvh; */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
+img, picture, video, canvas, svg {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+  font-size: 0;
+  font-style: italic;
+  background-repeat: no-repeat;
+  background-size: cover;
+  shape-margin: 1rem;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+#root, #__next {
+  isolation: isolate;
+}
+
+/* CSS Styles */
+canvas {
+  /* transform:scale(3) */
+}
 .form-container {
   position: absolute;
   top: 50%;
@@ -50,6 +83,7 @@ body {
   margin-left: 15px;
   cursor: pointer;
 }
+
 /* .player-info-container {
   position: absolute;
   top: 2rem;
@@ -81,4 +115,5 @@ body {
   border: 1px solid red;
   width: 200px;
   height: 80%;
-} */
+}
+*/

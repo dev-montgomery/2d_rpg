@@ -4,8 +4,9 @@ export class Sprite {
       this.image.src = './backend/assets/spritesheet-npcs.png';
       this.origin = origin;
       this.destination = destination;
-      this.pixelSize = 32;
+      this.position = { px: 29, px: 24 };
       this.direction = { sx: 0, sy: 0 };
+      this.pixelSize = 32;
     };
     
     draw = (ctx) => {
@@ -17,8 +18,8 @@ export class Sprite {
         this.pixelSize,
         this.destination.dx,
         this.destination.dy,
-        this.pixelSize * 2,
-        this.pixelSize * 2
+        this.pixelSize,
+        this.pixelSize
       );
     };
 };

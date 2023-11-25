@@ -38,6 +38,10 @@ window.addEventListener('load', (event) => {
     // ------ eventually style smoother transition
     form.style.display = 'none';
     form.closed = true;
+    setTimeout(() => {
+      genus.loaded && drawGenus(player.position.x, player.position.y);
+      player.draw(ctx);
+    }, 500)
   };
   
   document.getElementById('login-form').addEventListener('submit', initPlayerData);
@@ -79,6 +83,7 @@ window.addEventListener('load', (event) => {
     genus.loaded = true;
   };
   
+  // Draw map, takes in player coordinates and JSON data
   const drawGenus = (positionX, positionY, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     const startingTile = {};
     const screen = { width: 26, height: 22 };
@@ -120,16 +125,6 @@ window.addEventListener('load', (event) => {
     });
   };
   
-  // Game Loop Function
-  function animate () {
-    requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    form.closed && genus.loaded && drawGenus(player.position.x, player.position.y);
-    form.closed && player.draw(ctx);  
-  };
-  
-  animate();
-  
   // Implement Player Movement
   const directions = {
     up: { pressed: false },
@@ -137,65 +132,97 @@ window.addEventListener('load', (event) => {
     left: { pressed: false },
     right: { pressed: false }
   };
-  
+    
   const chatbox = false;
-  let lastKeyPressed = '';
-  
-  // Event Listeners for player mobility
+  // let lastKeyPressed = '';
+
+  // Event Listeners for player movement
   addEventListener('keydown', (e) => {
-    // if (lastKeyPressed === e.key) 
-    if (form.closed && !chatbox) {
+    if (form.closed && !chatbox && !player.cooldown) {
       switch(e.key) {
         case 'w' :
           directions.up.pressed = true;
-          lastKeyPressed = 'w';
           player.direction = player.origin.upward;
+          // lastKeyPressed = 'w';
+        if (player.position.y > 11) player.position.y -= 1;
           break;
         case 's' :
           directions.down.pressed = true;
-          lastKeyPressed = 's';
           player.direction = player.origin.downward;
+          // lastKeyPressed = 's';
+          if (player.position.y < (canvas.height - 11)) player.position.y += 1;
           break;
         case 'a' :
           directions.left.pressed = true;
-          lastKeyPressed = 'a';
           player.direction = player.origin.leftward;
+          // lastKeyPressed = 'a';
+          if (player.position.x > 11) player.position.x -= 1;
           break;
         case 'd' :
           directions.right.pressed = true;
-          lastKeyPressed = 'd';
           player.direction = player.origin.rightward;
+          // lastKeyPressed = 'd';
+          if (player.position.x < (canvas.width - 11)) player.position.x += 1;
           break;
         default: break;
       };
-    };
-  });
-  
-  addEventListener('keyup', (e) => {
-    if (form.closed && !chatbox) {
-      switch(e.key) {
-        case 'w' :
-          directions.up.pressed = false;
-          break;
-        case 's' :
-          directions.down.pressed = false;
-          break;
-        case 'a' :
-          directions.left.pressed = false;
-          break;
-        case 'd' :
-          directions.right.pressed = false;
-          break;
-        default: break;
-      };
-    };
-  });
-  
-  // addEventListener('resize', drawMap);
-});
 
-// player movement
-// map update beyond axis
+      player.cooldown = true;
+      setTimeout(() => {
+        player.cooldown = false;
+      }, player.speed);
+    };
+    form.closed && drawGenus(player.position.x, player.position.y);
+    form.closed && player.draw(ctx);  
+  });
+  
+  // addEventListener('keyup', (e) => {
+  //   if (form.closed && !chatbox) {
+  //     switch(e.key) {
+  //       case 'w' :
+  //         directions.up.pressed = false;
+  //         break;
+  //       case 's' :
+  //         directions.down.pressed = false;
+  //         break;
+  //       case 'a' :
+  //         directions.left.pressed = false;
+  //         break;
+  //       case 'd' :
+  //         directions.right.pressed = false;
+  //         break;
+  //       default: break;
+  //     };
+  //   };
+  // });
+
+  // Game Loop Function
+  // function animate () {
+  //   requestAnimationFrame(animate);
+  //   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //   form.closed && genus.loaded && drawGenus(player.position.x, player.position.y);
+  //   form.closed && player.draw(ctx);  
+
+  //   if (directions.up.pressed && lastKeyPressed === 'w') {
+  //     player.position.y--;
+  //   } else if (directions.down.pressed && lastKeyPressed === 's') {
+  //     player.position.y++;   
+  //   } else if (directions.left.pressed && lastKeyPressed === 'a') {
+  //     player.position.x--;
+  //   } else if (directions.right.pressed && lastKeyPressed === 'd') {
+  //     player.position.x++;
+  //   };
+    
+  //  // need to add boundaries
+  // };
+    
+  // animate();
+});
+    
+  // addEventListener('resize', drawMap);
+
+  // player movement
+  // map update beyond axis
 // create collision areas
 
 // make map larger

@@ -4,9 +4,11 @@ export class Sprite {
     this.image.src = './backend/assets/player_data/spritesheet-npcs.png';
     this.origin = origin;
     this.destination = destination;
-    this.position = { x: 97, y: 66 };
     this.direction = { sx: 0, sy: 0 };
     this.pixelSize = 32;
+    this.position = { x: 97, y: 66 };
+    this.speed = 500;
+    this.cooldown = false;
   };
   
   draw = (ctx) => {

@@ -38,10 +38,12 @@ window.addEventListener('load', (event) => {
     // ------ eventually style smoother transition
     form.style.display = 'none';
     form.closed = true;
+
+    // Render map and player after form is submitted
     setTimeout(() => {
       genus.loaded && drawGenus(player.position.x, player.position.y);
       player.draw(ctx);
-    }, 500)
+    }, 500);
   };
   
   document.getElementById('login-form').addEventListener('submit', initPlayerData);
@@ -172,72 +174,43 @@ window.addEventListener('load', (event) => {
         player.cooldown = false;
       }, player.speed);
     };
+
+    // Redraw map and player when player moves
     form.closed && drawGenus(player.position.x, player.position.y);
     form.closed && player.draw(ctx);  
   });
-  
-  // addEventListener('keyup', (e) => {
-  //   if (form.closed && !chatbox) {
-  //     switch(e.key) {
-  //       case 'w' :
-  //         directions.up.pressed = false;
-  //         break;
-  //       case 's' :
-  //         directions.down.pressed = false;
-  //         break;
-  //       case 'a' :
-  //         directions.left.pressed = false;
-  //         break;
-  //       case 'd' :
-  //         directions.right.pressed = false;
-  //         break;
-  //       default: break;
-  //     };
-  //   };
-  // });
 
   // Game Loop Function
   // function animate () {
   //   requestAnimationFrame(animate);
   //   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  //   form.closed && genus.loaded && drawGenus(player.position.x, player.position.y);
-  //   form.closed && player.draw(ctx);  
-
-  //   if (directions.up.pressed && lastKeyPressed === 'w') {
-  //     player.position.y--;
-  //   } else if (directions.down.pressed && lastKeyPressed === 's') {
-  //     player.position.y++;   
-  //   } else if (directions.left.pressed && lastKeyPressed === 'a') {
-  //     player.position.x--;
-  //   } else if (directions.right.pressed && lastKeyPressed === 'd') {
-  //     player.position.x++;
-  //   };
-    
-  //  // need to add boundaries
   // };
     
   // animate();
 });
     
-  // addEventListener('resize', drawMap);
+// addEventListener('resize', drawMap);
 
-  // player movement
-  // map update beyond axis
-// create collision areas
+// refine player movement
+// collision detection
+// handle uppermost layer
+// water animation
+// stairs and holes
 
 // make map larger
 
+// user interface
 // inventory functionality
 // equipping items
 // depot box function
 // mailbox function
 // trash function
 // fishing function
-// npcs
-// stairs map update
+// npcs/interaction/dialogue
 // attack functions
 // determine skills and lvl algorithms
 
+// ----------------------------
 
 // let lastShimmerInterval = 200;
 

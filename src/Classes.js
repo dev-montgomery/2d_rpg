@@ -1,5 +1,5 @@
 export class Sprite {
-  constructor({origin, destination}) {
+  constructor({ origin, destination }) {
     this.image = new Image();
     this.image.src = './backend/assets/player_data/spritesheet-npcs.png';
     this.origin = origin;

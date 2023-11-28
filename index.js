@@ -13,13 +13,19 @@ window.addEventListener('load', (event) => {
   canvas.height = 704 * scaleFactor;
   ctx.scale(scaleFactor, scaleFactor);
   
-  // ------ eventually use fantasy background image
+  // Temp Background
+  const bg = new Image();
+  bg.src = './backend/assets/east_oasis.png';
+  document.body.style.backgroundImage = `url(${bg.src})`;
+  document.body.style.backgroundRepeat = 'no-repeat';
+  document.body.style.backgroundSize = 'cover';
   
+  // ------ eventually implement chatbox to interact with npcs
+  const chatbox = false;
+
   // Handle form to create and/or "login" as existing player
   const form = document.querySelector('.form-container');
   form.closed = false;
-  
-  let colliding = false;
 
   const player = new Sprite({
     origin: {
@@ -28,7 +34,10 @@ window.addEventListener('load', (event) => {
       rightward: { sx: 32, sy: 0 },
       leftward: { sx: 32, sy: 32 }
     },
-    destination: { dx: canvas.width * 0.5, dy: canvas.height * 0.5 }
+    destination: {
+      dx: canvas.width * 0.5, 
+      dy: canvas.height * 0.5
+    }
   });
   
   const initPlayerData = e => {
@@ -43,7 +52,7 @@ window.addEventListener('load', (event) => {
 
     // Render map and player after form is submitted
     setTimeout(() => {
-      genus.loaded && drawGenus(player.position.x, player.position.y);
+      genus.loaded && drawGenus({ player });
       player.draw(ctx);
     }, 500);
   };
@@ -82,19 +91,19 @@ window.addEventListener('load', (event) => {
   genus.pixelSize = 32;
   genus.spritesheetWidth = 25;
   genus.mapSize = { row: 80, col: 120 };
-  genus.scale = 1;
   genus.onload = () => {
     genus.loaded = true;
   };
   
   // Draw map, takes in player coordinates and JSON data
-  const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+  // function to create local minimap
+  const createMinimap = ({ player }, currentMap) => {
+    const minimap = [];
     const startingTile = {};
     const screen = { width: 26, height: 22 };
     startingTile.x = player.position.x - screen.width/2;
     startingTile.y = player.position.y - screen.height/2;
-    
-    let minimap = [], boundaries = [];
+
     currentMap.forEach(layer => {
       startingTile.num = genus.mapSize.col * (startingTile.y - 1) + startingTile.x;
       let tiles = [];
@@ -105,23 +114,19 @@ window.addEventListener('load', (event) => {
       minimap.push(tiles);
     });
     
+    return minimap;
+  };
+
+  const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+    const minimap = createMinimap({ player }, currentMap);
+
     minimap.forEach(layer => {
       layer.forEach((tileID, i) => {
         if (tileID > 0) {
           const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize;
           const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize;
-          const dx = i % 26 * genus.pixelSize * genus.scale;
-          const dy = Math.floor(i / 26) * genus.pixelSize * genus.scale;
-          
-          if (tileID === 167) {
-            const boundary = new Boundary({
-              position: {
-                bx: dx, 
-                by: dy
-              }
-            });
-            boundaries.push(boundary);
-          };
+          const dx = i % 26 * genus.pixelSize;
+          const dy = Math.floor(i / 26) * genus.pixelSize;
 
           ctx.drawImage(
             genus,
@@ -133,60 +138,76 @@ window.addEventListener('load', (event) => {
             dy,
             genus.pixelSize,
             genus.pixelSize
-          );
+            );
+          };
+      });
+    });
+
+    player.draw(ctx);
+  };
+
+  // Collision Detection
+  const collisionCheck = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+    const minimap = createMinimap({ player }, currentMap);
+    const boundaries = [];
+
+    minimap.forEach(layer => {
+      layer.forEach((tileID, i) => {
+        if (tileID > 0) {
+          const dx = i % 26 * genus.pixelSize;
+          const dy = Math.floor(i / 26) * genus.pixelSize;
+          
+          if (tileID === 167) {
+            const boundary = new Boundary({
+              position: {
+                bx: dx, 
+                by: dy
+              }
+            });
+            boundaries.push(boundary);
+          };
         };
       });
     });
-    
-    // Collision Detection
-    const collisionDetect = ({ player, boundary }) => {
-      return (
-        player.position.x + player.pixelSize >= boundary.position.bx &&
-        player.position.x <= boundary.position.bx + boundary.pixelSize &&
-        player.position.y <= boundary.position.by + boundary.pixelSize &&
-        player.position.y + player.pixelSize >= boundary.position.by
-      );
-    };
-
+  
     for (let i = 0 ; i < boundaries.length ; i++) {
       const boundary = boundaries[i];
-  
-      if (collisionDetect({ player, boundary })) {
-        colliding = true;
-      } else {
-        colliding = false;
-      };
+      
+      if (
+        player.destination.dy + player.pixelSize >= boundary.position.by &&
+        player.destination.dy <= boundary.position.by + boundary.pixelSize &&
+        player.destination.dx <= boundary.position.bx + boundary.pixelSize &&
+        player.destination.dx + player.pixelSize >= boundary.position.bx
+      ) {
+        return true;
+      }
     };
+    return false;
   };
-  
-  // Implement Player Movement
-  const directions = {
-    up: { pressed: false },
-    down: { pressed: false },
-    left: { pressed: false },
-    right: { pressed: false }
-  };
-    
-  const chatbox = false;
-  // Event Listeners for player movement and collision
+
+  // Implement Player Movement | event listeners for player movement and collision
   addEventListener('keydown', (e) => {
     if (form.closed && !chatbox && !player.cooldown) {
       switch(e.key) {
         case 'w' :
-          directions.up.pressed = true;
           player.direction = player.origin.upward;
+          player.position.y -= !collisionCheck({ player }) && 1;
+          console.log(!collisionCheck({ player }))
           break;
         case 's' :
-          directions.down.pressed = true;
           player.direction = player.origin.downward;
+          player.position.y += !collisionCheck({ player }) && 1;
+          console.log(!collisionCheck({ player }))
           break;
         case 'a' :
-          directions.left.pressed = true;
           player.direction = player.origin.leftward;
+          player.position.x -= !collisionCheck({ player }) && 1;
+          console.log(!collisionCheck({ player }))
           break;
         case 'd' :
-          directions.right.pressed = true;
           player.direction = player.origin.rightward;
+          player.position.x += !collisionCheck({ player }) && 1;
+          console.log(!collisionCheck({ player }))
           break;
         default: break;
       };
@@ -198,8 +219,7 @@ window.addEventListener('load', (event) => {
     };
 
     // Redraw map and player when player moves
-    form.closed && !colliding && drawGenus({ player });
-    form.closed && !colliding && player.draw(ctx);  
+    form.closed && drawGenus({ player });  
   });
 
   // Game Loop Function

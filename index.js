@@ -1,5 +1,5 @@
 import { resources } from './src/resources.js';
-import { Sprite } from './src/Classes.js';
+import { Boundary, Sprite } from './src/Classes.js';
 
 window.addEventListener('load', (event) => {
 
@@ -19,6 +19,8 @@ window.addEventListener('load', (event) => {
   const form = document.querySelector('.form-container');
   form.closed = false;
   
+  let colliding = false;
+
   const player = new Sprite({
     origin: {
       downward: { sx: 0, sy: 0 },
@@ -86,13 +88,13 @@ window.addEventListener('load', (event) => {
   };
   
   // Draw map, takes in player coordinates and JSON data
-  const drawGenus = (positionX, positionY, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+  const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     const startingTile = {};
     const screen = { width: 26, height: 22 };
-    startingTile.x = positionX - screen.width/2;
-    startingTile.y = positionY - screen.height/2;
+    startingTile.x = player.position.x - screen.width/2;
+    startingTile.y = player.position.y - screen.height/2;
     
-    let minimap = [];
+    let minimap = [], boundaries = [];
     currentMap.forEach(layer => {
       startingTile.num = genus.mapSize.col * (startingTile.y - 1) + startingTile.x;
       let tiles = [];
@@ -110,7 +112,17 @@ window.addEventListener('load', (event) => {
           const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize;
           const dx = i % 26 * genus.pixelSize * genus.scale;
           const dy = Math.floor(i / 26) * genus.pixelSize * genus.scale;
-        
+          
+          if (tileID === 167) {
+            const boundary = new Boundary({
+              position: {
+                bx: dx, 
+                by: dy
+              }
+            });
+            boundaries.push(boundary);
+          };
+
           ctx.drawImage(
             genus,
             sx,
@@ -125,6 +137,26 @@ window.addEventListener('load', (event) => {
         };
       });
     });
+    
+    // Collision Detection
+    const collisionDetect = ({ player, boundary }) => {
+      return (
+        player.position.x + player.pixelSize >= boundary.position.bx &&
+        player.position.x <= boundary.position.bx + boundary.pixelSize &&
+        player.position.y <= boundary.position.by + boundary.pixelSize &&
+        player.position.y + player.pixelSize >= boundary.position.by
+      );
+    };
+
+    for (let i = 0 ; i < boundaries.length ; i++) {
+      const boundary = boundaries[i];
+  
+      if (collisionDetect({ player, boundary })) {
+        colliding = true;
+      } else {
+        colliding = false;
+      };
+    };
   };
   
   // Implement Player Movement
@@ -136,35 +168,25 @@ window.addEventListener('load', (event) => {
   };
     
   const chatbox = false;
-  // let lastKeyPressed = '';
-
-  // Event Listeners for player movement
+  // Event Listeners for player movement and collision
   addEventListener('keydown', (e) => {
     if (form.closed && !chatbox && !player.cooldown) {
       switch(e.key) {
         case 'w' :
           directions.up.pressed = true;
           player.direction = player.origin.upward;
-          // lastKeyPressed = 'w';
-        if (player.position.y > 11) player.position.y -= 1;
           break;
         case 's' :
           directions.down.pressed = true;
           player.direction = player.origin.downward;
-          // lastKeyPressed = 's';
-          if (player.position.y < (canvas.height - 11)) player.position.y += 1;
           break;
         case 'a' :
           directions.left.pressed = true;
           player.direction = player.origin.leftward;
-          // lastKeyPressed = 'a';
-          if (player.position.x > 11) player.position.x -= 1;
           break;
         case 'd' :
           directions.right.pressed = true;
           player.direction = player.origin.rightward;
-          // lastKeyPressed = 'd';
-          if (player.position.x < (canvas.width - 11)) player.position.x += 1;
           break;
         default: break;
       };
@@ -176,8 +198,8 @@ window.addEventListener('load', (event) => {
     };
 
     // Redraw map and player when player moves
-    form.closed && drawGenus(player.position.x, player.position.y);
-    form.closed && player.draw(ctx);  
+    form.closed && !colliding && drawGenus({ player });
+    form.closed && !colliding && player.draw(ctx);  
   });
 
   // Game Loop Function

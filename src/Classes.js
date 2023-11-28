@@ -3,10 +3,10 @@ export class Sprite {
     this.image = new Image();
     this.image.src = './backend/assets/player_data/spritesheet-npcs.png';
     this.origin = origin;
-    this.destination = destination;
     this.direction = { sx: 0, sy: 0 };
-    this.pixelSize = 32;
+    this.destination = destination;
     this.position = { x: 97, y: 66 };
+    this.pixelSize = 32;
     this.speed = 500;
     this.cooldown = false;
   };
@@ -23,5 +23,12 @@ export class Sprite {
       this.pixelSize,
       this.pixelSize
     );
+  };
+};
+
+export class Boundary {
+  constructor({ position }) {
+    this.position = position;
+    this.pixelSize = 32;
   };
 };

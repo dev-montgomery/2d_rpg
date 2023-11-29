@@ -20,6 +20,9 @@ window.addEventListener('load', (event) => {
   canvas.style.backgroundRepeat = 'no-repeat';
   canvas.style.backgroundSize = 'cover';
   document.body.style.backgroundColor = '#336c97';
+  const changeBorder = (element) => {
+    element.style.border = '1px solid black';
+  };
 
   // ------ eventually implement chatbox to interact with npcs
   const chatbox = false;
@@ -53,6 +56,7 @@ window.addEventListener('load', (event) => {
 
     // Render map and player after form is submitted
     setTimeout(() => {
+      changeBorder(canvas);
       genus.loaded && drawGenus({ player });
       player.draw(ctx);
     }, 500);
@@ -78,6 +82,7 @@ window.addEventListener('load', (event) => {
       console.error('Error saving player data.', error);
     };
   };
+  
   // ------ will need to determine if player is in combat before logging out.
   // Saves player data when the browser window is closed.
   addEventListener('beforeunload', e => {
@@ -147,8 +152,8 @@ window.addEventListener('load', (event) => {
             dy,
             genus.pixelSize,
             genus.pixelSize
-            );
-          };
+          );
+        };
       });
     });
   };

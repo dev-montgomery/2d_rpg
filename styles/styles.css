@@ -76,9 +76,8 @@ canvas {
 
 #login-form #login-form-input {
   padding: 0.5rem;
-  border: none;
+  border: 1px solid black;
   height: 2.4rem;
-  border-bottom: 1px solid #ccc;
 }
 
 #login-form #login-form-btn {

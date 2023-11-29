@@ -1,12 +1,14 @@
 export class Sprite {
-  constructor({ origin, destination }) {
+  constructor({ source, destination }) {
     this.image = new Image();
     this.image.src = './backend/assets/player_data/spritesheet-npcs.png';
-    this.origin = origin;
-    this.direction = { sx: 0, sy: 0 };
+    this.source = source;
     this.destination = destination;
-    this.position = { x: 97, y: 66 };
+    this.direction = { sx: 0, sy: 0 };
+    this.mapLocation = { mx: 97, my: 66 };
+    this.moveable = true;
     this.pixelSize = 32;
+    this.offset = 8;
     this.speed = 500;
     this.cooldown = false;
   };

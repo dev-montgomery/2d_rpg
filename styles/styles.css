@@ -46,7 +46,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 /* CSS Styles */
 canvas {
-  border: 1px solid black;
+  /* border: 1px solid black; */
 }
 .form-container {
   position: absolute;
@@ -59,6 +59,8 @@ canvas {
   padding: 20px;
   background: #ccc;
   border-radius: 2mm;
+  border: 1px solid black;
+  box-shadow: 0 0 25px black;;
 }
 
 #login-form {

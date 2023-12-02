@@ -1,5 +1,5 @@
 import { resources } from './src/resources.js';
-import { Boundary, Sprite } from './src/Classes.js';
+import { Tile, Sprite } from './src/Classes.js';
 
 window.addEventListener('load', (event) => {
 
@@ -110,11 +110,14 @@ window.addEventListener('load', (event) => {
       y: player.mapLocation.my - Math.floor(canvas.frames.row/2) // 5.5 up
     };
     
-    const minimap = [];
+    const minimap = [], upperWallTiles = [];
     currentMap.forEach(layer => {
       startingTile.num = genus.mapSize.col * (startingTile.y - 1) + startingTile.x;
       let tiles = []; 
       for (let i = 0 ; i < canvas.frames.row ; i++) {
+        // if (layer.name !== 'upperwalls') {
+
+        // }
         tiles.push(...layer.data.slice(startingTile.num, startingTile.num + canvas.frames.col));
         startingTile.num += genus.mapSize.col;
       };
@@ -129,8 +132,18 @@ window.addEventListener('load', (event) => {
           const dx = i % canvas.frames.col * genus.pixelSize;
           const dy = Math.floor(i / canvas.frames.col) * genus.pixelSize;
           
-          if (tileID === 24) {
-            const boundary = new Boundary({
+          // if (layer.name === 'upperwalls') {
+          //   const upperWall = new Tile({
+          //     position: {
+          //       bx: dx, 
+          //       by: dy
+          //     }
+          //   });
+          //   upperWallTiles.push(upperWall);
+          // };
+
+          if (tileID === 25) {
+            const boundary = new Tile({
               position: {
                 bx: dx, 
                 by: dy
@@ -157,7 +170,6 @@ window.addEventListener('load', (event) => {
 
   // Collision Detection
   const collisionDetect = (newX, newY) => {
-    console.log(boundaries)
     for (let i = 0 ; i < boundaries.length ; i++) {
       const boundary = boundaries[i];
       if (

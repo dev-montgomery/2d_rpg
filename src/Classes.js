@@ -27,7 +27,7 @@ export class Sprite {
   };
 };
 
-export class Boundary {
+export class Tile {
   constructor({ position }) {
     this.position = position;
     this.pixelSize = 32;

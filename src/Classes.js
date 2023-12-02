@@ -28,8 +28,9 @@ export class Sprite {
 };
 
 export class Tile {
-  constructor({ position }) {
-    this.position = position;
-    this.pixelSize = 32;
+  constructor({ source, destination }) {
+    this.source = source;
+    this.destination = destination;
+    this.pixelSize = 64;
   };
 };

@@ -6,12 +6,9 @@ window.addEventListener('load', (event) => {
   // Create canvas and context
   const canvas = document.querySelector('canvas');
   const ctx = canvas.getContext('2d');
-  
-  // Screen size for high-dpi displays - Probably unnecessary but seems fine to havd
-  const scaleFactor = window.devicePixelRatio;
-  canvas.width = 832 * scaleFactor;
-  canvas.height = 704 * scaleFactor;
-  ctx.scale(scaleFactor, scaleFactor);
+
+  canvas.width = 832; // 6.5 squares on each side of player
+  canvas.height = 704; // 5 up and down
   
   // Temp Background
   const bg = new Image();
@@ -34,13 +31,13 @@ window.addEventListener('load', (event) => {
   const player = new Sprite({
     source: {
       downward: { sx: 0, sy: 0 },
-      upward: { sx: 0, sy: 32 },
-      rightward: { sx: 32, sy: 0 },
-      leftward: { sx: 32, sy: 32 }
+      upward: { sx: 64, sy: 0 },
+      rightward: { sx: 128, sy: 0 },
+      leftward: { sx: 192, sy: 0 }
     },
     destination: {
-      dx: canvas.width * 0.5 - 8, 
-      dy: canvas.height * 0.5 - 8
+      dx: canvas.width * 0.5 - 48, // offset player
+      dy: canvas.height * 0.5 - 48 // offset player
     }
   });
   
@@ -91,12 +88,12 @@ window.addEventListener('load', (event) => {
     updatePlayerData(); // need to fix 
   });
   
-  // After player "login", populate the background and map
+  // Populate the background and map
   const genus = new Image();
-  genus.src = './backend/assets/map_data/genus/genus-map-resources-32.png';
-  genus.pixelSize = 32;
+  genus.src = './backend/assets/map_data/genus-resources-64.png';
+  genus.pixelSize = 64;
   genus.spritesheetWidth = 25;
-  genus.mapSize = { row: 80, col: 120 };
+  genus.mapSize = { row: 160, col: 140 };
   genus.onload = () => {
     genus.loaded = true;
   };
@@ -128,31 +125,30 @@ window.addEventListener('load', (event) => {
         if (tileID > 0) {
           const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize;
           const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize;
-          const dx = i % 26 * genus.pixelSize;
-          const dy = Math.floor(i / 26) * genus.pixelSize;
+          const dx = i % screen.width * genus.pixelSize;
+          const dy = Math.floor(i / screen.width) * genus.pixelSize;
           
-          if (tileID === 167) {
+          if (tileID === 24) {
             const boundary = new Boundary({
               position: {
                 bx: dx, 
                 by: dy
               }
             });
-
             boundaries.push(boundary);
+          } else {
+            ctx.drawImage(
+              genus,
+              sx,
+              sy,
+              genus.pixelSize,
+              genus.pixelSize,
+              dx,
+              dy,
+              genus.pixelSize,
+              genus.pixelSize
+            );
           };
-
-          ctx.drawImage(
-            genus,
-            sx,
-            sy,
-            genus.pixelSize,
-            genus.pixelSize,
-            dx,
-            dy,
-            genus.pixelSize,
-            genus.pixelSize
-          );
         };
       });
     });

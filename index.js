@@ -105,25 +105,25 @@ window.addEventListener('load', (event) => {
   // Draw map, takes in player coordinates and JSON data
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     boundaries = [];
-    const startingTile = { // takes location of player and identifies upper left corner to begin drawing. 13 x 11 tiles.
+    // Use location of player to identify upper left corner to begin drawing. 13 x 11 tiles.
+    const startingTile = { 
       x: player.mapLocation.mx - Math.floor(canvas.frames.col/2), // 6.5 left
       y: player.mapLocation.my - Math.floor(canvas.frames.row/2) // 5.5 up
     };
     
-    const minimap = [], upperWallTiles = [];
+    // Create minimap of player location
+    const minimap = [], uppermost = [];
     currentMap.forEach(layer => {
       startingTile.num = genus.mapSize.col * (startingTile.y - 1) + startingTile.x;
       let tiles = []; 
       for (let i = 0 ; i < canvas.frames.row ; i++) {
-        // if (layer.name !== 'upperwalls') {
-
-        // }
         tiles.push(...layer.data.slice(startingTile.num, startingTile.num + canvas.frames.col));
         startingTile.num += genus.mapSize.col;
       };
       minimap.push(tiles);
     });
   
+    // Iterate through minimap to draw tiles
     minimap.forEach(layer => {
       layer.forEach((tileID, i) => {
         if (tileID > 0) {
@@ -132,24 +132,34 @@ window.addEventListener('load', (event) => {
           const dx = i % canvas.frames.col * genus.pixelSize;
           const dy = Math.floor(i / canvas.frames.col) * genus.pixelSize;
           
-          // if (layer.name === 'upperwalls') {
-          //   const upperWall = new Tile({
-          //     position: {
-          //       bx: dx, 
-          //       by: dy
-          //     }
-          //   });
-          //   upperWallTiles.push(upperWall);
-          // };
-
-          if (tileID === 25) {
+          // Bucket of uppermost tiles
+          const upperTiles = [ 576, 577, 578, 579, 580, 581, 582, 601, 602, 603, 604, 605, 606, 607, 608 ];
+          
+          // Check for collision tiles
+          if (tileID === 25) { 
             const boundary = new Tile({
-              position: {
-                bx: dx, 
-                by: dy
+              destination: {
+                bdx: dx, 
+                bdy: dy
               }
             });
             boundaries.push(boundary);
+
+          // Collect uppermost tiles
+          } else if (upperTiles.includes(tileID)) {
+            const upper = new Tile({
+              source: {
+                usx: sx,
+                usy: sy
+              },
+              destination: {
+                udx: dx, 
+                udy: dy
+              }
+            });
+            upper.tileID = tileID;
+            uppermost.push(upper);
+
           } else {
             ctx.drawImage(
               genus,
@@ -166,6 +176,22 @@ window.addEventListener('load', (event) => {
         };
       });
     });
+    // Draw player after drawing minimap
+    player.draw(ctx);
+    // Draw uppermost layer
+    uppermost.forEach(tile => {
+      ctx.drawImage(
+        genus,
+        tile.source.usx,
+        tile.source.usy,
+        tile.pixelSize,
+        tile.pixelSize,
+        tile.destination.udx,
+        tile.destination.udy,
+        tile.pixelSize,
+        tile.pixelSize
+      );
+    });
   };
 
   // Collision Detection
@@ -173,10 +199,10 @@ window.addEventListener('load', (event) => {
     for (let i = 0 ; i < boundaries.length ; i++) {
       const boundary = boundaries[i];
       if (
-        newX < boundary.position.bx + boundary.pixelSize &&
-        newX + player.pixelSize > boundary.position.bx &&
-        newY < boundary.position.by + boundary.pixelSize &&
-        newY + player.pixelSize > boundary.position.by
+        newX < boundary.destination.bdx + boundary.pixelSize &&
+        newX + player.pixelSize > boundary.destination.bdx &&
+        newY < boundary.destination.bdy + boundary.pixelSize &&
+        newY + player.pixelSize > boundary.destination.bdy
       ) {
         return true;
       };
@@ -232,7 +258,6 @@ window.addEventListener('load', (event) => {
 
     // Redraw map and player when player moves
     form.closed && drawGenus({ player });  
-    form.closed && player.draw(ctx);
   });
 
   // Game Loop Function

@@ -6,7 +6,8 @@ window.addEventListener('load', (event) => {
   // Create canvas and context
   const canvas = document.querySelector('canvas');
   const ctx = canvas.getContext('2d');
-
+  
+  canvas.frames = { row: 11, col: 13 };
   canvas.width = 832; // 6.5 squares on each side of player
   canvas.height = 704; // 5 up and down
   
@@ -104,29 +105,29 @@ window.addEventListener('load', (event) => {
   // Draw map, takes in player coordinates and JSON data
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     boundaries = [];
-    const startingTile = {};
-    const screen = { width: 26, height: 22 };
-    startingTile.x = player.mapLocation.mx - screen.width/2;
-    startingTile.y = player.mapLocation.my - screen.height/2;
+    const startingTile = { // takes location of player and identifies upper left corner to begin drawing. 13 x 11 tiles.
+      x: player.mapLocation.mx - Math.floor(canvas.frames.col/2), // 6.5 left
+      y: player.mapLocation.my - Math.floor(canvas.frames.row/2) // 5.5 up
+    };
     
     const minimap = [];
     currentMap.forEach(layer => {
       startingTile.num = genus.mapSize.col * (startingTile.y - 1) + startingTile.x;
-      let tiles = [];
-      for (let i = 0 ; i < screen.height ; i++) {
-        tiles.push(...layer.data.slice(startingTile.num, startingTile.num + 26));
+      let tiles = []; 
+      for (let i = 0 ; i < canvas.frames.row ; i++) {
+        tiles.push(...layer.data.slice(startingTile.num, startingTile.num + canvas.frames.col));
         startingTile.num += genus.mapSize.col;
       };
       minimap.push(tiles);
     });
-
+  
     minimap.forEach(layer => {
       layer.forEach((tileID, i) => {
         if (tileID > 0) {
-          const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize;
-          const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize;
-          const dx = i % screen.width * genus.pixelSize;
-          const dy = Math.floor(i / screen.width) * genus.pixelSize;
+          const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize; // finds x-axis px on spritesheet
+          const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize; // determines row on spritesheet
+          const dx = i % canvas.frames.col * genus.pixelSize;
+          const dy = Math.floor(i / canvas.frames.col) * genus.pixelSize;
           
           if (tileID === 24) {
             const boundary = new Boundary({
@@ -156,6 +157,7 @@ window.addEventListener('load', (event) => {
 
   // Collision Detection
   const collisionDetect = (newX, newY) => {
+    console.log(boundaries)
     for (let i = 0 ; i < boundaries.length ; i++) {
       const boundary = boundaries[i];
       if (

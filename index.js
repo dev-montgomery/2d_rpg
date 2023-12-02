@@ -1,5 +1,5 @@
 import { resources } from './src/resources.js';
-import { Boundary, Sprite } from './src/Classes.js';
+import { Tile, Sprite } from './src/Classes.js';
 
 window.addEventListener('load', (event) => {
 
@@ -7,11 +7,9 @@ window.addEventListener('load', (event) => {
   const canvas = document.querySelector('canvas');
   const ctx = canvas.getContext('2d');
   
-  // Screen size for high-dpi displays - Probably unnecessary but seems fine to havd
-  const scaleFactor = window.devicePixelRatio;
-  canvas.width = 832 * scaleFactor;
-  canvas.height = 704 * scaleFactor;
-  ctx.scale(scaleFactor, scaleFactor);
+  canvas.frames = { row: 11, col: 13 };
+  canvas.width = 832; // 6.5 squares on each side of player
+  canvas.height = 704; // 5 up and down
   
   // Temp Background
   const bg = new Image();
@@ -34,13 +32,13 @@ window.addEventListener('load', (event) => {
   const player = new Sprite({
     source: {
       downward: { sx: 0, sy: 0 },
-      upward: { sx: 0, sy: 32 },
-      rightward: { sx: 32, sy: 0 },
-      leftward: { sx: 32, sy: 32 }
+      upward: { sx: 64, sy: 0 },
+      rightward: { sx: 128, sy: 0 },
+      leftward: { sx: 192, sy: 0 }
     },
     destination: {
-      dx: canvas.width * 0.5 - 8, 
-      dy: canvas.height * 0.5 - 8
+      dx: canvas.width * 0.5 - 48, // offset player
+      dy: canvas.height * 0.5 - 48 // offset player
     }
   });
   
@@ -91,12 +89,12 @@ window.addEventListener('load', (event) => {
     updatePlayerData(); // need to fix 
   });
   
-  // After player "login", populate the background and map
+  // Populate the background and map
   const genus = new Image();
-  genus.src = './backend/assets/map_data/genus/genus-map-resources-32.png';
-  genus.pixelSize = 32;
+  genus.src = './backend/assets/map_data/genus-resources-64.png';
+  genus.pixelSize = 64;
   genus.spritesheetWidth = 25;
-  genus.mapSize = { row: 80, col: 120 };
+  genus.mapSize = { row: 160, col: 140 };
   genus.onload = () => {
     genus.loaded = true;
   };
@@ -107,52 +105,64 @@ window.addEventListener('load', (event) => {
   // Draw map, takes in player coordinates and JSON data
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     boundaries = [];
-    const startingTile = {};
-    const screen = { width: 26, height: 22 };
-    startingTile.x = player.mapLocation.mx - screen.width/2;
-    startingTile.y = player.mapLocation.my - screen.height/2;
+    const startingTile = { // takes location of player and identifies upper left corner to begin drawing. 13 x 11 tiles.
+      x: player.mapLocation.mx - Math.floor(canvas.frames.col/2), // 6.5 left
+      y: player.mapLocation.my - Math.floor(canvas.frames.row/2) // 5.5 up
+    };
     
-    const minimap = [];
+    const minimap = [], upperWallTiles = [];
     currentMap.forEach(layer => {
       startingTile.num = genus.mapSize.col * (startingTile.y - 1) + startingTile.x;
-      let tiles = [];
-      for (let i = 0 ; i < screen.height ; i++) {
-        tiles.push(...layer.data.slice(startingTile.num, startingTile.num + 26));
+      let tiles = []; 
+      for (let i = 0 ; i < canvas.frames.row ; i++) {
+        // if (layer.name !== 'upperwalls') {
+
+        // }
+        tiles.push(...layer.data.slice(startingTile.num, startingTile.num + canvas.frames.col));
         startingTile.num += genus.mapSize.col;
       };
       minimap.push(tiles);
     });
-
+  
     minimap.forEach(layer => {
       layer.forEach((tileID, i) => {
         if (tileID > 0) {
-          const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize;
-          const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize;
-          const dx = i % 26 * genus.pixelSize;
-          const dy = Math.floor(i / 26) * genus.pixelSize;
+          const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize; // finds x-axis px on spritesheet
+          const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize; // determines row on spritesheet
+          const dx = i % canvas.frames.col * genus.pixelSize;
+          const dy = Math.floor(i / canvas.frames.col) * genus.pixelSize;
           
-          if (tileID === 167) {
-            const boundary = new Boundary({
+          // if (layer.name === 'upperwalls') {
+          //   const upperWall = new Tile({
+          //     position: {
+          //       bx: dx, 
+          //       by: dy
+          //     }
+          //   });
+          //   upperWallTiles.push(upperWall);
+          // };
+
+          if (tileID === 25) {
+            const boundary = new Tile({
               position: {
                 bx: dx, 
                 by: dy
               }
             });
-
             boundaries.push(boundary);
+          } else {
+            ctx.drawImage(
+              genus,
+              sx,
+              sy,
+              genus.pixelSize,
+              genus.pixelSize,
+              dx,
+              dy,
+              genus.pixelSize,
+              genus.pixelSize
+            );
           };
-
-          ctx.drawImage(
-            genus,
-            sx,
-            sy,
-            genus.pixelSize,
-            genus.pixelSize,
-            dx,
-            dy,
-            genus.pixelSize,
-            genus.pixelSize
-          );
         };
       });
     });

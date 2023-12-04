@@ -133,20 +133,8 @@ window.addEventListener('load', (event) => {
           const dy = Math.floor(i / canvas.frames.col) * genus.pixelSize;
           
           // Bucket of uppermost tiles
-          const upperTiles = [ 576, 577, 578, 579, 580, 581, 582, 601, 602, 603, 604, 605, 606, 607, 608 ];
-          
-          // Check for collision tiles
-          if (tileID === 25) { 
-            const boundary = new Tile({
-              destination: {
-                bdx: dx, 
-                bdy: dy
-              }
-            });
-            boundaries.push(boundary);
-
-          // Collect uppermost tiles
-          } else if (upperTiles.includes(tileID)) {
+          const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
+          if (upperTiles.includes(tileID)) {
             const upper = new Tile({
               source: {
                 usx: sx,
@@ -159,7 +147,17 @@ window.addEventListener('load', (event) => {
             });
             upper.tileID = tileID;
             uppermost.push(upper);
+          };
 
+          // Check for collision tiles
+          if (tileID === 25) { 
+            const boundary = new Tile({
+              destination: {
+                bdx: dx, 
+                bdy: dy
+              }
+            });
+            boundaries.push(boundary);
           } else {
             ctx.drawImage(
               genus,
@@ -271,11 +269,9 @@ window.addEventListener('load', (event) => {
     
 // addEventListener('resize', drawMap);
 
-// handle uppermost layer
+
 // water animation
 // stairs and holes
-
-// make map larger
 
 // user interface
 // inventory functionality

@@ -18,17 +18,11 @@ window.addEventListener('load', (event) => {
   canvas.style.backgroundRepeat = 'no-repeat';
   canvas.style.backgroundSize = 'cover';
   document.body.style.backgroundColor = '#336c97';
-  const changeBorder = (element) => {
-    element.style.border = '1px solid black';
-  };
 
   // ------ eventually implement chatbox to interact with npcs
   const chatbox = false;
 
-  // Handle form to create and/or "login" as existing player
-  const form = document.querySelector('.form-container');
-  form.closed = false;
-
+  // Init a player sprite
   const player = new Sprite({
     source: {
       downward: { sx: 0, sy: 0 },
@@ -42,7 +36,11 @@ window.addEventListener('load', (event) => {
     }
   });
   
-  const initPlayerData = e => {
+  // Checks if player exists/Creates player | Close form
+  const form = document.querySelector('.form-container');
+  form.closed = false;
+  
+  const initPlayerData = (e) => {
     e.preventDefault();
     const playerName = document.getElementById('login-form-input').value;
   
@@ -52,22 +50,30 @@ window.addEventListener('load', (event) => {
     form.style.display = 'none';
     form.closed = true;
 
-    // Render map and player after form is submitted
+    // Render interface, map, and player after form is submitted
     setTimeout(() => {
-      changeBorder(canvas);
+      document.querySelector('.player-stats').style.display = 'flex';
+      document.querySelector('.interface-container').style.display = 'flex';
+      canvas.style.border = '1px solid black';
       genus.loaded && drawGenus({ player });
       player.draw(ctx);
+      console.log(player)
     }, 500);
   };
   
   document.getElementById('login-form').addEventListener('submit', initPlayerData);
-  
+
+  // Append Player Stats to Screen
+  // const   
+
   // POST player data to backend json file
   const updatePlayerData = async () => {
+    const playerToUpdate = resources.playerData.playerlist.findIndex(user => user.id === player.data.id);
+    if (playerToUpdate !== -1) resources.playerData.playerlist[playerToUpdate] = player.data; 
     const playerdata = resources.playerData;
-    
+
     try {
-      const response = await fetch('http://localhost:4000/playerdata', {
+      const response = await fetch('http://localhost:3000/playerdata', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +86,7 @@ window.addEventListener('load', (event) => {
       console.error('Error saving player data.', error);
     };
   };
-  
+
   // ------ will need to determine if player is in combat before logging out.
   // Saves player data when the browser window is closed.
   addEventListener('beforeunload', e => {
@@ -98,21 +104,24 @@ window.addEventListener('load', (event) => {
   genus.onload = () => {
     genus.loaded = true;
   };
-
+  
   // Bucket of Boundaries
-  let boundaries = [];
+  const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
+  const waterTiles = [ 1, 2, 3, 4, 5, 6, 7, 8 ];
+  let boundaries = [], wateries = [];
   
   // Draw map, takes in player coordinates and JSON data
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     boundaries = [];
+    wateries = [];
     // Use location of player to identify upper left corner to begin drawing. 13 x 11 tiles.
     const startingTile = { 
       x: player.mapLocation.mx - Math.floor(canvas.frames.col/2), // 6.5 left
       y: player.mapLocation.my - Math.floor(canvas.frames.row/2) // 5.5 up
     };
     
-    // Create minimap of player location
-    const minimap = [], uppermost = [];
+    // Create visibleMapSection of player location
+    const visibleMapSection = [], uppermost = [];
     currentMap.forEach(layer => {
       startingTile.num = genus.mapSize.col * (startingTile.y - 1) + startingTile.x;
       let tiles = []; 
@@ -120,11 +129,11 @@ window.addEventListener('load', (event) => {
         tiles.push(...layer.data.slice(startingTile.num, startingTile.num + canvas.frames.col));
         startingTile.num += genus.mapSize.col;
       };
-      minimap.push(tiles);
+      visibleMapSection.push(tiles);
     });
   
-    // Iterate through minimap to draw tiles
-    minimap.forEach(layer => {
+    // Iterate through visibleMapSection to draw tiles
+    visibleMapSection.forEach(layer => {
       layer.forEach((tileID, i) => {
         if (tileID > 0) {
           const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize; // finds x-axis px on spritesheet
@@ -133,7 +142,6 @@ window.addEventListener('load', (event) => {
           const dy = Math.floor(i / canvas.frames.col) * genus.pixelSize;
           
           // Bucket of uppermost tiles
-          const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
           if (upperTiles.includes(tileID)) {
             const upper = new Tile({
               source: {
@@ -158,6 +166,18 @@ window.addEventListener('load', (event) => {
               }
             });
             boundaries.push(boundary);
+          // } else if (waterTiles.includes(tileID)) {
+          //   const water = new Tile({
+          //     source: {
+          //       wsx: sx,
+          //       wsy: sy
+          //     },
+          //     destination: {
+          //       wdx: dx,
+          //       wdy: dy
+          //     }
+          //   });
+          //   wateries.push(water);
           } else {
             ctx.drawImage(
               genus,
@@ -176,6 +196,7 @@ window.addEventListener('load', (event) => {
     });
     // Draw player after drawing minimap
     player.draw(ctx);
+
     // Draw uppermost layer
     uppermost.forEach(tile => {
       ctx.drawImage(
@@ -192,10 +213,32 @@ window.addEventListener('load', (event) => {
     });
   };
 
+  // Handle Water Animation
+  // const drawOcean = ({ player }) => {
+  //   const rando = Math.floor(Math.random() * 8);
+  //   for (let i = 0 ; i < wateries.length ; i++) {
+  //     const waterTile = wateries[i];
+
+  //     ctx.drawImage(
+  //       genus,
+  //       rando * waterTile.pixelSize,
+  //       waterTile.source.wsy,
+  //       waterTile.pixelSize,
+  //       waterTile.pixelSize,
+  //       waterTile.destination.wdx,
+  //       waterTile.destination.wdy,
+  //       waterTile.pixelSize,
+  //       waterTile.pixelSize
+  //     );
+  //   };
+  //   player.draw(ctx);
+  // };
+
   // Collision Detection
   const collisionDetect = (newX, newY) => {
     for (let i = 0 ; i < boundaries.length ; i++) {
       const boundary = boundaries[i];
+
       if (
         newX < boundary.destination.bdx + boundary.pixelSize &&
         newX + player.pixelSize > boundary.destination.bdx &&
@@ -209,6 +252,7 @@ window.addEventListener('load', (event) => {
   
   // Implement Player Movement | event listeners for player movement and collision
   addEventListener('keydown', (e) => {
+    // need to add player's last location
     let newX = player.destination.dx + player.offset;
     let newY = player.destination.dy + player.offset;
     let valX = 0;
@@ -255,13 +299,20 @@ window.addEventListener('load', (event) => {
     };
 
     // Redraw map and player when player moves
-    form.closed && drawGenus({ player });  
+    form.closed && drawGenus({ player });    
   });
 
+  // const handleCanvasUpdates = () => {
+
+  // }
+
+  // setInterval(() => {
+  //   drawOcean({ player });
+  // }, 1000);
+ 
   // Game Loop Function
   // function animate () {
   //   requestAnimationFrame(animate);
-  //   ctx.clearRect(0, 0, canvas.width, canvas.height);
   // };
     
   // animate();

@@ -5,7 +5,7 @@ export class Sprite {
     this.source = source;
     this.destination = destination;
     this.direction = { sx: 0, sy: 0 };
-    this.mapLocation = { mx: 93, my: 143 };
+    this.mapLocation = { mx: 93, my: 142 };
     this.pixelSize = 64;
     this.offset = 16;
     this.speed = 500;

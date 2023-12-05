@@ -1,6 +1,7 @@
 export class Resources {
   constructor() {
     this.mapJsonToLoad = {
+      // starting area:
       genus01: './backend/assets/map_data/genus/genus_01.json',
       // genus02: './assets/map_data/genus/genus_02.json',
     };
@@ -65,7 +66,7 @@ export class Resources {
     
     this.playerData.playerlist.push(newPlayer);
     console.log(`${playername} created.`)
-    console.log(`Logged in as ${playername}.`);
+    // console.log(`Logged in as ${playername}.`);
     return newPlayer;
   };
 };

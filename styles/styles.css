@@ -95,11 +95,30 @@ p, h1, h2, h3, h4, h5, h6 {
 .box {
   padding: 1rem;
 }
-.player-stats {
+
+.game-container .player-stats {
   display: none;
   flex-direction: column;
   width: 192px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
+}
+
+.game-container .player-stats .main-stats #player-name {
+  font-size: 1.6rem;
+  padding-bottom: .6rem;
+}
+
+.game-container .player-stats .main-stats li,
+.game-container .player-stats .skills-stats li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: #fff;
+  text-shadow:
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    -1px -1px 0 black;
 }
 
 .interface-container {

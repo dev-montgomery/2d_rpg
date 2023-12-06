@@ -17,20 +17,21 @@
   
   <div class="game-container">
     <div class="player-stats">
-      <section class="main-stats box">
-        <h2 id="player-name"></h2>
-        <p>level<span id="level"></span></p>          
-        <p>magic level<span id="magic-level"></span></p>
-      </section>
-      <section class="stat-box box">
-        <p>fist<span id="skill-fist"></span></p>
-        <p>sword<span id="skill-sword"></span></p>
-        <p>axe<span id="skill-axe"></span></p>
-        <p>blunt<span id="skill-blunt"></span></p>
-        <p>distance<span id="skill-distance"></span></p>        
-        <p>defense<span id="skill-defense"></span></p>
-        <p>fishing<span id="skill-fishing"></span></p>
-      </section>
+      <ul class="main-stats box">
+        <li id="player-name"></li>
+        <li>level: <span id="player-level"></span></li>
+        <li>magic level: <span id="player-magic-level"></span></li>
+      </ul>
+      
+      <ul class="skills-stats box">
+        <li>fist: <span id="player-skill-fist"></span></li>
+        <li>sword: <span id="player-skill-sword"></span></li>
+        <li>axe: <span id="player-skill-axe"></span></li>
+        <li>blunt: <span id="player-skill-blunt"></span></li>
+        <li>distance: <span id="player-skill-distance"></span></li>
+        <li>defense: <span id="player-skill-defense"></span></li>
+        <li>fishing: <span id="player-skill-fishing"></span></li>
+      </ul>
     </div>
     
     <canvas></canvas>

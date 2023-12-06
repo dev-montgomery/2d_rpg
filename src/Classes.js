@@ -1,11 +1,10 @@
-export class Sprite {
+export class Player {
   constructor({ source, destination }) {
     this.image = new Image();
     this.image.src = './backend/assets/player_data/player-64.png';
     this.source = source;
     this.destination = destination;
     this.direction = { sx: 0, sy: 0 };
-    this.mapLocation = { mx: 93, my: 142 };
     this.pixelSize = 64;
     this.offset = 16;
     this.speed = 500;
@@ -77,7 +76,7 @@ export class Item {
     };
   };
 
-  handleMouseMove = e => {
+  handleMouseMove = (e, ctx) => {
     if (this.isDragging) {
       this.destination.dx = e.clientX - canvas.getBoundingClientRect().left - this.pixelSize;
       this.destination.dy = e.clientY - canvas.getBoundingClientRect().top - this.pixelSize;

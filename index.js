@@ -1,5 +1,5 @@
 import { resources } from './src/resources.js';
-import { Item, Tile, Sprite } from './src/Classes.js';
+import { Item, Tile, Player } from './src/Classes.js';
 
 window.addEventListener('load', (event) => {
 
@@ -7,14 +7,14 @@ window.addEventListener('load', (event) => {
   const canvas = document.querySelector('canvas');
   const ctx = canvas.getContext('2d');
   
-  canvas.frames = { row: 11, col: 13 };
-  canvas.width = 1024; // 6.5 squares on each side of player
-  canvas.height = 704; // 5 up and down
+  canvas.width = 1024;
+  canvas.height = 704;
   
   // Visible map
   const screen = {};
-  screen.width = 832;
-  screen.height = 704;
+  screen.frames = { row: 11, col: 13 };
+  screen.width = 832; // 6.5 squares on each side of player
+  screen.height = 704; // 5 up and down
 
   // Temp Background
   const bg = new Image();
@@ -28,7 +28,7 @@ window.addEventListener('load', (event) => {
   const chatbox = false;
 
   // Init a player sprite
-  const player = new Sprite({
+  const player = new Player({
     source: {
       downward: { sx: 0, sy: 0 },
       upward: { sx: 64, sy: 0 },
@@ -73,11 +73,9 @@ window.addEventListener('load', (event) => {
     setTimeout(() => {
       document.querySelector('.player-stats').style.display = 'flex';
       appendPlayerStats({ player });
-      // document.querySelector('.interface-container').style.display = 'flex';
       canvas.style.background = '#464646';
       genus.loaded && drawGenus({ player });
       player.draw(ctx);
-      // console.log(player);
     }, 500);
   };
   
@@ -109,7 +107,7 @@ window.addEventListener('load', (event) => {
   addEventListener('beforeunload', e => {
     e.preventDefault();
     resources.playerData.isLoaded = false;
-    updatePlayerData(); // need to fix 
+    updatePlayerData(); 
   });
   
   // Populate the background and map
@@ -131,19 +129,20 @@ window.addEventListener('load', (event) => {
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     boundaries = [];
     wateries = [];
+
     // Use location of player to identify upper left corner to begin drawing. 13 x 11 tiles.
     const startingTile = { 
-      x: player.mapLocation.mx - Math.floor(canvas.frames.col/2), // 6.5 left
-      y: player.mapLocation.my - Math.floor(canvas.frames.row/2) // 5.5 up
+      x: player.data.performance.location.x - Math.floor(screen.frames.col/2), // 6.5 left
+      y: player.data.performance.location.y - Math.floor(screen.frames.row/2) // 5.5 up
     };
-    
+
     // Create visibleMapSection of player location
     const visibleMapSection = [], uppermost = [];
     currentMap.forEach(layer => {
       startingTile.num = genus.mapSize.col * (startingTile.y - 1) + startingTile.x;
       let tiles = []; 
-      for (let i = 0 ; i < canvas.frames.row ; i++) {
-        tiles.push(...layer.data.slice(startingTile.num, startingTile.num + canvas.frames.col));
+      for (let i = 0 ; i < screen.frames.row ; i++) {
+        tiles.push(...layer.data.slice(startingTile.num, startingTile.num + screen.frames.col));
         startingTile.num += genus.mapSize.col;
       };
       visibleMapSection.push(tiles);
@@ -155,8 +154,8 @@ window.addEventListener('load', (event) => {
         if (tileID > 0) {
           const sx = (tileID - 1) % genus.spritesheetWidth * genus.pixelSize; // finds x-axis px on spritesheet
           const sy = Math.floor((tileID - 1) / genus.spritesheetWidth) * genus.pixelSize; // determines row on spritesheet
-          const dx = i % canvas.frames.col * genus.pixelSize;
-          const dy = Math.floor(i / canvas.frames.col) * genus.pixelSize;
+          const dx = i % screen.frames.col * genus.pixelSize;
+          const dy = Math.floor(i / screen.frames.col) * genus.pixelSize;
           
           // Bucket of uppermost tiles
           if (upperTiles.includes(tileID)) {
@@ -220,6 +219,7 @@ window.addEventListener('load', (event) => {
         item.destination.dy >= 0 &&
         item.destination.dy < screen.height
       ) {
+        // item.isVisible = true;
         item.draw(ctx);
       };
     });
@@ -281,7 +281,6 @@ window.addEventListener('load', (event) => {
   
   // Implement Player Movement | event listeners for player movement and collision
   addEventListener('keydown', (e) => {
-    // need to add player's last location
     let newX = player.destination.dx + player.offset;
     let newY = player.destination.dy + player.offset;
     let valX = 0;
@@ -317,8 +316,14 @@ window.addEventListener('load', (event) => {
       };
 
       if (!collisionDetect(newX, newY)) {
-        player.mapLocation.mx += valX;
-        player.mapLocation.my += valY;
+        // update player location on map
+        player.data.performance.location.x += valX;
+        player.data.performance.location.y += valY;
+        // update object's locations on map
+        inWorldObjects.forEach(item => {
+          item.destination.dx -= valX * item.pixelSize * item.scale;
+          item.destination.dy -= valY * item.pixelSize * item.scale;
+        });
       };
 
       player.cooldown = true;
@@ -333,38 +338,34 @@ window.addEventListener('load', (event) => {
 
   // Handle in-world object behavior
   let inWorldObjects = [];
-  const item = new Item('leather helmet', inWorldObjects.length + 1 , {
-    source: {
-      sx: 0,
-      sy: 0
-    },
-    destination: {
-      dx: 384,
-      dy: 384
+
+  const item = new Item(
+    'sword', 
+    inWorldObjects.length + 1 ,
+    {
+      source: {
+        sx: 160,
+        sy: 32
+      },
+      destination: {
+        dx: 384,
+        dy: 384
+      }
     }
-  });
+  );
 
   inWorldObjects.push(item);
 
-  // const initItem = (id, { source, destination }) => {
-  //   const item = new Item(id, { source, destination });
-  //   inWorldObjects.push(item);
-  //   item.draw(ctx);
-  // };
-  const addEventListenerToItems = () => {
-
-  }
-  
-  canvas.addEventListener('mousedown', () => {
-    inWorldObjects.forEach(item => item.handleMouseDown());
+  form.closed && canvas.addEventListener('mousedown', () => {
+    inWorldObjects.forEach(item => item.handleMouseDown(canvas));
   });
 
-  canvas.addEventListener('mousemove', () => {
-    inWorldObjects.forEach(item => item.handleMouseMove());
+  form.closed && canvas.addEventListener('mousemove', () => {
+    inWorldObjects.forEach(item => item.handleMouseMove(ctx));
   });
 
-  canvas.addEventListener('mouseup', () => {
-    inWorldObjects.forEach(item => item.handleMouseUp());
+  form.closed && canvas.addEventListener('mouseup', () => {
+    inWorldObjects.forEach(item => item.handleMouseUp(canvas));
   });
   
   // const handleCanvasUpdates = () => {

@@ -1,5 +1,5 @@
 import { resources } from './src/resources.js';
-import { Tile, Sprite } from './src/Classes.js';
+import { Item, Tile, Sprite } from './src/Classes.js';
 
 window.addEventListener('load', (event) => {
 
@@ -8,9 +8,14 @@ window.addEventListener('load', (event) => {
   const ctx = canvas.getContext('2d');
   
   canvas.frames = { row: 11, col: 13 };
-  canvas.width = 832; // 6.5 squares on each side of player
+  canvas.width = 1024; // 6.5 squares on each side of player
   canvas.height = 704; // 5 up and down
   
+  // Visible map
+  const screen = {};
+  screen.width = 832;
+  screen.height = 704;
+
   // Temp Background
   const bg = new Image();
   bg.src = './backend/assets/east_oasis.png';
@@ -31,8 +36,8 @@ window.addEventListener('load', (event) => {
       leftward: { sx: 192, sy: 0 }
     },
     destination: {
-      dx: canvas.width * 0.5 - 48, // offset player
-      dy: canvas.height * 0.5 - 48 // offset player
+      dx: screen.width * 0.5 - 48, // offset player
+      dy: screen.height * 0.5 - 48 // offset player
     }
   });
 
@@ -68,11 +73,11 @@ window.addEventListener('load', (event) => {
     setTimeout(() => {
       document.querySelector('.player-stats').style.display = 'flex';
       appendPlayerStats({ player });
-      document.querySelector('.interface-container').style.display = 'flex';
-      canvas.style.border = '1px solid black';
+      // document.querySelector('.interface-container').style.display = 'flex';
+      canvas.style.background = '#464646';
       genus.loaded && drawGenus({ player });
       player.draw(ctx);
-      console.log(player);
+      // console.log(player);
     }, 500);
   };
   
@@ -206,6 +211,18 @@ window.addEventListener('load', (event) => {
         };
       });
     });
+
+    // Draw objects that are located on visible screen
+    inWorldObjects.forEach(item => {
+      if (
+        item.destination.dx >= 0 &&
+        item.destination.dx < screen.width &&
+        item.destination.dy >= 0 &&
+        item.destination.dy < screen.height
+      ) {
+        item.draw(ctx);
+      };
+    });
     // Draw player after drawing minimap
     player.draw(ctx);
 
@@ -314,6 +331,42 @@ window.addEventListener('load', (event) => {
     form.closed && drawGenus({ player });    
   });
 
+  // Handle in-world object behavior
+  let inWorldObjects = [];
+  const item = new Item('leather helmet', inWorldObjects.length + 1 , {
+    source: {
+      sx: 0,
+      sy: 0
+    },
+    destination: {
+      dx: 384,
+      dy: 384
+    }
+  });
+
+  inWorldObjects.push(item);
+
+  // const initItem = (id, { source, destination }) => {
+  //   const item = new Item(id, { source, destination });
+  //   inWorldObjects.push(item);
+  //   item.draw(ctx);
+  // };
+  const addEventListenerToItems = () => {
+
+  }
+  
+  canvas.addEventListener('mousedown', () => {
+    inWorldObjects.forEach(item => item.handleMouseDown());
+  });
+
+  canvas.addEventListener('mousemove', () => {
+    inWorldObjects.forEach(item => item.handleMouseMove());
+  });
+
+  canvas.addEventListener('mouseup', () => {
+    inWorldObjects.forEach(item => item.handleMouseUp());
+  });
+  
   // const handleCanvasUpdates = () => {
 
   // }

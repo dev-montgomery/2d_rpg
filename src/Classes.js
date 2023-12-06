@@ -34,3 +34,59 @@ export class Tile {
     this.pixelSize = 64;
   };
 };
+
+export class Item {
+  constructor(item, id, { source, destination }) {
+    this.item = item;
+    this.image = new Image();
+    this.image.src = './backend/assets/item_data/genus-item-resources.png';
+    this.id = id;
+    this.source = source;
+    this.destination = destination;
+    this.pixelSize = 32;
+    this.scale = 2;
+    this.isDragging = false;
+  }
+
+  draw = (ctx) => {
+    ctx.drawImage(
+      this.image,
+      this.source.sx,
+      this.source.sy,
+      this.pixelSize,
+      this.pixelSize,
+      this.destination.dx,
+      this.destination.dy,
+      this.pixelSize * this.scale,
+      this.pixelSize * this.scale
+    )
+  }
+
+  handleMouseDown = (e, canvas) => {
+    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+
+    if (
+      mouseX >= this.destination.dx &&
+      mouseX <= this.destination.dx + this.pixelSize * this.scale &&
+      mouseY >= this.destination.dy &&
+      mouseY <= this.destination.dy + this.pixelSize * this.scale 
+    ) {
+      this.isDragging = true;
+      canvas.style.cursor = 'grabbing';
+    };
+  };
+
+  handleMouseMove = e => {
+    if (this.isDragging) {
+      this.destination.dx = e.clientX - canvas.getBoundingClientRect().left - this.pixelSize;
+      this.destination.dy = e.clientY - canvas.getBoundingClientRect().top - this.pixelSize;
+      this.draw(ctx);
+    };
+  };
+
+  handleMouseUp = (canvas) => {
+    this.isDragging = false;
+    canvas.style.cursor = 'grab';
+  };
+};

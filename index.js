@@ -35,6 +35,20 @@ window.addEventListener('load', (event) => {
       dy: canvas.height * 0.5 - 48 // offset player
     }
   });
+
+  // Append Player Stats to Screen
+  const appendPlayerStats = ({ player }) => {
+    document.querySelector('#player-name').textContent = player.data.name;
+    document.querySelector('#player-level').textContent = player.data.performance.lvls.lvl;
+    document.querySelector('#player-magic-level').textContent = player.data.performance.lvls.mglvl;
+    document.querySelector('#player-skill-fist').textContent = player.data.performance.skills.fist;
+    document.querySelector('#player-skill-sword').textContent = player.data.performance.skills.sword;
+    document.querySelector('#player-skill-axe').textContent = player.data.performance.skills.axe;
+    document.querySelector('#player-skill-blunt').textContent = player.data.performance.skills.blunt;
+    document.querySelector('#player-skill-distance').textContent = player.data.performance.skills.distance;
+    document.querySelector('#player-skill-defense').textContent = player.data.performance.skills.defense;
+    document.querySelector('#player-skill-fishing').textContent = player.data.performance.skills.fishing;
+  };
   
   // Checks if player exists/Creates player | Close form
   const form = document.querySelector('.form-container');
@@ -53,18 +67,16 @@ window.addEventListener('load', (event) => {
     // Render interface, map, and player after form is submitted
     setTimeout(() => {
       document.querySelector('.player-stats').style.display = 'flex';
+      appendPlayerStats({ player });
       document.querySelector('.interface-container').style.display = 'flex';
       canvas.style.border = '1px solid black';
       genus.loaded && drawGenus({ player });
       player.draw(ctx);
-      console.log(player)
+      console.log(player);
     }, 500);
   };
   
   document.getElementById('login-form').addEventListener('submit', initPlayerData);
-
-  // Append Player Stats to Screen
-  // const   
 
   // POST player data to backend json file
   const updatePlayerData = async () => {

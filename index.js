@@ -316,10 +316,10 @@ window.addEventListener('load', (event) => {
       };
 
       if (!collisionDetect(newX, newY)) {
-        // update player location on map
+        // update player location in world
         player.data.performance.location.x += valX;
         player.data.performance.location.y += valY;
-        // update object's locations on map
+        // update object's locations in world
         inWorldObjects.forEach(item => {
           item.destination.dx -= valX * item.pixelSize * item.scale;
           item.destination.dy -= valY * item.pixelSize * item.scale;
@@ -339,6 +339,14 @@ window.addEventListener('load', (event) => {
   // Handle in-world object behavior
   let inWorldObjects = [];
 
+  const initItem = (item, id, type, source, destination) => {
+    const rpgItem = new Item(item, id, source, destination);
+
+    for (const key in resources.itemData) {
+      if (key === type) console.log(type)
+    }
+  };
+  
   const item = new Item(
     'sword', 
     inWorldObjects.length + 1 ,
@@ -356,17 +364,17 @@ window.addEventListener('load', (event) => {
 
   inWorldObjects.push(item);
 
-  form.closed && canvas.addEventListener('mousedown', () => {
-    inWorldObjects.forEach(item => item.handleMouseDown(canvas));
-  });
+  // canvas.addEventListener('mousedown', () => {
+  //   inWorldObjects.forEach(item => item.handleMouseDown());
+  // });
 
-  form.closed && canvas.addEventListener('mousemove', () => {
-    inWorldObjects.forEach(item => item.handleMouseMove(ctx));
-  });
+  // canvas.addEventListener('mousemove', () => {
+  //   inWorldObjects.forEach(item => item.handleMouseMove());
+  // });
 
-  form.closed && canvas.addEventListener('mouseup', () => {
-    inWorldObjects.forEach(item => item.handleMouseUp(canvas));
-  });
+  // canvas.addEventListener('mouseup', () => {
+  //   inWorldObjects.forEach(item => item.handleMouseUp());
+  // });
   
   // const handleCanvasUpdates = () => {
 

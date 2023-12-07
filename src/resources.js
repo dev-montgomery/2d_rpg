@@ -26,10 +26,11 @@ export class Resources {
       });      
     });
 
-    // Load Player | Create Player
     this.loadPlayerData();
+    this.fetchItemData();
   };  
-
+  
+  // Load Player | Create Player
   loadPlayerData() {
     fetch('./backend/assets/player_data/player.json')
     .then(response => {
@@ -68,6 +69,25 @@ export class Resources {
     console.log(`${playername} created.`)
     // console.log(`Logged in as ${playername}.`);
     return newPlayer;
+  };
+
+  // Fetch all json item data from backend
+  fetchItemData() {
+    fetch('./backend/assets/item_data/items.json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Fetch item data json error');
+      }
+      return response.json();
+    })
+    .then(data => {
+      this.itemData = data;
+      this.itemData.isLoaded = true;
+      console.log(this.itemData)
+    })
+    .catch(error => {
+      console.error('Error loading item data json', error);
+    });
   };
 };
 

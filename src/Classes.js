@@ -61,31 +61,31 @@ export class Item {
     )
   }
 
-  handleMouseDown = (e, canvas) => {
-    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
-    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+  // handleMouseDown = e => {
+  //   const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+  //   const mouseY = e.clientY - canvas.getBoundingClientRect().top;
 
-    if (
-      mouseX >= this.destination.dx &&
-      mouseX <= this.destination.dx + this.pixelSize * this.scale &&
-      mouseY >= this.destination.dy &&
-      mouseY <= this.destination.dy + this.pixelSize * this.scale 
-    ) {
-      this.isDragging = true;
-      canvas.style.cursor = 'grabbing';
-    };
-  };
+  //   if (
+  //     mouseX >= this.destination.dx &&
+  //     mouseX <= this.destination.dx + this.pixelSize * this.scale &&
+  //     mouseY >= this.destination.dy &&
+  //     mouseY <= this.destination.dy + this.pixelSize * this.scale 
+  //   ) {
+  //     this.isDragging = true;
+  //     canvas.style.cursor = 'grabbing';
+  //   };
+  // };
 
-  handleMouseMove = (e, ctx) => {
-    if (this.isDragging) {
-      this.destination.dx = e.clientX - canvas.getBoundingClientRect().left - this.pixelSize;
-      this.destination.dy = e.clientY - canvas.getBoundingClientRect().top - this.pixelSize;
-      this.draw(ctx);
-    };
-  };
+  // handleMouseMove = e => {
+  //   if (this.isDragging) {
+  //     this.destination.dx = e.clientX - canvas.getBoundingClientRect().left - this.pixelSize;
+  //     this.destination.dy = e.clientY - canvas.getBoundingClientRect().top - this.pixelSize;
+  //     this.draw(ctx);
+  //   };
+  // };
 
-  handleMouseUp = (canvas) => {
-    this.isDragging = false;
-    canvas.style.cursor = 'grab';
-  };
+  // handleMouseUp = () => {
+  //   this.isDragging = false;
+  //   canvas.style.cursor = 'grab';
+  // };
 };

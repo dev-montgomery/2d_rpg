@@ -1,5 +1,5 @@
-{"items":{
-  "containers":{
+{ 
+  "container":{
     "depot":{
       "slots":50
     },
@@ -20,8 +20,8 @@
       "capacity":0.5
     }
   },
-  "armors":{
-    "necklaces":{
+  "armor":{
+    "necklace":{
       "fanged":{
         "offense":1
       },
@@ -30,7 +30,7 @@
         "defense":1
       }
     },
-    "helmets":{
+    "helmet":{
       "hood":{
         "defense":1,
         "capacity":0.5
@@ -151,7 +151,7 @@
       }
     }
   },
-  "tools":{
+  "tool":{
     "fishingpole":{
 
     },
@@ -185,7 +185,7 @@
       "capacity":0.1
     }
   },
-  "consumables":{
+  "consumable":{
     "fish":{
       "blue":{
 
@@ -340,4 +340,4 @@
       "capacity":0.1
     }
   }
-}}
+}

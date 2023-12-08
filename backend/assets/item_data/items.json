@@ -20,135 +20,123 @@
       "capacity":0.5
     }
   },
-  "armor":{
-    "necklace":{
-      "fanged":{
-        "offense":1
-      },
-      "silver":{
-        "offense":1,
-        "defense":1
-      }
+  "necklace":{
+    "fanged":{
+      "offense":1
     },
-    "helmet":{
-      "hood":{
-        "defense":1,
-        "capacity":0.5
-      },
-      "leather":{
-        "defense":2,
-        "capacity":0.75
-      },
-      "coif":{
-        "defense":3,
-        "capacity":1
-      }
+    "silver":{
+      "offense":1,
+      "defense":1
+    }
+  },
+  "helmet":{
+    "hood":{
+      "defense":1,
+      "capacity":0.5
     },
-    "mainhand":{
-      "fist":{
-        "cestus":{
-          "offense":1,
-          "speed":2,
-          "capacity":0.5
-        },
-        "tigerclaws":{
-          "offense":1.5,
-          "speed":2,
-          "capacity":0.75
-        }
-      },
-      "blade":{
-        "dagger":{
-          "offense":1,
-          "speed":1,
-          "capacity":0.75
-        },
-        "sword":{
-          "offense":2,
-          "speed":1,
-          "capacity":1.25
-        }
-      },
-      "axe":{
-        "hatchet":{
-          "offense":1.25,
-          "speed":1,
-          "capacity":1
-        },
-        "broadaxe":{
-          "offense":2.25,
-          "speed":1,
-          "capacity":1.5
-        }
-      },
-      "blunt":{
-        "femur":{
-          "offense":1,
-          "speed":1,
-          "capacity":1
-        },
-        "mace":{
-          "offense":1.5,
-          "speed":0.75,
-          "capacity":1.75
-        }
-      },
-      "distance":{
-        "throwingknives":{
-          "offense":0.75,
-          "speed":1.5,
-          "capacity":0.25
-        },
-        "spear":{
-          "offense":3,
-          "speed":1,
-          "capacity":1.25
-        }
-      }
+    "leather":{
+      "defense":2,
+      "capacity":0.75
     },
-    "chest":{
-      "tunic":{
-
-      },
-      "vest":{
-
-      },
-      "chainmail":{
-
-      }
+    "coif":{
+      "defense":3,
+      "capacity":1
+    }
+  },
+  "mainhand":{
+    "cestus":{
+      "offense":1,
+      "speed":2,
+      "capacity":0.5
     },
-    "offhand":{
-      "targe":{
-
-      },
-      "kite":{
-
-      },
-      "heater":{
-
-      }
+    "tigerclaws":{
+      "offense":1.5,
+      "speed":2,
+      "capacity":0.75
     },
-    "legs":{
-      "pants":{
-
-      },
-      "leggings":{
-
-      },
-      "chainmaillegs":{
-
-      }
+    "dagger":{
+      "offense":1,
+      "speed":1,
+      "capacity":0.75
     },
-    "feet":{
-      "shoes":{
+    "sword":{
+      "offense":2,
+      "speed":1,
+      "capacity":1.25
+    },
+    "hatchet":{
+      "offense":1.25,
+      "speed":1,
+      "capacity":1
+    },
+    "broadaxe":{
+      "offense":2.25,
+      "speed":1,
+      "capacity":1.5
+    },
+    "femur":{
+      "offense":1,
+      "speed":1,
+      "capacity":1
+    },
+    "mace":{
+      "offense":1.5,
+      "speed":0.75,
+      "capacity":1.75
+    },
+    "throwingknives":{
+      "offense":0.75,
+      "speed":1.5,
+      "capacity":0.25
+    },
+    "spear":{
+      "offense":3,
+      "speed":1,
+      "capacity":1.25
+    }
+  },
+  "chest":{
+    "tunic":{
 
-      },
-      "boots":{
+    },
+    "vest":{
 
-      },
-      "chausses":{
+    },
+    "chainmail":{
 
-      }
+    }
+  },
+  "offhand":{
+    "targe":{
+
+    },
+    "kite":{
+
+    },
+    "heater":{
+
+    }
+  },
+  "legs":{
+    "pants":{
+
+    },
+    "leggings":{
+
+    },
+    "chainmaillegs":{
+
+    }
+  },
+  "feet":{
+    "shoes":{
+
+    },
+    "boots":{
+
+    },
+    "chausses":{
+
     }
   },
   "tool":{
@@ -186,46 +174,38 @@
     }
   },
   "consumable":{
-    "fish":{
-      "blue":{
+    "blue":{
 
-      },
-      "red":{
-
-      },
-      "pink":{
-
-      }
     },
-    "cheeses":{
-      "wheel":{
+    "red":{
 
-      },
-      "moldywheel":{
+    },
+    "pink":{
 
-      }
+    },
+    "cheesewheel":{
+
+    },
+    "moldycheesewheel":{
+
     },
     "bread":{
 
     },
-    "fruit":{
-      "apple":{
+    "apple":{
 
-      }
     },
-    "flask":{
-      "empty":{
-        "capacity":0.25
-      },
-      "antivenom":{
-        "capacity":0.5
-      },
-      "health":{
-        "capacity":0.5
-      },
-      "magic":{
-        "capacity":0.5
-      }
+    "emptyflask":{
+      "capacity":0.25
+    },
+    "antivenom":{
+      "capacity":0.5
+    },
+    "health":{
+      "capacity":0.5
+    },
+    "magic":{
+      "capacity":0.5
     }
   },
   "rubbish":{

@@ -35,11 +35,12 @@ export class Tile {
 };
 
 export class Item {
-  constructor(item, id, { source, destination }) {
-    this.item = item;
+  constructor(id, type, name, { source, destination }) {
     this.image = new Image();
     this.image.src = './backend/assets/item_data/genus-item-resources.png';
     this.id = id;
+    this.type = type;
+    this.name = name;
     this.source = source;
     this.destination = destination;
     this.pixelSize = 32;
@@ -72,20 +73,18 @@ export class Item {
   //     mouseY <= this.destination.dy + this.pixelSize * this.scale 
   //   ) {
   //     this.isDragging = true;
-  //     canvas.style.cursor = 'grabbing';
   //   };
   // };
 
-  // handleMouseMove = e => {
+  // handleMouseMove = (e) => {
   //   if (this.isDragging) {
   //     this.destination.dx = e.clientX - canvas.getBoundingClientRect().left - this.pixelSize;
   //     this.destination.dy = e.clientY - canvas.getBoundingClientRect().top - this.pixelSize;
-  //     this.draw(ctx);
+  //     // this.draw(ctx);
   //   };
   // };
 
   // handleMouseUp = () => {
   //   this.isDragging = false;
-  //   canvas.style.cursor = 'grab';
   // };
 };

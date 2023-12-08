@@ -83,7 +83,6 @@ export class Resources {
     .then(data => {
       this.itemData = data;
       this.itemData.isLoaded = true;
-      console.log(this.itemData)
     })
     .catch(error => {
       console.error('Error loading item data json', error);

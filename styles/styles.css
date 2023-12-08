@@ -122,20 +122,41 @@ p, h1, h2, h3, h4, h5, h6 {
     -1px -1px 0 black;
 }
 
+.game-container #item-info {
+  padding: 1rem;
+  width: 192px;
+}
+
 /* interface - righthand side */
-/* .interface-container {
-  display: none;
+#item-info {
+  color: #fff;
+  text-shadow:
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    -1px -1px 0 black;
+}
+
+.draggable {
+  position: absolute;
+  cursor: grab;
+  border: 20px solid red;
+}
+/*
+.game-container .interface-container {
+  display: flex;
+  visibility: hidden;
   width: 192px;
   height: 704px;
   background: #464646;
 }
 
-.interface-container .player-inventory-container {
+.interface-container .inventory-container {
   display: flex;
   flex-direction: column;
 }
 
-.interface-container .player-inventory-container #equipment-slots {
+.interface-container .inventory-container #equipment-slots {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }

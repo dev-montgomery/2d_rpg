@@ -11,10 +11,11 @@ window.addEventListener('load', (event) => {
   canvas.height = 704;
   
   // Visible map
-  const screen = {};
-  screen.frames = { row: 11, col: 13 };
-  screen.width = 832; // 6.5 squares on each side of player
-  screen.height = 704; // 5 up and down
+  const screen = {
+    frames: { row: 11, col: 13 },
+    width: 832, // 6.5 squares on each side of player
+    height: 704 // 5 up and down
+  };
 
   // Temp Background
   const bg = new Image();
@@ -75,7 +76,6 @@ window.addEventListener('load', (event) => {
       appendPlayerStats({ player });
       canvas.style.background = '#464646';
       genus.loaded && drawGenus({ player });
-      player.draw(ctx);
     }, 500);
   };
   
@@ -104,7 +104,7 @@ window.addEventListener('load', (event) => {
 
   // ------ will need to determine if player is in combat before logging out.
   // Saves player data when the browser window is closed.
-  addEventListener('beforeunload', e => {
+  window.addEventListener('beforeunload', e => {
     e.preventDefault();
     resources.playerData.isLoaded = false;
     updatePlayerData(); 
@@ -123,12 +123,13 @@ window.addEventListener('load', (event) => {
   // Bucket of Boundaries
   const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
   const waterTiles = [ 1, 2, 3, 4, 5, 6, 7, 8 ];
-  let boundaries = [], wateries = [];
+  let boundaries = [], wateries = [], itemsVisible = [];
   
   // Draw map, takes in player coordinates and JSON data
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     boundaries = [];
     wateries = [];
+    itemsVisible = [];
 
     // Use location of player to identify upper left corner to begin drawing. 13 x 11 tiles.
     const startingTile = { 
@@ -219,13 +220,14 @@ window.addEventListener('load', (event) => {
         item.destination.dy >= 0 &&
         item.destination.dy < screen.height
       ) {
-        // item.isVisible = true;
         item.draw(ctx);
+        itemsVisible.push(item);
       };
     });
+
     // Draw player after drawing minimap
     player.draw(ctx);
-
+    
     // Draw uppermost layer
     uppermost.forEach(tile => {
       ctx.drawImage(
@@ -240,6 +242,9 @@ window.addEventListener('load', (event) => {
         tile.pixelSize
       );
     });
+
+    // Draw interface
+    drawUI();
   };
 
   // Handle Water Animation
@@ -262,6 +267,87 @@ window.addEventListener('load', (event) => {
   //   };
   //   player.draw(ctx);
   // };
+
+  // Handle in-world object behavior
+  let inWorldObjects = [];
+  const itemData = document.querySelector('#item-info');
+
+  // Function to Generate Item and Stats
+  const initItem = (id, type, name, { source, destination }) => {
+    const rpgItem = new Item(id, type, name, { source, destination });
+    // all item stats 3 layers deep
+    for (const category in resources.itemData) {
+      if (category === type) {
+        for (const item in resources.itemData[category]) {
+          if (item === name) {
+            for (const property in resources.itemData[category][item]) {
+              rpgItem[property] = resources.itemData[category][item][property];
+            };
+          };
+        };
+      };
+    };
+    // console.log()
+    console.log(`${rpgItem.name} created - `, rpgItem);
+    inWorldObjects.push(rpgItem);
+  };
+  setTimeout(() => {
+    initItem(
+      inWorldObjects.length + 1,
+      'mainhand',
+      'sword', 
+      {
+        source: {
+          sx: 160,
+          sy: 32
+        },
+        destination: {
+          dx: 384,
+          dy: 384
+        }
+      }  
+    )
+  }, 500)
+
+  // Create Side User Interface - Map | Inventory | Attack List
+  const ui = new Image();
+  ui.src = './backend/assets/interface/inventory_items.png';
+  ui.equip = {
+    x: 0,
+    y: 0,
+    width: 192,
+    height: 192
+  };
+
+  // Map ui
+
+  // Inventory ui
+  const drawUI = () => {
+    ctx.drawImage(
+      ui,
+      ui.equip.x,
+      ui.equip.y,
+      ui.equip.width,
+      ui.equip.height,
+      screen.width,
+      0,
+      ui.equip.width,
+      ui.equip.height
+    ) 
+  };
+  
+  const offsetEquip = 16;
+  const equipmentSlots = {
+    neck: { x: screen.width + offsetEquip, y: offsetEquip },
+    head: { x: screen.width + (offsetEquip * 5), y: offsetEquip },
+    back: { x: screen.width + (offsetEquip * 9), y: offsetEquip },
+    chest: { x: screen.width + offsetEquip, y: offsetEquip * 5 },
+    offhand: { x: screen.width + (offsetEquip * 9), y: offsetEquip * 5 },
+    mainhand: { x: screen.width + offsetEquip, y: offsetEquip * 9 },
+    legs: { x: screen.width + (offsetEquip * 5), y: offsetEquip * 9 },
+    feet: { x: screen.width + (offsetEquip * 9), y: offsetEquip * 9 },
+  }
+  // List ui
 
   // Collision Detection
   const collisionDetect = (newX, newY) => {
@@ -335,55 +421,87 @@ window.addEventListener('load', (event) => {
     // Redraw map and player when player moves
     form.closed && drawGenus({ player });    
   });
-
-  // Handle in-world object behavior
-  let inWorldObjects = [];
-
-  const initItem = (item, id, type, source, destination) => {
-    const rpgItem = new Item(item, id, source, destination);
-
-    for (const key in resources.itemData) {
-      if (key === type) console.log(type)
-    }
-  };
-  
-  const item = new Item(
-    'sword', 
-    inWorldObjects.length + 1 ,
-    {
-      source: {
-        sx: 160,
-        sy: 32
-      },
-      destination: {
-        dx: 384,
-        dy: 384
-      }
-    }
-  );
-
-  inWorldObjects.push(item);
-
-  // canvas.addEventListener('mousedown', () => {
-  //   inWorldObjects.forEach(item => item.handleMouseDown());
-  // });
-
-  // canvas.addEventListener('mousemove', () => {
-  //   inWorldObjects.forEach(item => item.handleMouseMove());
-  // });
-
-  // canvas.addEventListener('mouseup', () => {
-  //   inWorldObjects.forEach(item => item.handleMouseUp());
-  // });
-  
-  // const handleCanvasUpdates = () => {
-
-  // }
-
-  // setInterval(() => {
-  //   drawOcean({ player });
-  // }, 1000);
  
+  // Handle item behavior
+  // isMouseOver checks if the mouse is over an item
+  const isMouseOver = (mouseX, mouseY, { item }) => {
+    return (
+      mouseX >= item.destination.dx &&
+      mouseX <= item.destination.dx + item.pixelSize * item.scale &&
+      mouseY >= item.destination.dy &&
+      mouseY <= item.destination.dy + item.pixelSize * item.scale
+    );
+  };
+
+  // This event listener handles 
+  addEventListener('mousedown', (e) => {
+    let mouseX = e.clientX - canvas.getBoundingClientRect().left;
+    let mouseY = e.clientY - canvas.getBoundingClientRect().top;
+  
+    itemsVisible.forEach(item => {
+      if (isMouseOver(mouseX, mouseY, { item })) {
+        item.isDragging = true;
+        canvas.style.cursor = 'grabbing';
+      };
+    });
+  });
+  
+  // Displays Item Stats | Also handles dragging items
+  addEventListener('mousemove', (e) => {
+    let mouseX = e.clientX - canvas.getBoundingClientRect().left;
+    let mouseY = e.clientY - canvas.getBoundingClientRect().top;
+  
+    itemsVisible.forEach(item => {
+      if (isMouseOver(mouseX, mouseY, { item })) {
+        if (item.type === 'mainhand' && !item.isDragging) {
+          itemData.innerHTML = `
+            ${item.name} (${item.type})<br>
+            damage: ${item.offense}<br>
+            speed: ${item.speed}<br>
+            capweight: ${item.capacity}
+          `;
+
+          itemData.style.display = 'block';
+          itemData.style.border = '1px solid #fff';
+          canvas.style.cursor = 'grab';
+        };
+      } else {
+        itemData.style.display = 'none';
+        itemData.style.border = 'none';
+        canvas.style.cursor = 'pointer';
+      };
+
+      if (item.isDragging) {        
+        item.destination.dx = e.clientX - canvas.getBoundingClientRect().left - item.pixelSize;
+        item.destination.dy = e.clientY - canvas.getBoundingClientRect().top - item.pixelSize;
+        
+        ctx.clearRect(0, 0, screen.width, screen.height);
+        drawGenus({ player });
+        item.draw(ctx);
+      };
+    });
+  });
+  
+  // Handles item behavior when dropped
+  addEventListener('mouseup', (e) => {
+    itemsVisible.forEach(item => {
+      let posX = e.clientX - canvas.getBoundingClientRect().left;
+      let posY = e.clientY - canvas.getBoundingClientRect().top;
+      item.destination.dx = Math.floor(posX / 64) * 64;
+      item.destination.dy = Math.floor(posY / 64) * 64;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawGenus({ player });
+      item.draw(ctx);
+      player.draw(ctx);
+      if (item.isDragging) {
+        item.isDragging = false;
+        canvas.style.cursor = 'pointer';
+      };
+    });
+  });
+
+  
   // Game Loop Function
   // function animate () {
   //   requestAnimationFrame(animate);

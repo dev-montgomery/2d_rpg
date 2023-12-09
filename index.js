@@ -120,16 +120,15 @@ window.addEventListener('load', (event) => {
     genus.loaded = true;
   };
   
-  // Bucket of Boundaries
+  // Buckets of Boundaries and Water
   const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
   const waterTiles = [ 1, 2, 3, 4, 5, 6, 7, 8 ];
-  let boundaries = [], wateries = [], itemsVisible = [];
+  let boundaries = [], wateries = [];
   
   // Draw map, takes in player coordinates and JSON data
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     boundaries = [];
     wateries = [];
-    itemsVisible = [];
 
     // Use location of player to identify upper left corner to begin drawing. 13 x 11 tiles.
     const startingTile = { 
@@ -221,7 +220,6 @@ window.addEventListener('load', (event) => {
         item.destination.dy < screen.height
       ) {
         item.draw(ctx);
-        itemsVisible.push(item);
       };
     });
 
@@ -268,11 +266,11 @@ window.addEventListener('load', (event) => {
   //   player.draw(ctx);
   // };
 
-  // Handle in-world object behavior
+  // Handle In-World Object Behavior
   let inWorldObjects = [];
   const itemData = document.querySelector('#item-info');
 
-  // Function to Generate Item and Stats
+  // Function to Generate Item and Append Stats
   const initItem = (id, type, name, { source, destination }) => {
     const rpgItem = new Item(id, type, name, { source, destination });
     // all item stats 3 layers deep
@@ -287,11 +285,96 @@ window.addEventListener('load', (event) => {
         };
       };
     };
-    // console.log()
     console.log(`${rpgItem.name} created - `, rpgItem);
     inWorldObjects.push(rpgItem);
   };
+
+  // Handle Item Drag and Drop | Item Details
+  const isMouseOverItem = (mouseX, mouseY, item) => {
+    return (
+      mouseX >= item.destination.dx &&
+      mouseX <= item.destination.dx + item.pixelSize * item.scale &&
+      mouseY >= item.destination.dy &&
+      mouseY <= item.destination.dy + item.pixelSize * item.scale
+    );
+  };
+
+  const findItemUnderMouse = (mouseX, mouseY) => {
+    canvas.style.cursor = 'grab';
+    for (let i = inWorldObjects.length - 1 ; i >= 0 ; i--) {
+      const currentItem = inWorldObjects[i];
+      if (isMouseOverItem(mouseX, mouseY, currentItem)) {
+        return currentItem;
+      };
+    };
+    return null;
+  };
+
+  // Performs first in/last out of stacked items
+  addEventListener('mousedown', (e) => {
+    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+    const selectedItem = findItemUnderMouse(mouseX, mouseY);
+
+    if (selectedItem) {
+      selectedItem.isDragging = true;
+      canvas.style.cursor = 'grabbing';
+
+      inWorldObjects.splice(inWorldObjects.indexOf(selectedItem), 1);
+      inWorldObjects.push(selectedItem);
+    };
+  });
+  
+  // Displays Item Stats | Handles dragging events
+  addEventListener('mousemove', (e) => {
+    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+    const selectedItem = findItemUnderMouse(mouseX, mouseY);
+    
+    if (selectedItem && selectedItem.type === 'mainhand' && !selectedItem.isDragging) {
+      itemData.innerHTML = `
+        ${selectedItem.name} (${selectedItem.type})<br>
+        damage: ${selectedItem.offense}<br>
+        speed: ${selectedItem.speed}<br>
+        capweight: ${selectedItem.capacity}
+      `;
+
+      itemData.style.display = 'block';
+      itemData.style.border = '1px solid #fff';
+      canvas.style.cursor = 'grab';
+    } else {
+      itemData.style.display = 'none';
+      itemData.style.border = 'none';
+      canvas.style.cursor = 'pointer';
+    };
+
+    if (selectedItem && selectedItem.isDragging) {
+      inWorldObjects.splice(inWorldObjects.indexOf(selectedItem), 1);
+      inWorldObjects.push(selectedItem);      
+      
+      ctx.clearRect(0, 0, screen.width, screen.height);
+      drawGenus({ player });
+    };
+  });
+  
+  // Handles drop events
+  addEventListener('mouseup', (e) => {
+    inWorldObjects.forEach(item => {
+      if (item.isDragging) {
+        let posX = e.clientX - canvas.getBoundingClientRect().left;
+        let posY = e.clientY - canvas.getBoundingClientRect().top;
+        item.destination.dx = Math.floor(posX / 64) * 64;
+        item.destination.dy = Math.floor(posY / 64) * 64;
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawGenus({ player });
+        item.isDragging = false;
+      };
+    });
+  });
+
   setTimeout(() => {
+    // item 1
     initItem(
       inWorldObjects.length + 1,
       'mainhand',
@@ -306,7 +389,39 @@ window.addEventListener('load', (event) => {
           dy: 384
         }
       }  
-    )
+    );
+    // item 2
+    initItem(
+      inWorldObjects.length + 1,
+      'mainhand',
+      'tigerclaws', 
+      {
+        source: {
+          sx: 128,
+          sy: 32
+        },
+        destination: {
+          dx: 324,
+          dy: 384
+        }
+      }  
+    );
+    // item 3
+    initItem(
+      inWorldObjects.length + 1,
+      'mainhand',
+      'mace', 
+      {
+        source: {
+          sx: 192,
+          sy: 32
+        },
+        destination: {
+          dx: 260,
+          dy: 384
+        }
+      }  
+    );
   }, 500)
 
   // Create Side User Interface - Map | Inventory | Attack List
@@ -422,86 +537,6 @@ window.addEventListener('load', (event) => {
     form.closed && drawGenus({ player });    
   });
  
-  // Handle item behavior
-  // isMouseOver checks if the mouse is over an item
-  const isMouseOver = (mouseX, mouseY, { item }) => {
-    return (
-      mouseX >= item.destination.dx &&
-      mouseX <= item.destination.dx + item.pixelSize * item.scale &&
-      mouseY >= item.destination.dy &&
-      mouseY <= item.destination.dy + item.pixelSize * item.scale
-    );
-  };
-
-  // This event listener handles 
-  addEventListener('mousedown', (e) => {
-    let mouseX = e.clientX - canvas.getBoundingClientRect().left;
-    let mouseY = e.clientY - canvas.getBoundingClientRect().top;
-  
-    itemsVisible.forEach(item => {
-      if (isMouseOver(mouseX, mouseY, { item })) {
-        item.isDragging = true;
-        canvas.style.cursor = 'grabbing';
-      };
-    });
-  });
-  
-  // Displays Item Stats | Also handles dragging items
-  addEventListener('mousemove', (e) => {
-    let mouseX = e.clientX - canvas.getBoundingClientRect().left;
-    let mouseY = e.clientY - canvas.getBoundingClientRect().top;
-  
-    itemsVisible.forEach(item => {
-      if (isMouseOver(mouseX, mouseY, { item })) {
-        if (item.type === 'mainhand' && !item.isDragging) {
-          itemData.innerHTML = `
-            ${item.name} (${item.type})<br>
-            damage: ${item.offense}<br>
-            speed: ${item.speed}<br>
-            capweight: ${item.capacity}
-          `;
-
-          itemData.style.display = 'block';
-          itemData.style.border = '1px solid #fff';
-          canvas.style.cursor = 'grab';
-        };
-      } else {
-        itemData.style.display = 'none';
-        itemData.style.border = 'none';
-        canvas.style.cursor = 'pointer';
-      };
-
-      if (item.isDragging) {        
-        item.destination.dx = e.clientX - canvas.getBoundingClientRect().left - item.pixelSize;
-        item.destination.dy = e.clientY - canvas.getBoundingClientRect().top - item.pixelSize;
-        
-        ctx.clearRect(0, 0, screen.width, screen.height);
-        drawGenus({ player });
-        item.draw(ctx);
-      };
-    });
-  });
-  
-  // Handles item behavior when dropped
-  addEventListener('mouseup', (e) => {
-    itemsVisible.forEach(item => {
-      let posX = e.clientX - canvas.getBoundingClientRect().left;
-      let posY = e.clientY - canvas.getBoundingClientRect().top;
-      item.destination.dx = Math.floor(posX / 64) * 64;
-      item.destination.dy = Math.floor(posY / 64) * 64;
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawGenus({ player });
-      item.draw(ctx);
-      player.draw(ctx);
-      if (item.isDragging) {
-        item.isDragging = false;
-        canvas.style.cursor = 'pointer';
-      };
-    });
-  });
-
-  
   // Game Loop Function
   // function animate () {
   //   requestAnimationFrame(animate);

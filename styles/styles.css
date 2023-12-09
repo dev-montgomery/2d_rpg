@@ -137,11 +137,6 @@ p, h1, h2, h3, h4, h5, h6 {
     -1px -1px 0 black;
 }
 
-.draggable {
-  position: absolute;
-  cursor: grab;
-  border: 20px solid red;
-}
 /*
 .game-container .interface-container {
   display: flex;

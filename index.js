@@ -290,6 +290,17 @@ window.addEventListener('load', (event) => {
   };
 
   // Handle Item Drag and Drop | Item Details
+  let originalItemPosition = {};
+
+  const isInPlayerRange = (objX, objY) => {
+    return (
+      objX >= screen.width / 2 - 96 &&
+      objX < screen.width / 2 + 96 &&
+      objY >= screen.height / 2 - 96 &&
+      objY < screen.height / 2 + 96
+    );
+  };
+  
   const isMouseOverItem = (mouseX, mouseY, item) => {
     return (
       mouseX >= item.destination.dx &&
@@ -316,9 +327,13 @@ window.addEventListener('load', (event) => {
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
     const selectedItem = findItemUnderMouse(mouseX, mouseY);
 
-    if (selectedItem) {
+    if (selectedItem && isInPlayerRange(selectedItem.destination.dx, selectedItem.destination.dy)) {
       selectedItem.isDragging = true;
       canvas.style.cursor = 'grabbing';
+      originalItemPosition = {
+        x: selectedItem.destination.dx,
+        y: selectedItem.destination.dy
+      };
 
       inWorldObjects.splice(inWorldObjects.indexOf(selectedItem), 1);
       inWorldObjects.push(selectedItem);
@@ -351,23 +366,26 @@ window.addEventListener('load', (event) => {
     if (selectedItem && selectedItem.isDragging) {
       inWorldObjects.splice(inWorldObjects.indexOf(selectedItem), 1);
       inWorldObjects.push(selectedItem);      
-      
-      ctx.clearRect(0, 0, screen.width, screen.height);
-      drawGenus({ player });
     };
   });
   
   // Handles drop events
   addEventListener('mouseup', (e) => {
     inWorldObjects.forEach(item => {
-      if (item.isDragging) {
+      if (item.isDragging && isInPlayerRange(item.destination.dx, item.destination.dy)) {
         let posX = e.clientX - canvas.getBoundingClientRect().left;
         let posY = e.clientY - canvas.getBoundingClientRect().top;
         item.destination.dx = Math.floor(posX / 64) * 64;
         item.destination.dy = Math.floor(posY / 64) * 64;
         
+        if (collisionDetect(item.destination.dx, item.destination.dy)) {
+          item.destination.dx = originalItemPosition.x;
+          item.destination.dy = originalItemPosition.y;
+        };
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawGenus({ player });
+        
         item.isDragging = false;
       };
     });
@@ -417,7 +435,7 @@ window.addEventListener('load', (event) => {
           sy: 32
         },
         destination: {
-          dx: 260,
+          dx: 448,
           dy: 384
         }
       }  

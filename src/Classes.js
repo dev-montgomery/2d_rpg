@@ -61,30 +61,4 @@ export class Item {
       this.pixelSize * this.scale
     )
   }
-
-  // handleMouseDown = e => {
-  //   const mouseX = e.clientX - canvas.getBoundingClientRect().left;
-  //   const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-
-  //   if (
-  //     mouseX >= this.destination.dx &&
-  //     mouseX <= this.destination.dx + this.pixelSize * this.scale &&
-  //     mouseY >= this.destination.dy &&
-  //     mouseY <= this.destination.dy + this.pixelSize * this.scale 
-  //   ) {
-  //     this.isDragging = true;
-  //   };
-  // };
-
-  // handleMouseMove = (e) => {
-  //   if (this.isDragging) {
-  //     this.destination.dx = e.clientX - canvas.getBoundingClientRect().left - this.pixelSize;
-  //     this.destination.dy = e.clientY - canvas.getBoundingClientRect().top - this.pixelSize;
-  //     // this.draw(ctx);
-  //   };
-  // };
-
-  // handleMouseUp = () => {
-  //   this.isDragging = false;
-  // };
 };

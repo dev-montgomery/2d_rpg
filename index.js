@@ -301,13 +301,106 @@ window.addEventListener('load', (event) => {
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
     const selectedItem = findItemUnderMouse(mouseX, mouseY);
     
-    if (selectedItem && selectedItem.type === 'mainhand' && !selectedItem.isDragging) {
-      itemData.innerHTML = `
-        ${selectedItem.name}<br>
-        damage: ${selectedItem.offense}<br>
-        speed: ${selectedItem.speed}<br>
-        capweight: ${selectedItem.capacity}
-      `;
+    if (selectedItem && !selectedItem.isDragging) {
+      switch(selectedItem.type) {
+        case 'container':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            contains: ${selectedItem.slots} items<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'necklace':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            offense skill: ${selectedItem.offense}<br>
+            defense skill: ${selectedItem.defense}<br>
+          `;
+          break;
+        case 'helmet':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            defense: ${selectedItem.defense}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'chest':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            defense: ${selectedItem.defense}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'legs':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            defense: ${selectedItem.defense}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'feet':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            defense: ${selectedItem.defense}<br>
+            speed: ${selectedItem.speed}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'mainhand':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            damage: ${selectedItem.offense}<br>
+            speed: ${selectedItem.speed}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'offhand':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            defense: ${selectedItem.defense}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'tool':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'currency':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            amount: ${selectedItem.amount}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'consumable':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            purpose: ${selectedItem.purpose}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'rubbish':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'decor':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'literature':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        default: break;
+      };
 
       itemData.style.display = 'block';
       itemData.style.border = '1px solid #fff';
@@ -358,33 +451,27 @@ window.addEventListener('load', (event) => {
       'mainhand',
       'sword', 
       {
-        source: {
-          sx: 160,
-          sy: 32
-        },
-        destination: {
-          dx: 384,
-          dy: 384
-        }
+        source: {sx: 0, sy: 0 }, 
+        destination: { dx: 384, dy: 384 }
       }  
     );
     // item 2
     initItem(
       inWorldObjects.length + 1,
       'mainhand',
-      'tigerclaws', 
+      'sword', 
       {
-        source: { sx: 128, sy: 32 },
+        source: { sx: 0, sy: 0 },
         destination: { dx: 324, dy: 384 }
       }  
     );
     // item 3
     initItem(
       inWorldObjects.length + 1,
-      'mainhand',
-      'mace', 
+      'tool',
+      'fishingpole', 
       { 
-        source: { sx: 192, sy: 32 },
+        source: { sx: 64, sy: 0 },
         destination: { dx: 448, dy: 384 } 
       }
     );
@@ -421,7 +508,7 @@ window.addEventListener('load', (event) => {
     ctx.drawImage( ui, 0, 192, 192, 64, screen.width, 192, 192, 64 );
 
     // draw selected
-    ctx.drawImage( ui, 128, 256, 32, 32, active.dx - 1, active.dy - 1, 34, 34 );
+    ctx.drawImage( ui, 128, 256, 34, 34, active.dx - 1, active.dy - 1, 34, 34 );
 
     // draw buttons
     for (const btn in ui.toggleUIButtons) {
@@ -528,7 +615,6 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  
   // Collision Detection
   const collisionDetect = (newX, newY) => {
     for (let i = 0 ; i < boundaries.length ; i++) {
@@ -611,21 +697,6 @@ window.addEventListener('load', (event) => {
 });
     
 // addEventListener('resize', drawMap);
-
-
-// water animation
-// stairs and holes
-
-// user interface
-// inventory functionality
-// equipping items
-// depot box function
-// mailbox function
-// trash function
-// fishing function
-// npcs/interaction/dialogue
-// attack functions
-// determine skills and lvl algorithms
 
 // ----------------------------
 

@@ -37,14 +37,14 @@ export class Tile {
 export class Item {
   constructor(id, type, name, { source, destination }) {
     this.image = new Image();
-    this.image.src = './backend/assets/item_data/genus-item-resources.png';
+    this.image.src = './backend/assets/item_data/genus-items-64.png';
     this.id = id;
     this.type = type;
     this.name = name;
     this.source = source;
     this.destination = destination;
-    this.pixelSize = 32;
-    this.scale = 2;
+    this.pixelSize = 64;
+    this.scale = 1;
     this.isDragging = false;
   }
 

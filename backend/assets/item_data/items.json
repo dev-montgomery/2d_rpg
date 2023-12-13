@@ -1,7 +1,8 @@
 { 
   "container":{
     "depot":{
-      "slots":50
+      "slots":50,
+      "capacity":"n/a"
     },
     "backpack":{
       "slots":18,
@@ -22,7 +23,8 @@
   },
   "necklace":{
     "fanged":{
-      "offense":1
+      "offense":1,
+      "defense":"n/a"
     },
     "silver":{
       "offense":1,
@@ -141,7 +143,7 @@
   },
   "tool":{
     "fishingpole":{
-
+      "capacity":0.75
     },
     "shovel":{
 
@@ -167,9 +169,11 @@
   },
   "currency":{
     "gold":{
+      "amount":0,
       "capacity":0.1
     },
     "platinum":{
+      "amount":0,
       "capacity":0.1
     }
   },

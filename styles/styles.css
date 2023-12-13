@@ -90,6 +90,7 @@ p, h1, h2, h3, h4, h5, h6 {
 .game-container {
   display: flex;
   flex-direction: row;
+  box-shadow: 0 0 10px black;
 }
 /* player stats - lefthand side */
 .game-container .player-stats .box {

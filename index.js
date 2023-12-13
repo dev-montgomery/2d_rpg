@@ -2,22 +2,17 @@ import { resources } from './src/resources.js';
 import { Item, Tile, Player } from './src/Classes.js';
 
 window.addEventListener('load', (event) => {
-
-  // Create canvas and context
+  // Create Canvas
   const canvas = document.querySelector('canvas');
   const ctx = canvas.getContext('2d');
   
   canvas.width = 1024;
   canvas.height = 704;
   
-  // Visible map
-  const screen = {
-    frames: { row: 11, col: 13 },
-    width: 832, // 6.5 squares on each side of player
-    height: 704 // 5 up and down
-  };
+  // Visible Map
+  const screen = { frames: { row: 11, col: 13 }, width: 832, height: 704 };
 
-  // Temp Background
+  // Intro Background
   const bg = new Image();
   bg.src = './backend/assets/east_oasis.png';
   canvas.style.backgroundImage = `url(${bg.src})`;
@@ -28,21 +23,11 @@ window.addEventListener('load', (event) => {
   // ------ eventually implement chatbox to interact with npcs
   const chatbox = false;
 
-  // Init a player sprite
   const player = new Player({
-    source: {
-      downward: { sx: 0, sy: 0 },
-      upward: { sx: 64, sy: 0 },
-      rightward: { sx: 128, sy: 0 },
-      leftward: { sx: 192, sy: 0 }
-    },
-    destination: {
-      dx: screen.width * 0.5 - 48, // offset player
-      dy: screen.height * 0.5 - 48 // offset player
-    }
+    source: { downward: { sx: 0, sy: 0 }, upward: { sx: 64, sy: 0 }, rightward: { sx: 128, sy: 0 }, leftward: { sx: 192, sy: 0 } },
+    destination: { dx: screen.width * 0.5 - 48, dy: screen.height * 0.5 - 48 }
   });
 
-  // Append Player Stats to Screen
   const appendPlayerStats = ({ player }) => {
     document.querySelector('#player-name').textContent = player.data.name;
     document.querySelector('#player-level').textContent = player.data.performance.lvls.lvl;
@@ -76,9 +61,7 @@ window.addEventListener('load', (event) => {
       appendPlayerStats({ player });
       canvas.style.background = '#464646';
       genus.loaded && drawGenus({ player });
-      // Draw interface
-      drawEquipmentInterface();
-      drawInterfaceToggle();
+      drawInterface();
     }, 500);
   };
   
@@ -119,11 +102,8 @@ window.addEventListener('load', (event) => {
   genus.pixelSize = 64;
   genus.spritesheetWidth = 25;
   genus.mapSize = { row: 160, col: 140 };
-  genus.onload = () => {
-    genus.loaded = true;
-  };
+  genus.onload = () => { genus.loaded = true };
   
-  // Buckets of Boundaries and Water
   const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
   const waterTiles = [ 1, 2, 3, 4, 5, 6, 7, 8 ];
   let boundaries = [], wateries = [];
@@ -163,14 +143,8 @@ window.addEventListener('load', (event) => {
           // Bucket of uppermost tiles
           if (upperTiles.includes(tileID)) {
             const upper = new Tile({
-              source: {
-                usx: sx,
-                usy: sy
-              },
-              destination: {
-                udx: dx, 
-                udy: dy
-              }
+              source: { usx: sx, usy: sy },
+              destination: { udx: dx, udy: dy }
             });
             upper.tileID = tileID;
             uppermost.push(upper);
@@ -179,10 +153,7 @@ window.addEventListener('load', (event) => {
           // Check for collision tiles
           if (tileID === 25) { 
             const boundary = new Tile({
-              destination: {
-                bdx: dx, 
-                bdy: dy
-              }
+              destination: { bdx: dx, bdy: dy }
             });
             boundaries.push(boundary);
           // } else if (waterTiles.includes(tileID)) {
@@ -198,17 +169,7 @@ window.addEventListener('load', (event) => {
           //   });
           //   wateries.push(water);
           } else {
-            ctx.drawImage(
-              genus,
-              sx,
-              sy,
-              genus.pixelSize,
-              genus.pixelSize,
-              dx,
-              dy,
-              genus.pixelSize,
-              genus.pixelSize
-            );
+            ctx.drawImage( genus, sx, sy, genus.pixelSize, genus.pixelSize, dx, dy, genus.pixelSize, genus.pixelSize );
           };
         };
       });
@@ -226,22 +187,12 @@ window.addEventListener('load', (event) => {
       };
     });
 
-    // Draw player after drawing minimap
+    // Draw player after drawing minimap and items
     player.draw(ctx);
     
-    // Draw uppermost layer
+    // Draw uppermost layer after map | player | items
     uppermost.forEach(tile => {
-      ctx.drawImage(
-        genus,
-        tile.source.usx,
-        tile.source.usy,
-        tile.pixelSize,
-        tile.pixelSize,
-        tile.destination.udx,
-        tile.destination.udy,
-        tile.pixelSize,
-        tile.pixelSize
-      );
+      ctx.drawImage( genus, tile.source.usx, tile.source.usy, tile.pixelSize, tile.pixelSize, tile.destination.udx, tile.destination.udy, tile.pixelSize, tile.pixelSize );
     });
   };
 
@@ -273,7 +224,7 @@ window.addEventListener('load', (event) => {
   // Function to Generate Item and Append Stats
   const initItem = (id, type, name, { source, destination }) => {
     const rpgItem = new Item(id, type, name, { source, destination });
-    // all item stats 3 layers deep
+    
     for (const category in resources.itemData) {
       if (category === type) {
         for (const item in resources.itemData[category]) {
@@ -338,6 +289,10 @@ window.addEventListener('load', (event) => {
       inWorldObjects.splice(inWorldObjects.indexOf(selectedItem), 1);
       inWorldObjects.push(selectedItem);
     };
+
+    if (checkToggle(mouseX, mouseY)) {
+      drawInterface(checkToggle(mouseX, mouseY));
+    };
   });
   
   // Displays Item Stats | Handles dragging events
@@ -346,13 +301,106 @@ window.addEventListener('load', (event) => {
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
     const selectedItem = findItemUnderMouse(mouseX, mouseY);
     
-    if (selectedItem && selectedItem.type === 'mainhand' && !selectedItem.isDragging) {
-      itemData.innerHTML = `
-        ${selectedItem.name}<br>
-        damage: ${selectedItem.offense}<br>
-        speed: ${selectedItem.speed}<br>
-        capweight: ${selectedItem.capacity}
-      `;
+    if (selectedItem && !selectedItem.isDragging) {
+      switch(selectedItem.type) {
+        case 'container':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            contains: ${selectedItem.slots} items<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'necklace':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            offense skill: ${selectedItem.offense}<br>
+            defense skill: ${selectedItem.defense}<br>
+          `;
+          break;
+        case 'helmet':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            defense: ${selectedItem.defense}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'chest':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            defense: ${selectedItem.defense}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'legs':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            defense: ${selectedItem.defense}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'feet':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            defense: ${selectedItem.defense}<br>
+            speed: ${selectedItem.speed}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'mainhand':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            damage: ${selectedItem.offense}<br>
+            speed: ${selectedItem.speed}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'offhand':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            defense: ${selectedItem.defense}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'tool':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'currency':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            amount: ${selectedItem.amount}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'consumable':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            purpose: ${selectedItem.purpose}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'rubbish':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'decor':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        case 'literature':
+          itemData.innerHTML = `
+            ${selectedItem.name}<br>
+            capweight: ${selectedItem.capacity}
+          `;
+          break;
+        default: break;
+      };
 
       itemData.style.display = 'block';
       itemData.style.border = '1px solid #fff';
@@ -384,8 +432,8 @@ window.addEventListener('load', (event) => {
 
           ctx.font = '20px Arial';
           ctx.fillStyle = '#fff';
-          const message = 'cannot drop item here';
-          ctx.fillText(message, 20, 20);
+          const message = 'unable to place item there';
+          ctx.fillText(message, screen.width / 2 - 140, screen.height / 2 - 80);
         } else {
           ctx.clearRect(0, 0, screen.width, screen.height);
           drawGenus({ player });
@@ -403,186 +451,80 @@ window.addEventListener('load', (event) => {
       'mainhand',
       'sword', 
       {
-        source: {
-          sx: 160,
-          sy: 32
-        },
-        destination: {
-          dx: 384,
-          dy: 384
-        }
+        source: {sx: 0, sy: 0 }, 
+        destination: { dx: 384, dy: 384 }
       }  
     );
     // item 2
     initItem(
       inWorldObjects.length + 1,
       'mainhand',
-      'tigerclaws', 
+      'sword', 
       {
-        source: {
-          sx: 128,
-          sy: 32
-        },
-        destination: {
-          dx: 324,
-          dy: 384
-        }
+        source: { sx: 0, sy: 0 },
+        destination: { dx: 324, dy: 384 }
       }  
     );
     // item 3
     initItem(
       inWorldObjects.length + 1,
-      'mainhand',
-      'mace', 
-      {
-        source: {
-          sx: 192,
-          sy: 32
-        },
-        destination: {
-          dx: 448,
-          dy: 384
-        }
-      }  
+      'tool',
+      'fishingpole', 
+      { 
+        source: { sx: 64, sy: 0 },
+        destination: { dx: 448, dy: 384 } 
+      }
     );
   }, 500)
 
-  // Create Side User Interface - Map | Inventory | Attack List
+  // Create Interface - Map | Inventory | Attack List
   const ui = new Image();
   ui.src = './backend/assets/interface/genus-interface-assets.png';
-  // equip interface
-  ui.equipmentInterface = {
-    sx: 0,
-    sy: 0,
-    dx: screen.width,
-    dy: 0,
-    size: 192
-  };
-  // toggle background
-  ui.toggleUIBackground = {
-    background: {
-      sx: 0,
-      sy: 192,
-      dx: screen.width,
-      dy: 192,
-      width: 192,
-      height: 64
-    }
-  };
-  // toggle highlight selected
-  ui.toggleUISelected = {
-    sx: 128,
-    sy: 256,
-    dx: screen.width + 80,
-    dy: 208,
-    width: 32,
-    height: 32
-  };
-  // toggle buttons
+  
+  // Toggle Buttons
   ui.toggleUIButtons = {
-    mapbtn: {
-      sx: 96,
-      sy: 320,
-      dx: screen.width + 16,
-      dy: 208,
-      width: 32,
-      height: 32
-    },
-    inventorybtn: {
-      sx: 128,
-      sy: 320,
-      dx: screen.width + 80,
-      dy: 208,
-      width: 32,
-      height: 32
-    },
-    listbtn: {
-      sx: 160,
-      sy: 320,
-      dx: screen.width + 142,
-      dy: 208,
-      width: 32,
-      height: 32
-    }
+    mapbtn: { sx: 96, sy: 320, dx: screen.width + 16, dy: 208, width: 32, height: 32 },
+    inventorybtn: { sx: 128, sy: 320, dx: screen.width + 80, dy: 208, width: 32, height: 32 },
+    listbtn: { sx: 160, sy: 320, dx: screen.width + 142, dy: 208, width: 32, height: 32 }
   };
 
-  // Draw Interface Functions
-  // draw equip interface
-  const drawEquipmentInterface = () => {
-    ctx.drawImage(
-      ui,
-      ui.equipmentInterface.sx,
-      ui.equipmentInterface.sy,
-      ui.equipmentInterface.size,
-      ui.equipmentInterface.size,
-      ui.equipmentInterface.dx,
-      ui.equipmentInterface.dy,
-      ui.equipmentInterface.size,
-      ui.equipmentInterface.size
-    );
-  };
-
-  // draw interface toggle
-  const drawInterfaceToggle = (button = 'inventorybtn') => {
-    ctx.drawImage(
-      ui,
-      ui.toggleUIBackground.background.sx,
-      ui.toggleUIBackground.background.sy,
-      ui.toggleUIBackground.background.width,
-      ui.toggleUIBackground.background.height,
-      ui.toggleUIBackground.background.dx,
-      ui.toggleUIBackground.background.dy,
-      ui.toggleUIBackground.background.width,
-      ui.toggleUIBackground.background.height
-    );
-
-    // Determine selected button
-    let selected;
-    switch(button) {
+  const drawInterfaceToggle = (selected = 'inventorybtn') => {
+    let active;
+    switch(selected) {
       case 'mapbtn':
-        selected = ui.toggleUIButtons.mapbtn;
+        active = ui.toggleUIButtons.mapbtn;
         break;
       case 'inventorybtn':
-        selected = ui.toggleUIButtons.inventorybtn;
+        active = ui.toggleUIButtons.inventorybtn;
         break;
       case 'listbtn':
-        selected = ui.toggleUIButtons.listbtn;
+        active = ui.toggleUIButtons.listbtn;
         break;
       default: 
         break;
     };
+    
+    // draw toggle background
+    ctx.drawImage( ui, 0, 192, 192, 64, screen.width, 192, 192, 64 );
 
     // draw selected
-    ctx.drawImage(
-      ui,
-      ui.toggleUISelected.sx,
-      ui.toggleUISelected.sy,
-      ui.toggleUISelected.width,
-      ui.toggleUISelected.height,
-      ui.toggleUISelected.dx,
-      ui.toggleUISelected.dy,
-      ui.toggleUISelected.width,
-      ui.toggleUISelected.height
-    );
+    ctx.drawImage( ui, 128, 256, 34, 34, active.dx - 1, active.dy - 1, 34, 34 );
 
     // draw buttons
     for (const btn in ui.toggleUIButtons) {
-      ctx.drawImage(
-        ui,
-        ui.toggleUIButtons[btn].sx,
-        ui.toggleUIButtons[btn].sy,
-        ui.toggleUIButtons[btn].width,
-        ui.toggleUIButtons[btn].height,
-        ui.toggleUIButtons[btn].dx,
-        ui.toggleUIButtons[btn].dy,
-        ui.toggleUIButtons[btn].width,
-        ui.toggleUIButtons[btn].height
-      );
+      ctx.drawImage( ui, ui.toggleUIButtons[btn].sx, ui.toggleUIButtons[btn].sy, ui.toggleUIButtons[btn].width, ui.toggleUIButtons[btn].height, ui.toggleUIButtons[btn].dx, ui.toggleUIButtons[btn].dy, ui.toggleUIButtons[btn].width, ui.toggleUIButtons[btn].height );
     };
   };
-  
+
+  // Map Interface
+  // draw map modal
+  // area description on top
+  // map contents below toggle area
+
+  // Inventory Interface
+  // equip section
   const offsetEquip = 16;
-  const equip = {
+  const equipLocations = {
     area: { x: screen.width, y: 0 , size: 192 },
     neck: { x: screen.width + offsetEquip, y: offsetEquip },
     head: { x: screen.width + (offsetEquip * 5), y: offsetEquip },
@@ -594,8 +536,84 @@ window.addEventListener('load', (event) => {
     feet: { x: screen.width + (offsetEquip * 9), y: offsetEquip * 9 },
   };
 
+  // Draw Equipment
+  const drawEquipmentInterface = () => {
+    ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
+  };
+
+  // inventory section
   const inventory = [];
-  // List ui
+
+  // init inventory spaces
+  for (let iy = 0 ; iy < 7 ; iy++) {
+    for (let ix = 0 ; ix < 3 ; ix++) {
+      inventory.push({ x: ix * 64, y: iy * 64, item: null });
+    };
+  };
+  // the above seems needs to be refactored to reflect inventory spots
+  // Draw Inventory
+  const drawInventory = (backpack = null, container = null) => {
+    ctx.clearRect(screen.width, 256, 192, 448);
+    
+    if (!backpack && !container) {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(screen.width, 256, 192, 448)
+    };
+  };
+  
+  // draw bottom buttons
+
+  // List Interface
+
+  // Draw Entire Interface
+  const drawInterface = (input = 'inventorybtn') => {
+    ctx.clearRect( screen.width, 0, 192, 704 );
+    switch(input) {
+      case 'mapbtn':
+        // mapbtn functions
+        drawInterfaceToggle(input);
+        break;
+      case 'inventorybtn':
+        drawEquipmentInterface();
+        drawInterfaceToggle(input);
+        drawInventory();
+      break;
+      case 'listbtn':
+        // list functions
+        drawInterfaceToggle(input);
+        break;
+      default: break;
+    };
+  };
+
+  const checkToggle = (mouseX, mouseY) => {
+    if (
+      mouseX >= ui.toggleUIButtons.mapbtn.dx &&
+      mouseX <= ui.toggleUIButtons.mapbtn.dx + ui.toggleUIButtons.mapbtn.width &&
+      mouseY >= ui.toggleUIButtons.mapbtn.dy &&
+      mouseY <= ui.toggleUIButtons.mapbtn.dy + ui.toggleUIButtons.mapbtn.height
+    ) {
+      return 'mapbtn';
+    };
+
+    if (
+      mouseX >= ui.toggleUIButtons.inventorybtn.dx &&
+      mouseX <= ui.toggleUIButtons.inventorybtn.dx + ui.toggleUIButtons.inventorybtn.width &&
+      mouseY >= ui.toggleUIButtons.inventorybtn.dy &&
+      mouseY <= ui.toggleUIButtons.inventorybtn.dy + ui.toggleUIButtons.inventorybtn.height
+    ) {
+      return 'inventorybtn';
+    };
+
+    if (
+      mouseX >= ui.toggleUIButtons.listbtn.dx &&
+      mouseX <= ui.toggleUIButtons.listbtn.dx + ui.toggleUIButtons.listbtn.width &&
+      mouseY >= ui.toggleUIButtons.listbtn.dy &&
+      mouseY <= ui.toggleUIButtons.listbtn.dy + ui.toggleUIButtons.listbtn.height
+    ) {
+      return 'listbtn';
+    };
+  };
 
   // Collision Detection
   const collisionDetect = (newX, newY) => {
@@ -679,21 +697,6 @@ window.addEventListener('load', (event) => {
 });
     
 // addEventListener('resize', drawMap);
-
-
-// water animation
-// stairs and holes
-
-// user interface
-// inventory functionality
-// equipping items
-// depot box function
-// mailbox function
-// trash function
-// fishing function
-// npcs/interaction/dialogue
-// attack functions
-// determine skills and lvl algorithms
 
 // ----------------------------
 

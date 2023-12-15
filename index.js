@@ -272,6 +272,15 @@ window.addEventListener('load', (event) => {
     return null;
   };
 
+  const isMouseOverMapScrollButton = (mouseX, mouseY, btn) => {
+    return (
+      mouseX >= btn.dx &&
+      mouseX <= btn.dx + btn.pixelSize &&
+      mouseY >= btn.dy &&
+      mouseY <= btn.dy + btn.pixelSize
+    );
+  };
+
   // Performs first in/last out of stacked items
   addEventListener('mousedown', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
@@ -293,6 +302,20 @@ window.addEventListener('load', (event) => {
     if (checkToggle(mouseX, mouseY)) {
       drawInterface(checkToggle(mouseX, mouseY));
     };
+
+    for (let btn in scrollMapBtns) {
+      if (isMouseOverMapScrollButton(mouseX, mouseY, scrollMapBtns[btn])) {
+        if (btn == 'activeDown') {
+          activeButtonFlag = true;
+          ctx.clearRect(screen.width, 256, 192, 448);
+          drawMapContentSection();
+        } else {
+          activeButtonFlag = false;
+          ctx.clearRect(screen.width, 256, 192, 448);
+          drawMapContentSection();
+        };
+      };
+    };  
   });
   
   // Displays Item Stats | Handles dragging events
@@ -520,52 +543,53 @@ window.addEventListener('load', (event) => {
   };
 
   // Map Interface
+  const scrollMapBtns = { 
+    inactiveDown : { sx: 0, sy: 320, dx: screen.width + 160, dy: 288, pixelSize: 32 },
+    inactiveUp: { sx: 32, sy: 320, dx: screen.width + 160, dy: 256, pixelSize: 32 },
+    activeDown: { sx: 0, sy: 352, dx: screen.width + 160, dy: 288, pixelSize: 32 },
+    activeUp: { sx: 32, sy: 352, dx: screen.width + 160, dy: 256, pixelSize: 32 }
+  };
+  
+  const mapContentsGenus = {
+    1: { area: "The Genus Temple", description: "The Genus Temple is a relic said to have been erected when the gods roamed the Oasis. In service to old world, a warpriest named Heremal is said to have watched over the temple for millenia welcoming new generations of warriors." },
+    // 26
+  };
+  
+  const genusMapContents = [ "The Genus Temple", "Willow's Rest", "Spells Antica", "Tools and Textiles", "Genus Harvest", "House Militem", "Pillar of The Militem", "House Arcus", "Pillar of The Arcus", "House Maleficus", "Pillar of The Maleficus", "House Medicus", "Pillar of The Medicus", "Swiftpost: Genus", "Depot", "Feybrew Flasks", "Weaponsmith", "Armory", "The Ugly Door Tavern", "Ye Old Curio", "Westbridge", "Eastbridge", "The Poison Fields", "The Fanged Glen", "The River Den", "The Grottos" ];
+  let activeButtonFlag = false;
+  
   const drawMapContentSection = () => {
-    ctx.drawImage( mapModal, 0, 0, 1120, 1280, 120, 20, screen.width - 220, screen.height - 40 );
+    ctx.drawImage( mapModal, 0, 0, 1200, 1300, 120, 20, screen.width - 220, screen.height - 40 );
     
     ctx.font = '0.8rem Arial';
-    const genusMapContents = [ "The Genus Temple", "Willow's Rest", "Spells Antica", "Tools and Textiles", "Genus Harvest", "House Militem", "Pillar of The Militem", "House Arcus", "Pillar of The Arcus", "House Maleficus", "Pillar of The Maleficus", "House Medicus", "Pillar of The Medicus", "Swiftpost: Genus", "Depot", "Feybrew Flasks", "Weaponsmith", "Armory", "The Ugly Door Tavern", "Ye Old Curio", "Westbridge", "Eastbridge", "The Poison Fields", "The Fanged Glen", "The River Den", "The Grottos" ];
-    const scrollMapBtns = { 
-      inactiveDown : { sx: 0, sy: 320, dx: screen.width + 160, dy: 288, pixelSize: 32 },
-      inactiveUp: { sx: 32, sy: 320, dx: screen.width + 160, dy: 256, pixelSize: 32 },
-      activeDown: { sx: 0, sy: 352, dx: screen.width + 160, dy: 288, pixelSize: 32 },
-      activeUp: { sx: 32, sy: 352, dx: screen.width + 160, dy: 256, pixelSize: 32 }
-    };
-    
-    // determine size of contents..
-    // those determine which index to start drawing
-
-    ctx.drawImage(
-      ui,
-      scrollMapBtns.inactiveDown.sx,
-      scrollMapBtns.inactiveDown.sy,
-      scrollMapBtns.inactiveDown.pixelSize,
-      scrollMapBtns.inactiveDown.pixelSize,
-      scrollMapBtns.inactiveDown.dx,
-      scrollMapBtns.inactiveDown.dy,
-      scrollMapBtns.inactiveDown.pixelSize,
-      scrollMapBtns.inactiveDown.pixelSize
-    );
-
-    ctx.drawImage(
-      ui,
-      scrollMapBtns.inactiveUp.sx,
-      scrollMapBtns.inactiveUp.sy,
-      scrollMapBtns.inactiveUp.pixelSize,
-      scrollMapBtns.inactiveUp.pixelSize,
-      scrollMapBtns.inactiveUp.dx,
-      scrollMapBtns.inactiveUp.dy,
-      scrollMapBtns.inactiveUp.pixelSize,
-      scrollMapBtns.inactiveUp.pixelSize
-    );
-
-    ctx.drawImage(ui, scrollMapBtns.mx, scrollMapBtns.my, scrollMapBtns.width, scrollMapBtns.height );
     ctx.fillText("Genus Island Contents", screen.width + 15, 286);
-    for (let i = 0 ; i < genusMapContents.length ; i++) {
-      const mapX = screen.width + 25, mapY = 310 + (20 * i);
-      ctx.fillText(genusMapContents[i], mapX, mapY);
+    
+    if (!activeButtonFlag) {
+      ctx.drawImage( ui, scrollMapBtns.activeUp.sx, scrollMapBtns.activeUp.sy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.dx, scrollMapBtns.activeUp.dy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize );
+      ctx.drawImage( ui, scrollMapBtns.inactiveDown.sx, scrollMapBtns.inactiveDown.sy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.dx, scrollMapBtns.inactiveDown.dy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize );
+      
+      for (let i = 0 ; i < 20 ; i++) {
+        const mapX = screen.width + 25, mapY = 310 + (20 * i);
+        ctx.fillText(genusMapContents[i], mapX, mapY);
+      };
+    } else {
+      ctx.drawImage( ui, scrollMapBtns.inactiveUp.sx, scrollMapBtns.inactiveUp.sy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.dx, scrollMapBtns.inactiveUp.dy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize );
+      ctx.drawImage( ui, scrollMapBtns.activeDown.sx, scrollMapBtns.activeDown.sy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.dx, scrollMapBtns.activeDown.dy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize );
+
+      for (let i = 20 ; i < 26 ; i++) {
+        const mapX = screen.width + 25, mapY = 310 + (20 * (i-20));
+        ctx.fillText(genusMapContents[i], mapX, mapY);
+      };
     };
+
+    // for (let i = 0 ; i < 190 ; i+=19) {
+    //   ctx.fillText(
+    //     mapContentsGenus[1].description,
+    //     screen.width + 10,
+    //     20)
+    // }
   };
+
   // Inventory Interface
   // equip section
   const offsetEquip = 16;

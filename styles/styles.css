@@ -19,6 +19,7 @@ body {
   height: 100dvh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow: clip;
 }
 
 img, picture, video, canvas, svg {
@@ -90,6 +91,7 @@ p, h1, h2, h3, h4, h5, h6 {
 .game-container {
   display: flex;
   flex-direction: row;
+  background: rgb(46, 46, 46);
   /* box-shadow: 0 0 10px black; */
 }
 /* player stats - lefthand side */
@@ -101,7 +103,7 @@ p, h1, h2, h3, h4, h5, h6 {
   display: none;
   flex-direction: column;
   width: 192px;
-  background: rgb(46, 46, 46);
+  /* background: rgb(46, 46, 46); */
 }
 
 .game-container .player-stats .main-stats #player-name {

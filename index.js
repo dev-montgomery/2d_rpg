@@ -45,6 +45,7 @@ window.addEventListener('load', (event) => {
   const form = document.querySelector('.form-container');
   form.closed = false;
   
+  // First render of game happens here
   const initPlayerData = (e) => {
     e.preventDefault();
     const playerName = document.getElementById('login-form-input').value;
@@ -281,6 +282,78 @@ window.addEventListener('load', (event) => {
     );
   };
 
+  const isMouseOverContent = (mouseX, mouseY, content) => {
+    return (
+      mouseX >= content.cx &&
+      mouseX <= content.cx + content.width &&
+      mouseY >= content.cy &&
+      mouseY <= content.cy + content.height
+    );
+  };
+
+  const findContentUnderMouse = (mouseX, mouseY) => {
+    for (let content in mapContentsGenus) {
+      const currentContent = mapContentsGenus[content];
+      if (isMouseOverContent(mouseX, mouseY, currentContent)) {
+        return currentContent;
+      };
+    };
+    return null;
+  };
+
+  const justifyAndDraw = (text, width) => {
+    // Figure out which words are on each line;
+    let line = '', lines = [], array = text.split(' ');
+    
+    for (let i = 0 ; i < array.length ; i++) {
+      if (line === '') {
+        line += array[i];
+      } else if (line.length + 1 + array[i].length <= width) {
+        line += ' ' + array[i];
+      } else {
+        lines.push(line);
+        line = '';
+        i--;
+      };
+    };
+    
+    if (line.length > 0) lines.push(line);
+    
+    // Insert spaces to justify content
+    let lineCount, result = [], index;
+    
+    for (let i = 0 ; i < lines.length ; i++) {
+      lineCount = lines[i].length;
+      array = lines[i].split(' ');
+      index = 0;
+      
+      while (lineCount < width) {
+        if (index < array.length - 1) {
+          array[index] += ' ';
+          lineCount++;
+          index++;
+        } else {
+          index = 0;
+          if (index === array.length - 1) lineCount = width;
+        };
+      };
+      
+      result.push(array.join(' '));
+    };
+    
+    // Fix last line by removing the added spaces ^_^
+    if (/\s/.test(result[result.length - 1])) result[result.length - 1] = result[result.length - 1].replace(/\s+/g, ' ');
+    
+    ctx.clearRect(screen.width, 0, 192, 192);
+
+    for (let i = 16, index = 0 ; i < 176 ; i+= 16, index++) {
+      if (result[index]) {
+        ctx.font = '0.8rem Arial';
+        ctx.fillText(result[index], screen.width + 15, 15 + i);
+      };
+    };
+  };
+
   // Performs first in/last out of stacked items
   addEventListener('mousedown', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
@@ -438,6 +511,9 @@ window.addEventListener('load', (event) => {
       inWorldObjects.splice(inWorldObjects.indexOf(selectedItem), 1);
       inWorldObjects.push(selectedItem);      
     };
+
+    const content = findContentUnderMouse(mouseX, mouseY);
+    if (content) justifyAndDraw(content.description, 26);
   });
   
   // Handles drop events
@@ -551,43 +627,102 @@ window.addEventListener('load', (event) => {
   };
   
   const mapContentsGenus = {
-    1: { area: "The Genus Temple", description: "The Genus Temple is a relic said to have been erected when the gods roamed the Oasis. In service to old world, a warpriest named Heremal is said to have watched over the temple for millenia welcoming new generations of warriors." },
-    // 26
+    1: { area: "The Genus Temple", description: "The Genus Temple - An antiquated sanctuary said to have been constructed when gods wandered the Oasis. In service to the old world, warpriest Heremal welcomes new generations of warriors." },
+    2: { area: "Willow's Rest", description: "Willow's Rest - It lacks charm, comfort, and cleanliness. It is not a mystical retreat, nor a grove of tranquility. It is a place where warriors sleep, wake up, and leave." },
+    3: { area: "Spell's Antica", description: "Spell's Antica - Unleash the power within and embark on a journey where every incantation opens a door of possibility. Your adventure in the arcane begins here." },
+    4: { area: "Textiles and Tools", description: "Textiles and Tools - Your clothes and your tools are a reflection of you. Begin your journey with the right weapon, a tunic that covers your nipples, and a fishing pole so you won't go hungry." },
+    5: { area: "Genus Harvest", description: "Genus Harvest - Unique foods offer a unique experience. The right meal can fill you with the warmth of a thousand hearths. The wrong one can send you on a gastronomic adventure." },
+    6: { area: "House Militem", description: "House Militem - Set forth into the world with a foundation of physical prowess as a knight of the East Oasis. A symbol of strength and valor. Their tales are sung by bards. Their deeds, etched into the tapestry of the Oasis." },
+    7: { area: "Pillar of The Militem", description: "Pillar Militem - Etched on a plaque near the base: \"Arm Day, every day.\" - Knight Aalok" },
+    8: { area: "House Arcus", description: "House Arcus - The archer of the East Oasis is the harbinger of swift and precise justice. Every arrow, a choice, shaping destiny throughout the Oasis." },
+    9: { area: "Pillar of The Arcus", description: "Pillar Arcus - Etched on a plaque near the base: \"Pew Pew Pew!\" - Guy With Bow" },
+    10: { area: "House Maleficus", description: "House Maleficus - Those of the East Oasis who embrace the arcane seek the rawest form of power. Many fear it like the storm, but never has an arrow broken a storm. Never has a shield stopped its path." },
+    11: { area: "Pillar of The Maleficus", description: "Pillar Maleficus - Etched on a plaque near the base: \"Ancient spirits of evil...\" - Mumm-Ra" },
+    12: { area: "House Medicus", description: "House Medicus - Discover the power derived from nature as a guardian of its secrets. To be a harbinger of life is to also be an arbiter of death." },
+    13: { area: "Pillar of The Medicus", description: "Pillar Medicus - Etched on a plaque near the base: \"We surreptitiously live surrounded by magic. It is in the petals and the leaves, deep in the roots of Oasis trees. Those who take the time to appreciate it are bound to learn from it.\" - Richard" },
+    14: { area: "Swiftpost: Genus", description: "Genus Swiftpost - Purchase a friendly letter or a parcel to send items to others. Purchase backpacks, and labels for backpacks." },
+    15: { area: "Depot: Genus", description: "Genus Depot - A place to hang your rope, stash your shovel, deposit your coin, and do business with others; however, buyer beware. Trades are not guaranteed." },
+    16: { area: "Feybrew Flasks", description: "Feybrew Flasks - A wise man once said, \"buy some flasks.\" These flasks will meet your needs. A quick heal, some desired energy, a cure for what ails you. You'll be hard-pressed to find more suitable potions on Genus." },
+    17: { area: "Genus Weaponsmith", description: "Genus Weaponsmith - If you are finding your adventures across Genus difficult, it may very well be because you are ill equipped. Purchase a finer weapon and mind your skills. Maybe visit the armory." },
+    18: { area: "Genus Armory", description: "Genus Armory - For a hefty price, you may acquire some of the island's finest armor. For a moderate price you can buy something else." },
+    19: { area: "The Ugly Door Tavern", description: "The Ugly Door Tavern - \"Where's this ugly door?\" That's not important. Enter and enjoy a bad selection of liquor. It's the best." },
+    20: { area: "Ye Old Curio", description: "Ye Old Curio - Want to see the Troll King's Cudgel? Or a necklace from a dig of an ancient Merk city? What about the horns of a Minos? Ye Old Curio is a store filled with curious items found across Genus." },
+    21: { area: "Westbridge", description: "The Westbridge - The bridge in the west is currently inaccessable." },
+    22: { area: "Eastbridge", description: "The Eastbridge - The bridge in the east is currently inaccessable." },
+    23: { area: "The Poison Fields", description: "The Poison Fields - Beware the spiders in the poison fields. You may be strong enough to handle the spiders, but their poison often proves deadly. On a separate note, The Poison Fields is the only area the Genus Rose grows." },
+    24: { area: "The Fanged Glen", description: "The Fanged Glen - North of town is a spacious area known for its wolf population. Be careful running into packs of wolves. It becomes exponentially difficult to defend against multiple foes." },
+    25: { area: "The River Den", description: "The River Den - Discover the ocean river below, but beware the area's rats and spiders that roam the den." },
+    26: { area: "The Grottos", description: "The Grottos - Be careful venturing into the grottos of Genus. Though some dangerous creatures can be found in the fields, more fearsome creatures lurk in the shadows below. There are long told tales of a Troll King somewhere beneathe the islands." }
   };
   
-  const genusMapContents = [ "The Genus Temple", "Willow's Rest", "Spells Antica", "Tools and Textiles", "Genus Harvest", "House Militem", "Pillar of The Militem", "House Arcus", "Pillar of The Arcus", "House Maleficus", "Pillar of The Maleficus", "House Medicus", "Pillar of The Medicus", "Swiftpost: Genus", "Depot", "Feybrew Flasks", "Weaponsmith", "Armory", "The Ugly Door Tavern", "Ye Old Curio", "Westbridge", "Eastbridge", "The Poison Fields", "The Fanged Glen", "The River Den", "The Grottos" ];
+  // const genusMapContents = [ "The Genus Temple", "Willow's Rest", "Spells Antica", "Tools and Textiles", "Genus Harvest", "House Militem", "Pillar of The Militem", "House Arcus", "Pillar of The Arcus", "House Maleficus", "Pillar of The Maleficus", "House Medicus", "Pillar of The Medicus", "Swiftpost: Genus", "Depot", "Feybrew Flasks", "Weaponsmith", "Armory", "The Ugly Door Tavern", "Ye Old Curio", "Westbridge", "Eastbridge", "The Poison Fields", "The Fanged Glen", "The River Den", "The Grottos" ];
   let activeButtonFlag = false;
   
   const drawMapContentSection = () => {
     ctx.drawImage( mapModal, 0, 0, 1200, 1300, 120, 20, screen.width - 220, screen.height - 40 );
     
-    ctx.font = '0.8rem Arial';
-    ctx.fillText("Genus Island Contents", screen.width + 15, 286);
-    
     if (!activeButtonFlag) {
+      ctx.clearRect(screen.width, 256, 192, 448);
       ctx.drawImage( ui, scrollMapBtns.activeUp.sx, scrollMapBtns.activeUp.sy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.dx, scrollMapBtns.activeUp.dy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize );
       ctx.drawImage( ui, scrollMapBtns.inactiveDown.sx, scrollMapBtns.inactiveDown.sy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.dx, scrollMapBtns.inactiveDown.dy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize );
-      
-      for (let i = 0 ; i < 20 ; i++) {
-        const mapX = screen.width + 25, mapY = 310 + (20 * i);
-        ctx.fillText(genusMapContents[i], mapX, mapY);
-      };
-    } else {
+      let keyCount = 0;
+
+      ctx.font = '0.8rem Arial';
+      ctx.fillText("Genus Island Contents", screen.width + 15, 286);
+
+      for (const key in mapContentsGenus) {
+        if (mapContentsGenus[key].cx) {
+          delete mapContentsGenus[key].cx;
+          delete mapContentsGenus[key].cy;
+        };
+
+        if (mapContentsGenus.hasOwnProperty(key)) {
+          const mapX = screen.width + 25, mapY = 310 + (20 * keyCount);
+          ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
+          
+          mapContentsGenus[key].cx = mapX;
+          mapContentsGenus[key].cy = mapY - 12;
+          mapContentsGenus[key].width = 130;
+          mapContentsGenus[key].height = 20;
+        };
+
+        keyCount++;
+
+        if(keyCount === 20) break;
+      }; 
+    } else if (activeButtonFlag) {
+      ctx.clearRect(screen.width, 256, 192, 448);
       ctx.drawImage( ui, scrollMapBtns.inactiveUp.sx, scrollMapBtns.inactiveUp.sy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.dx, scrollMapBtns.inactiveUp.dy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize );
       ctx.drawImage( ui, scrollMapBtns.activeDown.sx, scrollMapBtns.activeDown.sy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.dx, scrollMapBtns.activeDown.dy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize );
+      let keyCount = 0, yAxis = 0;
 
-      for (let i = 20 ; i < 26 ; i++) {
-        const mapX = screen.width + 25, mapY = 310 + (20 * (i-20));
-        ctx.fillText(genusMapContents[i], mapX, mapY);
+      ctx.font = '0.8rem Arial';
+      ctx.fillText("Genus Island Contents", screen.width + 15, 286);
+
+      for (const key in mapContentsGenus) {
+        if (mapContentsGenus[key].cx) {
+          delete mapContentsGenus[key].cx;
+          delete mapContentsGenus[key].cy;
+        };
+
+        if (mapContentsGenus.hasOwnProperty(key)) {
+          keyCount++;
+        };
+
+        if (keyCount > 20) {
+          const mapX = screen.width + 25, mapY = 310 + (20 * yAxis);
+          ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
+
+          mapContentsGenus[key].cx = mapX;
+          mapContentsGenus[key].cy = mapY - 12;
+          mapContentsGenus[key].width = 130;
+          mapContentsGenus[key].height = 20;
+          yAxis++;
+        };
+
+        if (keyCount >= 26) break;
       };
     };
-
-    // for (let i = 0 ; i < 190 ; i+=19) {
-    //   ctx.fillText(
-    //     mapContentsGenus[1].description,
-    //     screen.width + 10,
-    //     20)
-    // }
   };
 
   // Inventory Interface

@@ -12,7 +12,7 @@ window.addEventListener('load', (event) => {
   
   const screen = { frames: { row: 11, col: 13 }, width: 832, height: 704 };
 
-  // Init Image Elements
+  // Image Resources | Initial Properties
   const bg = new Image();
   bg.src = './backend/assets/east_oasis.png';
   canvas.style.backgroundImage = `url(${bg.src})`;
@@ -38,12 +38,14 @@ window.addEventListener('load', (event) => {
   genus.mapSize = { row: 160, col: 140 };
   genus.onload = () => { genus.loaded = true };
 
-  // Variables
+  // Const Variables - Integers | Arrays | Objects | Selectors
   const offsetEquip = 16;
 
   const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
   
   const waterTiles = [ 1, 2, 3, 4, 5, 6, 7, 8 ];
+
+  const originalItemPosition = {};
 
   const scrollMapBtns = { 
     inactiveDown : { sx: 0, sy: 320, dx: screen.width + 160, dy: 288, pixelSize: 32 },
@@ -93,20 +95,25 @@ window.addEventListener('load', (event) => {
     feet: { x: screen.width + (offsetEquip * 9), y: offsetEquip * 9 },
   };
 
+  const itemData = document.querySelector('#item-info');
+
+  const form = document.querySelector('.form-container');
+  form.closed = false;
+
+  // Let Variables - Strings | Bools | Arrays
+  let currentInterface = 'inventorybtn';
+  
+  let activeButtonFlag = false;
+
   let chatbox = false;
 
   let boundaries = [], wateries = [];
 
   let inWorldObjects = [];
 
-  let originalItemPosition = {};
-  
-  let currentInterface = 'inventorybtn';
-  
-  let activeButtonFlag = false;
-
   let inventory = [];
-
+  
+  // Init Player and Append Stats
   const player = new Player({
     source: { downward: { sx: 0, sy: 0 }, upward: { sx: 64, sy: 0 }, rightward: { sx: 128, sy: 0 }, leftward: { sx: 192, sy: 0 } },
     destination: { dx: screen.width * 0.5 - 48, dy: screen.height * 0.5 - 48 }
@@ -125,11 +132,7 @@ window.addEventListener('load', (event) => {
     document.querySelector('#player-skill-fishing').textContent = player.data.performance.skills.fishing;
   };
   
-  // Checks if player exists/Creates player | Close form
-  const form = document.querySelector('.form-container');
-  form.closed = false;
-  
-  // First render of game happens here
+  // First render of game happens here after player data loads
   const initPlayerData = (e) => {
     e.preventDefault();
     const playerName = document.getElementById('login-form-input').value;
@@ -174,7 +177,7 @@ window.addEventListener('load', (event) => {
     };
   };
   
-  // Draw map, takes in player coordinates and JSON data
+  // Draw Functions
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     boundaries = [];
     wateries = [];
@@ -262,9 +265,140 @@ window.addEventListener('load', (event) => {
     });
   };
 
-  const itemData = document.querySelector('#item-info');
+  const drawInterfaceToggle = (selected = 'inventorybtn') => {
+    let active;
+    switch(selected) {
+      case 'mapbtn':
+        active = ui.toggleUIButtons.mapbtn;
+        break;
+      case 'inventorybtn':
+        active = ui.toggleUIButtons.inventorybtn;
+        break;
+      case 'listbtn':
+        active = ui.toggleUIButtons.listbtn;
+        break;
+      default: 
+        break;
+    };
+    
+    // draw toggle background
+    ctx.drawImage( ui, 0, 192, 192, 64, screen.width, 192, 192, 64 );
 
-  // Function to Generate Item and Append Stats
+    // draw selected
+    ctx.drawImage( ui, 128, 256, 34, 34, active.dx - 1, active.dy - 1, 34, 34 );
+
+    // draw buttons
+    for (const btn in ui.toggleUIButtons) {
+      ctx.drawImage( ui, ui.toggleUIButtons[btn].sx, ui.toggleUIButtons[btn].sy, ui.toggleUIButtons[btn].width, ui.toggleUIButtons[btn].height, ui.toggleUIButtons[btn].dx, ui.toggleUIButtons[btn].dy, ui.toggleUIButtons[btn].width, ui.toggleUIButtons[btn].height );
+    };
+  };
+  
+  const drawMapContentSection = () => {
+    ctx.clearRect(screen.width, 0, 192, 192);
+    ctx.clearRect(screen.width, 256, 192, 448);
+    ctx.drawImage( mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40 );
+    ctx.font = '1.5rem Arial';
+    ctx.fillText('Genus Island', screen.width + 20, 50);
+    ctx.font = '1rem Arial';
+    ctx.fillText('Town and Outskirts', screen.width + 20, 80);
+    if (!activeButtonFlag) {
+      ctx.drawImage( ui, scrollMapBtns.activeUp.sx, scrollMapBtns.activeUp.sy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.dx, scrollMapBtns.activeUp.dy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize );
+      ctx.drawImage( ui, scrollMapBtns.inactiveDown.sx, scrollMapBtns.inactiveDown.sy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.dx, scrollMapBtns.inactiveDown.dy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize );
+      let keyCount = 0;
+      
+      ctx.font = '0.8rem Arial';
+      ctx.fillText("Genus Island Contents", screen.width + 15, 286);
+
+      for (const key in mapContentsGenus) {
+        if (mapContentsGenus[key].cx) {
+          delete mapContentsGenus[key].cx;
+          delete mapContentsGenus[key].cy;
+        };
+
+        if (mapContentsGenus.hasOwnProperty(key)) {
+          const mapX = screen.width + 25, mapY = 310 + (20 * keyCount);
+          ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
+          
+          mapContentsGenus[key].cx = mapX;
+          mapContentsGenus[key].cy = mapY - 12;
+          mapContentsGenus[key].width = 130;
+          mapContentsGenus[key].height = 20;
+        };
+
+        keyCount++;
+
+        if(keyCount === 20) break;
+      }; 
+    } else if (activeButtonFlag) {
+      ctx.drawImage( ui, scrollMapBtns.inactiveUp.sx, scrollMapBtns.inactiveUp.sy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.dx, scrollMapBtns.inactiveUp.dy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize );
+      ctx.drawImage( ui, scrollMapBtns.activeDown.sx, scrollMapBtns.activeDown.sy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.dx, scrollMapBtns.activeDown.dy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize );
+      let keyCount = 0, yAxis = 0;
+
+      ctx.font = '0.8rem Arial';
+      ctx.fillText("Genus Island Contents", screen.width + 15, 286);
+
+      for (const key in mapContentsGenus) {
+        if (mapContentsGenus[key].cx) {
+          delete mapContentsGenus[key].cx;
+          delete mapContentsGenus[key].cy;
+        };
+
+        if (mapContentsGenus.hasOwnProperty(key)) {
+          keyCount++;
+        };
+
+        if (keyCount > 20) {
+          const mapX = screen.width + 25, mapY = 310 + (20 * yAxis);
+          ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
+
+          mapContentsGenus[key].cx = mapX;
+          mapContentsGenus[key].cy = mapY - 12;
+          mapContentsGenus[key].width = 130;
+          mapContentsGenus[key].height = 20;
+          yAxis++;
+        };
+
+        if (keyCount >= 26) break;
+      };
+    };
+  };
+
+  const drawEquipmentInterface = () => {
+    ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
+  };
+
+  const drawInventory = (backpack = null, container = null) => {
+    ctx.clearRect(screen.width, 256, 192, 448);
+    
+    if (!backpack && !container) {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(screen.width, 256, 192, 448)
+    };
+  };
+
+  const drawInterface = (input = 'inventorybtn') => {
+    ctx.clearRect( screen.width, 0, 192, 704 );
+    drawGenus({ player });
+    switch(input) {
+      case 'mapbtn':
+        // mapbtn functions
+        drawInterfaceToggle(input);
+        drawMapContentSection();
+        break;
+      case 'inventorybtn':
+        drawEquipmentInterface();
+        drawInterfaceToggle(input);
+        drawInventory();
+      break;
+      case 'listbtn':
+        // list functions
+        drawInterfaceToggle(input);
+        break;
+      default: break;
+    };
+  };
+
+  // Utility Functions
   const initItem = (id, type, name, { source, destination }) => {
     const rpgItem = new Item(id, type, name, { source, destination });
     
@@ -283,7 +417,6 @@ window.addEventListener('load', (event) => {
     inWorldObjects.push(rpgItem);
   };
 
-  // Utility Functions
   const isInPlayerRange = (objX, objY) => {
     return (
       objX >= screen.width / 2 - 96 &&
@@ -665,153 +798,11 @@ window.addEventListener('load', (event) => {
     form.closed && drawGenus({ player });    
   });
 
-  // addEventListener('resize', drawMap);
-
   window.addEventListener('beforeunload', e => {
     e.preventDefault();
     resources.playerData.isLoaded = false;
     updatePlayerData(); 
   });
-
-  // Draw Functions
-  const drawInterfaceToggle = (selected = 'inventorybtn') => {
-    let active;
-    switch(selected) {
-      case 'mapbtn':
-        active = ui.toggleUIButtons.mapbtn;
-        break;
-      case 'inventorybtn':
-        active = ui.toggleUIButtons.inventorybtn;
-        break;
-      case 'listbtn':
-        active = ui.toggleUIButtons.listbtn;
-        break;
-      default: 
-        break;
-    };
-    
-    // draw toggle background
-    ctx.drawImage( ui, 0, 192, 192, 64, screen.width, 192, 192, 64 );
-
-    // draw selected
-    ctx.drawImage( ui, 128, 256, 34, 34, active.dx - 1, active.dy - 1, 34, 34 );
-
-    // draw buttons
-    for (const btn in ui.toggleUIButtons) {
-      ctx.drawImage( ui, ui.toggleUIButtons[btn].sx, ui.toggleUIButtons[btn].sy, ui.toggleUIButtons[btn].width, ui.toggleUIButtons[btn].height, ui.toggleUIButtons[btn].dx, ui.toggleUIButtons[btn].dy, ui.toggleUIButtons[btn].width, ui.toggleUIButtons[btn].height );
-    };
-  };
-  
-  const drawMapContentSection = () => {
-    ctx.clearRect(screen.width, 0, 192, 192);
-    ctx.clearRect(screen.width, 256, 192, 448);
-    ctx.drawImage( mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40 );
-    ctx.font = '1.5rem Arial';
-    ctx.fillText('Genus Island', screen.width + 20, 50);
-    ctx.font = '1rem Arial';
-    ctx.fillText('Town and Outskirts', screen.width + 20, 80);
-    if (!activeButtonFlag) {
-      ctx.drawImage( ui, scrollMapBtns.activeUp.sx, scrollMapBtns.activeUp.sy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.dx, scrollMapBtns.activeUp.dy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize );
-      ctx.drawImage( ui, scrollMapBtns.inactiveDown.sx, scrollMapBtns.inactiveDown.sy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.dx, scrollMapBtns.inactiveDown.dy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize );
-      let keyCount = 0;
-      
-      ctx.font = '0.8rem Arial';
-      ctx.fillText("Genus Island Contents", screen.width + 15, 286);
-
-      for (const key in mapContentsGenus) {
-        if (mapContentsGenus[key].cx) {
-          delete mapContentsGenus[key].cx;
-          delete mapContentsGenus[key].cy;
-        };
-
-        if (mapContentsGenus.hasOwnProperty(key)) {
-          const mapX = screen.width + 25, mapY = 310 + (20 * keyCount);
-          ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
-          
-          mapContentsGenus[key].cx = mapX;
-          mapContentsGenus[key].cy = mapY - 12;
-          mapContentsGenus[key].width = 130;
-          mapContentsGenus[key].height = 20;
-        };
-
-        keyCount++;
-
-        if(keyCount === 20) break;
-      }; 
-    } else if (activeButtonFlag) {
-      ctx.drawImage( ui, scrollMapBtns.inactiveUp.sx, scrollMapBtns.inactiveUp.sy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.dx, scrollMapBtns.inactiveUp.dy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize );
-      ctx.drawImage( ui, scrollMapBtns.activeDown.sx, scrollMapBtns.activeDown.sy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.dx, scrollMapBtns.activeDown.dy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize );
-      let keyCount = 0, yAxis = 0;
-
-      ctx.font = '0.8rem Arial';
-      ctx.fillText("Genus Island Contents", screen.width + 15, 286);
-
-      for (const key in mapContentsGenus) {
-        if (mapContentsGenus[key].cx) {
-          delete mapContentsGenus[key].cx;
-          delete mapContentsGenus[key].cy;
-        };
-
-        if (mapContentsGenus.hasOwnProperty(key)) {
-          keyCount++;
-        };
-
-        if (keyCount > 20) {
-          const mapX = screen.width + 25, mapY = 310 + (20 * yAxis);
-          ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
-
-          mapContentsGenus[key].cx = mapX;
-          mapContentsGenus[key].cy = mapY - 12;
-          mapContentsGenus[key].width = 130;
-          mapContentsGenus[key].height = 20;
-          yAxis++;
-        };
-
-        if (keyCount >= 26) break;
-      };
-    };
-  };
-
-  const drawEquipmentInterface = () => {
-    ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
-  };
-
-  const drawInventory = (backpack = null, container = null) => {
-    ctx.clearRect(screen.width, 256, 192, 448);
-    
-    if (!backpack && !container) {
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(screen.width, 256, 192, 448)
-    };
-  };
-
-  for (let iy = 0 ; iy < 7 ; iy++) {
-    for (let ix = 0 ; ix < 3 ; ix++) {
-      inventory.push({ x: ix * 64, y: iy * 64, item: null });
-    };
-  };
-  
-  const drawInterface = (input = 'inventorybtn') => {
-    ctx.clearRect( screen.width, 0, 192, 704 );
-    drawGenus({ player });
-    switch(input) {
-      case 'mapbtn':
-        // mapbtn functions
-        drawInterfaceToggle(input);
-        drawMapContentSection();
-        break;
-      case 'inventorybtn':
-        drawEquipmentInterface();
-        drawInterfaceToggle(input);
-        drawInventory();
-      break;
-      case 'listbtn':
-        // list functions
-        drawInterfaceToggle(input);
-        break;
-      default: break;
-    };
-  };
 
   // Create Items
   setTimeout(() => {

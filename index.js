@@ -40,20 +40,16 @@ window.addEventListener('load', (event) => {
 
   // Const Variables - Integers | Arrays | Objects | Selectors
   const offsetEquip = 16;
-
-  const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
   
+  const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
   const waterTiles = [ 1, 2, 3, 4, 5, 6, 7, 8 ];
-
-  const originalItemPosition = {};
-
+  
   const scrollMapBtns = { 
     inactiveDown : { sx: 0, sy: 320, dx: screen.width + 160, dy: 288, pixelSize: 32 },
     inactiveUp: { sx: 32, sy: 320, dx: screen.width + 160, dy: 256, pixelSize: 32 },
     activeDown: { sx: 0, sy: 352, dx: screen.width + 160, dy: 288, pixelSize: 32 },
     activeUp: { sx: 32, sy: 352, dx: screen.width + 160, dy: 256, pixelSize: 32 }
   };
-  
   const mapContentsGenus = {
     1: { location: { x: 493, y: 588 }, area: "The Genus Temple", description: "An antiquated sanctuary said to have been constructed when gods wandered the Oasis. In service to the old world, warpriest Heremal welcomes new generations of warriors." },
     2: { location: { x: 530, y: 545 }, area: "Willow's Rest", description: "It lacks charm, comfort, and cleanliness. It is not a mystical retreat, nor a grove of tranquility. It is a place where warriors sleep." },
@@ -82,37 +78,35 @@ window.addEventListener('load', (event) => {
     25: { location: { x: 252, y: 360 }, area: "The River Den", description: "Discover the ocean river below, but beware the area's rats and spiders that roam the den." },
     26: { location: { x: 190, y: 210 }, area: "The Grottos", description: "Some dangerous creatures can be found in the light of day. More fearsome creatures lurk in its shadows. There are long told tales of a Troll King somewhere beneathe the islands. Beware in the Grottos." }
   };
-
-  const equipLocations = {
+  const equip = {
     area: { x: screen.width, y: 0 , size: 192 },
-    neck: { x: screen.width + offsetEquip, y: offsetEquip },
-    head: { x: screen.width + (offsetEquip * 5), y: offsetEquip },
-    back: { x: screen.width + (offsetEquip * 9), y: offsetEquip },
-    chest: { x: screen.width + offsetEquip, y: offsetEquip * 5 },
-    offhand: { x: screen.width + (offsetEquip * 9), y: offsetEquip * 5 },
-    mainhand: { x: screen.width + offsetEquip, y: offsetEquip * 9 },
-    legs: { x: screen.width + (offsetEquip * 5), y: offsetEquip * 9 },
-    feet: { x: screen.width + (offsetEquip * 9), y: offsetEquip * 9 },
+    neck: { slot: null, x: screen.width + offsetEquip, y: offsetEquip },
+    head: { slot: null, x: screen.width + (offsetEquip * 5), y: offsetEquip },
+    back: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip },
+    chest: { slot: null, x: screen.width + offsetEquip, y: offsetEquip * 5 },
+    offhand: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip * 5 },
+    mainhand: { slot: null, x: screen.width + offsetEquip, y: offsetEquip * 9 },
+    legs: { slot: null, x: screen.width + (offsetEquip * 5), y: offsetEquip * 9 },
+    feet: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip * 9 },
   };
 
   const itemData = document.querySelector('#item-info');
-
   const form = document.querySelector('.form-container');
-  form.closed = false;
+  const login = document.getElementById('login-form');
 
-  // Let Variables - Strings | Bools | Arrays
+  // Let Variables - Strings | Bools | Arrays | Objects
   let currentInterface = 'inventorybtn';
   
   let activeButtonFlag = false;
-
   let chatbox = false;
-
+  
   let boundaries = [], wateries = [];
-
   let inWorldObjects = [];
-
+  let equipped = [];
   let inventory = [];
   
+  let originalItemPosition = {};
+
   // Init Player and Append Stats
   const player = new Player({
     source: { downward: { sx: 0, sy: 0 }, upward: { sx: 64, sy: 0 }, rightward: { sx: 128, sy: 0 }, leftward: { sx: 192, sy: 0 } },
@@ -153,8 +147,6 @@ window.addEventListener('load', (event) => {
       drawInterface();
     }, 500);
   };
-  
-  document.getElementById('login-form').addEventListener('submit', initPlayerData);
 
   // POST player data to backend json file
   const updatePlayerData = async () => {
@@ -176,7 +168,7 @@ window.addEventListener('load', (event) => {
       console.error('Error saving player data.', error);
     };
   };
-  
+
   // Draw Functions
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     boundaries = [];
@@ -219,24 +211,28 @@ window.addEventListener('load', (event) => {
             uppermost.push(upper);
           };
 
+          // Check for water tiles
+          if (waterTiles.includes(tileID)) {
+            const water = new Tile({
+              source: {
+                wsx: sx,
+                wsy: sy
+              },
+              destination: {
+                wdx: dx,
+                wdy: dy
+              },
+              pixelSize: 64
+            });
+            wateries.push(water);
+          };
+
           // Check for collision tiles
           if (tileID === 25) { 
             const boundary = new Tile({
               destination: { bdx: dx, bdy: dy }
             });
             boundaries.push(boundary);
-          // } else if (waterTiles.includes(tileID)) {
-          //   const water = new Tile({
-          //     source: {
-          //       wsx: sx,
-          //       wsy: sy
-          //     },
-          //     destination: {
-          //       wdx: dx,
-          //       wdy: dy
-          //     }
-          //   });
-          //   wateries.push(water);
           } else {
             ctx.drawImage( genus, sx, sy, genus.pixelSize, genus.pixelSize, dx, dy, genus.pixelSize, genus.pixelSize );
           };
@@ -363,8 +359,9 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  const drawEquipmentInterface = () => {
+  const drawEquip = () => {
     ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
+    equipped.forEach(item => item.draw(ctx));
   };
 
   const drawInventory = (backpack = null, container = null) => {
@@ -386,7 +383,7 @@ window.addEventListener('load', (event) => {
         drawMapContentSection();
         break;
       case 'inventorybtn':
-        drawEquipmentInterface();
+        drawEquip();
         drawInterfaceToggle(input);
         drawInventory();
       break;
@@ -545,6 +542,99 @@ window.addEventListener('load', (event) => {
       };
     };
   };
+
+  const waterDetect = (newX, newY) => {
+    for (let i = 0 ; i < wateries.length ; i++) {
+      const water = wateries[i];
+
+      if (
+        newX < water.destination.wdx + water.pixelSize &&
+        newX + player.pixelSize > water.destination.wdx &&
+        newY < water.destination.wdy + water.pixelSize &&
+        newY + player.pixelSize > water.destination.wdy
+      ) {
+        return true;
+      };
+    };
+  };
+
+  const equipDetect = (newX, newY, item) => {
+    if (
+      newX < screen.width + 192 &&
+      newX + item.pixelSize > screen.width &&
+      newY < 192 &&
+      newY + item.pixelSize > 0
+    ) {
+      switch(item.type) {
+        case 'neck':
+          if (equip.neck.slot) {
+            
+          }
+          break;
+        case 'head':
+          if (equip.head.slot) {
+            
+          }
+          break;
+        case 'back':
+          if (equip.back.slot) {
+            
+          }
+          break;
+        case 'chest':
+          if (equip.chest.slot) {
+            
+          }
+          break;
+        case 'offhand':
+          if (equip.offhand.slot) {
+            
+          }
+          break;
+        case 'mainhand':
+          if (equip.mainhand.slot === null) {
+            equip.mainhand.slot = item.name;
+            item.destination.dx = equip.mainhand.x;
+            item.destination.dy = equip.mainhand.y;
+            item.scale = 0.5;
+
+            equipped.push(item);
+            inWorldObjects.splice(inWorldObjects.indexOf(item), 1);
+            
+            ctx.clearRect(screen.width, 0, 192, 192);
+            drawEquip();
+          } else {
+            
+          };
+          break;
+        case 'legs':
+          if (equip.legs.slot) {
+            
+          }
+          break;
+        case 'feet':
+          if (equip.feet.slot) {
+            
+          }
+          break;
+        default: break;
+      };
+    };
+        // code to remove items
+        // draw item in equipment slot
+  };
+
+  // equip = {
+  //   area: { x: screen.width, y: 0 , size: 192 },
+  //   neck: { slot: null, x: screen.width + offsetEquip, y: offsetEquip },
+  //   head: { slot: null, x: screen.width + (offsetEquip * 5), y: offsetEquip },
+  //   back: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip },
+  //   chest: { slot: null, x: screen.width + offsetEquip, y: offsetEquip * 5 },
+  //   offhand: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip * 5 },
+  //   mainhand: { slot: null, x: screen.width + offsetEquip, y: offsetEquip * 9 },
+  //   legs: { slot: null, x: screen.width + (offsetEquip * 5), y: offsetEquip * 9 },
+  //   feet: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip * 9 },
+  // };
 
   // Event Listeners
   addEventListener('mousedown', (e) => {
@@ -724,6 +814,12 @@ window.addEventListener('load', (event) => {
         item.destination.dx = Math.floor(posX / 64) * 64;
         item.destination.dy = Math.floor(posY / 64) * 64;
         
+        if (waterDetect(item.destination.dx, item.destination.dy)) {
+          inWorldObjects = inWorldObjects.filter(obj => obj.id !== item.id);
+          ctx.clearRect(0, 0, screen.width, screen.height);
+          drawGenus({ player });
+        };
+
         if (collisionDetect(item.destination.dx, item.destination.dy)) {
           item.destination.dx = originalItemPosition.x;
           item.destination.dy = originalItemPosition.y;
@@ -737,8 +833,10 @@ window.addEventListener('load', (event) => {
           drawGenus({ player });
         };
         
+        equipDetect(item.destination.dx, item.destination.dy, item);
         item.isDragging = false;
       };
+
     });
   });
 
@@ -797,6 +895,8 @@ window.addEventListener('load', (event) => {
     // Redraw map and player when player moves
     form.closed && drawGenus({ player });    
   });
+
+  login.addEventListener('submit', initPlayerData);
 
   window.addEventListener('beforeunload', e => {
     e.preventDefault();

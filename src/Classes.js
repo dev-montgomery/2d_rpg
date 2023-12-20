@@ -46,6 +46,7 @@ export class Item {
     this.pixelSize = 64;
     this.scale = 1;
     this.isDragging = false;
+    // this.isEquipped = false;
   }
 
   draw = (ctx) => {

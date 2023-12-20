@@ -593,7 +593,7 @@ window.addEventListener('load', (event) => {
           break;
         case 'mainhand':
           if (equip.mainhand.slot === null) {
-            equip.mainhand.slot = item.name;
+            equip.mainhand.slot = item;
             item.destination.dx = equip.mainhand.x;
             item.destination.dy = equip.mainhand.y;
             item.scale = 0.5;
@@ -603,9 +603,34 @@ window.addEventListener('load', (event) => {
             
             ctx.clearRect(screen.width, 0, 192, 192);
             drawEquip();
-          } else {
+          } else if (equip.mainhand.slot) {
+            const prevItem = equip.mainhand.slot;
+            equip.mainhand.slot = item;
+            item.destination.dx = equip.mainhand.x;
+            item.destination.dy = equip.mainhand.y;
+            item.scale = 0.5;
+
+            equipped.push(item);
+            inWorldObjects.splice(inWorldObjects.indexOf(item), 1);
             
+            ctx.clearRect(screen.width, 0, 192, 192);
+            drawEquip();
+
+            prevItem.destination.dx = player.destination.dx + 16;
+            prevItem.destination.dy = player.destination.dy + 16;
+            prevItem.scale = 1;
+            
+            inWorldObjects.push(prevItem);
+            equipped.splice(equipped.indexOf(prevItem), 1);
+
+            ctx.clearRect(0, 0, screen.width, screen.height);
+            drawGenus({ player });
           };
+
+          // code unequip
+
+          // later: code move to inventory
+
           break;
         case 'legs':
           if (equip.legs.slot) {

@@ -40,10 +40,8 @@ window.addEventListener('load', (event) => {
 
   // Const Variables - Integers | Arrays | Objects | Selectors
   const offsetEquip = 16;
-  
   const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
   const waterTiles = [ 1, 2, 3, 4, 5, 6, 7, 8 ];
-  
   const scrollMapBtns = { 
     inactiveDown : { sx: 0, sy: 320, dx: screen.width + 160, dy: 288, pixelSize: 32 },
     inactiveUp: { sx: 32, sy: 320, dx: screen.width + 160, dy: 256, pixelSize: 32 },
@@ -89,30 +87,27 @@ window.addEventListener('load', (event) => {
     legs: { slot: null, x: screen.width + (offsetEquip * 5), y: offsetEquip * 9 },
     feet: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip * 9 },
   };
-
   const itemData = document.querySelector('#item-info');
   const form = document.querySelector('.form-container');
   const login = document.getElementById('login-form');
 
   // Let Variables - Strings | Bools | Arrays | Objects
   let currentInterface = 'inventorybtn';
-  
   let activeButtonFlag = false;
   let chatbox = false;
-  
   let boundaries = [], wateries = [];
   let inWorldObjects = [];
   let equipped = [];
   let inventory = [];
-  
   let originalItemPosition = {};
 
-  // Init Player and Append Stats
+  // Init Player
   const player = new Player({
-    source: { downward: { sx: 0, sy: 0 }, upward: { sx: 64, sy: 0 }, rightward: { sx: 128, sy: 0 }, leftward: { sx: 192, sy: 0 } },
+    source: { downward: { sx: 0, sy: 0 }, upward: { sx: 0, sy: 64 }, rightward: { sx: 64, sy: 0 }, leftward: { sx: 64, sy: 64 } },
     destination: { dx: screen.width * 0.5 - 48, dy: screen.height * 0.5 - 48 }
   });
 
+  // Append Stats
   const appendPlayerStats = ({ player }) => {
     document.querySelector('#player-name').textContent = player.data.name;
     document.querySelector('#player-level').textContent = player.data.performance.lvls.lvl;
@@ -360,6 +355,7 @@ window.addEventListener('load', (event) => {
   };
 
   const drawEquip = () => {
+    ctx.clearRect(screen.width, 0, 192, 192);
     ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
     equipped.forEach(item => item.draw(ctx));
   };
@@ -432,10 +428,10 @@ window.addEventListener('load', (event) => {
     );
   };
 
-  const findItemUnderMouse = (mouseX, mouseY) => {
+  const findItemUnderMouse = (mouseX, mouseY, array) => {
     canvas.style.cursor = 'grab';
-    for (let i = inWorldObjects.length - 1 ; i >= 0 ; i--) {
-      const currentItem = inWorldObjects[i];
+    for (let i = array.length - 1 ; i >= 0 ; i--) {
+      const currentItem = array[i];
       if (isMouseOverItem(mouseX, mouseY, currentItem)) {
         return currentItem;
       };
@@ -541,6 +537,7 @@ window.addEventListener('load', (event) => {
         return true;
       };
     };
+    return false;
   };
 
   const waterDetect = (newX, newY) => {
@@ -556,15 +553,29 @@ window.addEventListener('load', (event) => {
         return true;
       };
     };
+    return false;
   };
 
-  const equipDetect = (newX, newY, item) => {
-    if (
-      newX < screen.width + 192 &&
-      newX + item.pixelSize > screen.width &&
-      newY < 192 &&
-      newY + item.pixelSize > 0
-    ) {
+  const isInEquipArea = (item) => {
+    return (
+      item.destination.dx < screen.width + 192 &&
+      item.destination.dx + item.pixelSize > screen.width &&
+      item.destination.dy < 192 &&
+      item.destination.dy + item.pixelSize > 0
+    );
+  };
+
+  const isInInventoryArea = (item) => {
+    return (
+      item.destination.dx < screen.width + 192 &&
+      item.destination.dx + item.pixelSize > screen.width &&
+      item.destination.dy < screen.height &&
+      item.destination.dy + item.pixelSize > 256
+    );
+  };
+
+  const handleEquipping = (item) => {
+    if (isInEquipArea(item)) {
       switch(item.type) {
         case 'neck':
           if (equip.neck.slot) {
@@ -592,45 +603,29 @@ window.addEventListener('load', (event) => {
           }
           break;
         case 'mainhand':
+          if (equip.mainhand.slot) {
+            const prev = equip.mainhand.slot;
+            if (prev.id !== item.id) {
+              equip.mainhand.slot = null;
+              prev.destination.dx = player.destination.dx + 16;
+              prev.destination.dy = player.destination.dy + 16;
+              prev.scale = 1;
+              inWorldObjects.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
           if (equip.mainhand.slot === null) {
             equip.mainhand.slot = item;
             item.destination.dx = equip.mainhand.x;
             item.destination.dy = equip.mainhand.y;
             item.scale = 0.5;
-
             equipped.push(item);
             inWorldObjects.splice(inWorldObjects.indexOf(item), 1);
-            
-            ctx.clearRect(screen.width, 0, 192, 192);
-            drawEquip();
-          } else if (equip.mainhand.slot) {
-            const prevItem = equip.mainhand.slot;
-            equip.mainhand.slot = item;
-            item.destination.dx = equip.mainhand.x;
-            item.destination.dy = equip.mainhand.y;
-            item.scale = 0.5;
-
-            equipped.push(item);
-            inWorldObjects.splice(inWorldObjects.indexOf(item), 1);
-            
-            ctx.clearRect(screen.width, 0, 192, 192);
-            drawEquip();
-
-            prevItem.destination.dx = player.destination.dx + 16;
-            prevItem.destination.dy = player.destination.dy + 16;
-            prevItem.scale = 1;
-            
-            inWorldObjects.push(prevItem);
-            equipped.splice(equipped.indexOf(prevItem), 1);
-
-            ctx.clearRect(0, 0, screen.width, screen.height);
-            drawGenus({ player });
           };
 
-          // code unequip
-
-          // later: code move to inventory
-
+          drawGenus({ player });
+          drawEquip();  
           break;
         case 'legs':
           if (equip.legs.slot) {
@@ -645,27 +640,53 @@ window.addEventListener('load', (event) => {
         default: break;
       };
     };
-        // code to remove items
-        // draw item in equipment slot
   };
 
-  // equip = {
-  //   area: { x: screen.width, y: 0 , size: 192 },
-  //   neck: { slot: null, x: screen.width + offsetEquip, y: offsetEquip },
-  //   head: { slot: null, x: screen.width + (offsetEquip * 5), y: offsetEquip },
-  //   back: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip },
-  //   chest: { slot: null, x: screen.width + offsetEquip, y: offsetEquip * 5 },
-  //   offhand: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip * 5 },
-  //   mainhand: { slot: null, x: screen.width + offsetEquip, y: offsetEquip * 9 },
-  //   legs: { slot: null, x: screen.width + (offsetEquip * 5), y: offsetEquip * 9 },
-  //   feet: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip * 9 },
-  // };
+  const resetEquipSlot = (item) => {
+    switch(item.type) {
+      case 'neck':
+        equip.neck.slot = null;
+        break;
+      case 'head':
+        equip.head.slot = null;
+        break;
+      case 'back':
+        equip.back.slot = null;
+        break;
+      case 'chest':
+        equip.chest.slot = null;
+        break;
+      case 'offhand':
+        equip.offhand.slot = null;
+        break;
+      case 'mainhand':
+        equip.mainhand.slot = null;  
+        break;
+      case 'legs':
+        equip.legs.slot = null;
+        break;
+      case 'feet':
+        equip.feet.slot = null;
+        break;
+      default: break;
+    };
+  };
 
   // Event Listeners
   addEventListener('mousedown', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    const selectedItem = findItemUnderMouse(mouseX, mouseY);
+    const selectedItem = findItemUnderMouse(mouseX, mouseY, inWorldObjects);
+    const equippedItem = findItemUnderMouse(mouseX, mouseY, equipped);
+    
+    if (currentInterface === 'inventorybtn' && equippedItem) {
+      equippedItem.isDragging = true;
+      canvas.style.cursor = 'grabbing';
+      originalItemPosition = {
+        x: equippedItem.destination.dx,
+        y: equippedItem.destination.dy
+      }; 
+    };
 
     if (selectedItem && isInPlayerRange(selectedItem.destination.dx, selectedItem.destination.dy)) {
       selectedItem.isDragging = true;
@@ -674,9 +695,6 @@ window.addEventListener('load', (event) => {
         x: selectedItem.destination.dx,
         y: selectedItem.destination.dy
       };
-
-      inWorldObjects.splice(inWorldObjects.indexOf(selectedItem), 1);
-      inWorldObjects.push(selectedItem);
     };
 
     if (checkToggle(mouseX, mouseY)) {
@@ -702,8 +720,8 @@ window.addEventListener('load', (event) => {
   addEventListener('mousemove', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    const selectedItem = findItemUnderMouse(mouseX, mouseY);
-    
+    const selectedItem = findItemUnderMouse(mouseX, mouseY, inWorldObjects);
+
     if (selectedItem && !selectedItem.isDragging) {
       switch(selectedItem.type) {
         case 'container':
@@ -840,29 +858,54 @@ window.addEventListener('load', (event) => {
         item.destination.dy = Math.floor(posY / 64) * 64;
         
         if (waterDetect(item.destination.dx, item.destination.dy)) {
-          inWorldObjects = inWorldObjects.filter(obj => obj.id !== item.id);
-          ctx.clearRect(0, 0, screen.width, screen.height);
-          drawGenus({ player });
-        };
-
-        if (collisionDetect(item.destination.dx, item.destination.dy)) {
+          inWorldObjects.splice(inWorldObjects.indexOf(item), 1);
+        } else if (
+          collisionDetect(item.destination.dx, item.destination.dy)) {
           item.destination.dx = originalItemPosition.x;
           item.destination.dy = originalItemPosition.y;
-
-          // ctx.font = '0.8rem Arial';
-          // ctx.fillStyle = '#fff';
-          // const message = 'unable to place item there';
-          // ctx.fillText(message, screen.width / 2 - 140, screen.height / 2 - 80);
-        } else {
-          ctx.clearRect(0, 0, screen.width, screen.height);
-          drawGenus({ player });
         };
-        
-        equipDetect(item.destination.dx, item.destination.dy, item);
-        item.isDragging = false;
-      };
 
+        item.isDragging = false;
+        if (currentInterface === 'inventorybtn') handleEquipping(item);
+        drawGenus({ player });
+      };
     });
+
+    if (currentInterface === 'inventorybtn') {
+      equipped.forEach(item => {
+        if (item.isDragging) {
+          let posX = e.clientX - canvas.getBoundingClientRect().left;
+          let posY = e.clientY - canvas.getBoundingClientRect().top;
+          item.destination.dx = Math.floor(posX / 64) * 64;
+          item.destination.dy = Math.floor(posY / 64) * 64;
+   
+          if (waterDetect(item.destination.dx, item.destination.dy)) {
+            resetEquipSlot(item);
+            equipped.splice(equipped.indexOf(item), 1);
+            drawEquip();
+          } else if (
+            collisionDetect(item.destination.dx, item.destination.dy)) {
+            item.destination.dx = originalItemPosition.x;
+            item.destination.dy = originalItemPosition.y;
+            item.isDragging = false;
+          } else if (
+            item.destination.dx + item.pixelSize < screen.width &&
+            item.destination.dx > 0 &&
+            item.destination.dy + item.pixelSize < screen.height &&
+            item.destination.dy > 0 &&
+            collisionDetect(item.destination.dx, item.destination.dy) === false
+          ) {
+            item.scale = 1;
+            item.isDragging = false;
+            inWorldObjects.push(item);
+            resetEquipSlot(item);
+            equipped.splice(equipped.indexOf(item), 1);
+            drawGenus({ player });
+            drawEquip();
+          };
+        };
+      });
+    };
   });
 
   addEventListener('keydown', (e) => {
@@ -935,9 +978,9 @@ window.addEventListener('load', (event) => {
     initItem(
       inWorldObjects.length + 1,
       'mainhand',
-      'sword', 
+      'tigerclaws', 
       {
-        source: {sx: 0, sy: 0 }, 
+        source: {sx: 256, sy: 64 }, 
         destination: { dx: 384, dy: 384 }
       }  
     );
@@ -945,9 +988,9 @@ window.addEventListener('load', (event) => {
     initItem(
       inWorldObjects.length + 1,
       'mainhand',
-      'sword', 
+      'broadaxe', 
       {
-        source: { sx: 0, sy: 0 },
+        source: { sx: 448, sy: 64 },
         destination: { dx: 324, dy: 384 }
       }  
     );
@@ -957,15 +1000,9 @@ window.addEventListener('load', (event) => {
       'tool',
       'fishingpole', 
       { 
-        source: { sx: 64, sy: 0 },
+        source: { sx: 256, sy: 128 },
         destination: { dx: 448, dy: 384 } 
       }
     );
-  }, 500)
-
-  // function animate () {
-  //   requestAnimationFrame(animate);
-  // };
-    
-  // animate();
+  }, 500);
 });

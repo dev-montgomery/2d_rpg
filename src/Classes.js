@@ -46,10 +46,9 @@ export class Item {
     this.pixelSize = 64;
     this.scale = 1;
     this.isDragging = false;
-    // this.isEquipped = false;
   }
 
-  draw = (ctx) => {
+  draw = (ctx) => {  
     ctx.drawImage(
       this.image,
       this.source.sx,
@@ -60,6 +59,6 @@ export class Item {
       this.destination.dy,
       this.pixelSize * this.scale,
       this.pixelSize * this.scale
-    )
-  }
+    );
+  };
 };

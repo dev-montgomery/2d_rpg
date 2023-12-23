@@ -360,13 +360,43 @@ window.addEventListener('load', (event) => {
     equipped.forEach(item => item.draw(ctx));
   };
 
-  const drawInventory = (backpack = null, container = null) => {
+  const drawInventory = (backpack = 'backpack', container = null) => {
     ctx.clearRect(screen.width, 256, 192, 448);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(screen.width, 256, 192, 448)
     
-    if (!backpack && !container) {
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(screen.width, 256, 192, 448)
-    };
+    if (backpack) {
+      switch (backpack) {
+        case 'backpack':
+          for (let row = 0 ; row < 5 ; row ++) {
+            for (let slot = 0 ; slot < 6 ; slot++) {
+              ctx.drawImage(
+                ui,
+                64,
+                288,
+                32,
+                32,
+                screen.width + (slot * 32),
+                256 + (row * 32),
+                32,
+                32
+              );
+            };
+          };
+          break;
+        case 'labledbackpack':
+
+          break;
+        case 'enchantedbackpack':
+
+          break;
+        case 'labeledenchantedbackpack':
+
+          break;
+        default:
+          break;
+      }
+    }
   };
 
   const drawInterface = (input = 'inventorybtn') => {
@@ -565,15 +595,6 @@ window.addEventListener('load', (event) => {
     );
   };
 
-  const isInInventoryArea = (item) => {
-    return (
-      item.destination.dx < screen.width + 192 &&
-      item.destination.dx + item.pixelSize > screen.width &&
-      item.destination.dy < screen.height &&
-      item.destination.dy + item.pixelSize > 256
-    );
-  };
-
   const handleEquipping = (item) => {
     if (isInEquipArea(item)) {
       switch(item.type) {
@@ -672,6 +693,15 @@ window.addEventListener('load', (event) => {
     };
   };
 
+  const isInInventoryArea = (item) => {
+    return (
+      item.destination.dx < screen.width + 192 &&
+      item.destination.dx + item.pixelSize > screen.width &&
+      item.destination.dy < screen.height &&
+      item.destination.dy + item.pixelSize > 256
+    );
+  };
+  
   // Event Listeners
   addEventListener('mousedown', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
@@ -878,13 +908,12 @@ window.addEventListener('load', (event) => {
           let posY = e.clientY - canvas.getBoundingClientRect().top;
           item.destination.dx = Math.floor(posX / 64) * 64;
           item.destination.dy = Math.floor(posY / 64) * 64;
-   
+
           if (waterDetect(item.destination.dx, item.destination.dy)) {
             resetEquipSlot(item);
             equipped.splice(equipped.indexOf(item), 1);
             drawEquip();
-          } else if (
-            collisionDetect(item.destination.dx, item.destination.dy)) {
+          } else if (collisionDetect(item.destination.dx, item.destination.dy)) {
             item.destination.dx = originalItemPosition.x;
             item.destination.dy = originalItemPosition.y;
             item.isDragging = false;

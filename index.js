@@ -22,6 +22,8 @@ window.addEventListener('load', (event) => {
 
   const ui = new Image();
   ui.src = './backend/assets/interface/genus-interface-assets.png';
+  ui.size = 64;
+  ui.scale = 0.5;
   ui.toggleUIButtons = {
     mapbtn: { sx: 96, sy: 320, dx: screen.width + 16, dy: 208, width: 32, height: 32 },
     inventorybtn: { sx: 128, sy: 320, dx: screen.width + 80, dy: 208, width: 32, height: 32 },
@@ -96,7 +98,7 @@ window.addEventListener('load', (event) => {
   let activeButtonFlag = false;
   let chatbox = false;
   let boundaries = [], wateries = [];
-  let inWorldObjects = [];
+  let items = [];
   let equipped = [];
   let inventory = [];
   let originalItemPosition = {};
@@ -108,7 +110,7 @@ window.addEventListener('load', (event) => {
   });
 
   // Append Stats
-  const appendPlayerStats = ({ player }) => {
+  const appendPlayerData = ({ player }) => {
     document.querySelector('#player-name').textContent = player.data.name;
     document.querySelector('#player-level').textContent = player.data.performance.lvls.lvl;
     document.querySelector('#player-magic-level').textContent = player.data.performance.lvls.mglvl;
@@ -119,6 +121,13 @@ window.addEventListener('load', (event) => {
     document.querySelector('#player-skill-distance').textContent = player.data.performance.skills.distance;
     document.querySelector('#player-skill-defense').textContent = player.data.performance.skills.defense;
     document.querySelector('#player-skill-fishing').textContent = player.data.performance.skills.fishing;
+
+    // for (const piece in player.equipped) {
+    //   if (player.equipped[piece] !== 'empty') {
+    //     const item = player.equipped[piece];
+    //     initItem(item.id, item.type, item.name, item.sx, item.sy, item.dx, item.dy);
+    //   };
+    // };
   };
   
   // First render of game happens here after player data loads
@@ -135,7 +144,7 @@ window.addEventListener('load', (event) => {
     // Render interface, map, and player after form is submitted
     setTimeout(() => {
       document.querySelector('.player-stats').style.display = 'flex';
-      appendPlayerStats({ player });
+      appendPlayerData({ player });
       canvas.style.background = '#464646';
       document.querySelector('.game-container').style.boxShadow = '0 0 10px black';
       genus.loaded && drawGenus({ player });
@@ -236,12 +245,12 @@ window.addEventListener('load', (event) => {
     });
 
     // Draw objects that are located on visible screen
-    inWorldObjects.forEach(item => {
+    items.forEach(item => {
       if (
-        item.destination.dx >= 0 &&
-        item.destination.dx < screen.width &&
-        item.destination.dy >= 0 &&
-        item.destination.dy < screen.height
+        item.dx >= 0 &&
+        item.dx < screen.width &&
+        item.dy >= 0 &&
+        item.dy < screen.height
       ) {
         item.draw(ctx);
       };
@@ -285,71 +294,74 @@ window.addEventListener('load', (event) => {
   };
   
   const drawMapContentSection = () => {
-    ctx.clearRect(screen.width, 0, 192, 192);
-    ctx.clearRect(screen.width, 256, 192, 448);
-    ctx.drawImage( mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40 );
-    ctx.font = '1.5rem Arial';
-    ctx.fillText('Genus Island', screen.width + 20, 50);
-    ctx.font = '1rem Arial';
-    ctx.fillText('Town and Outskirts', screen.width + 20, 80);
-    if (!activeButtonFlag) {
-      ctx.drawImage( ui, scrollMapBtns.activeUp.sx, scrollMapBtns.activeUp.sy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.dx, scrollMapBtns.activeUp.dy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize );
-      ctx.drawImage( ui, scrollMapBtns.inactiveDown.sx, scrollMapBtns.inactiveDown.sy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.dx, scrollMapBtns.inactiveDown.dy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize );
-      let keyCount = 0;
-      
-      ctx.font = '0.8rem Arial';
-      ctx.fillText("Genus Island Contents", screen.width + 15, 286);
+    if (currentInterface === 'mapbtn') {
 
-      for (const key in mapContentsGenus) {
-        if (mapContentsGenus[key].cx) {
-          delete mapContentsGenus[key].cx;
-          delete mapContentsGenus[key].cy;
-        };
-
-        if (mapContentsGenus.hasOwnProperty(key)) {
-          const mapX = screen.width + 25, mapY = 310 + (20 * keyCount);
-          ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
-          
-          mapContentsGenus[key].cx = mapX;
-          mapContentsGenus[key].cy = mapY - 12;
-          mapContentsGenus[key].width = 130;
-          mapContentsGenus[key].height = 20;
-        };
-
-        keyCount++;
-
-        if(keyCount === 20) break;
-      }; 
-    } else if (activeButtonFlag) {
-      ctx.drawImage( ui, scrollMapBtns.inactiveUp.sx, scrollMapBtns.inactiveUp.sy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.dx, scrollMapBtns.inactiveUp.dy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize );
-      ctx.drawImage( ui, scrollMapBtns.activeDown.sx, scrollMapBtns.activeDown.sy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.dx, scrollMapBtns.activeDown.dy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize );
-      let keyCount = 0, yAxis = 0;
-
-      ctx.font = '0.8rem Arial';
-      ctx.fillText("Genus Island Contents", screen.width + 15, 286);
-
-      for (const key in mapContentsGenus) {
-        if (mapContentsGenus[key].cx) {
-          delete mapContentsGenus[key].cx;
-          delete mapContentsGenus[key].cy;
-        };
-
-        if (mapContentsGenus.hasOwnProperty(key)) {
+      ctx.clearRect(screen.width, 0, 192, 192);
+      ctx.clearRect(screen.width, 256, 192, 448);
+      ctx.drawImage( mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40 );
+      ctx.font = '1.5rem Arial';
+      ctx.fillText('Genus Island', screen.width + 20, 50);
+      ctx.font = '1rem Arial';
+      ctx.fillText('Town and Outskirts', screen.width + 20, 80);
+      if (!activeButtonFlag) {
+        ctx.drawImage( ui, scrollMapBtns.activeUp.sx, scrollMapBtns.activeUp.sy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.dx, scrollMapBtns.activeUp.dy, scrollMapBtns.activeUp.pixelSize, scrollMapBtns.activeUp.pixelSize );
+        ctx.drawImage( ui, scrollMapBtns.inactiveDown.sx, scrollMapBtns.inactiveDown.sy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.dx, scrollMapBtns.inactiveDown.dy, scrollMapBtns.inactiveDown.pixelSize, scrollMapBtns.inactiveDown.pixelSize );
+        let keyCount = 0;
+        
+        ctx.font = '0.8rem Arial';
+        ctx.fillText("Genus Island Contents", screen.width + 15, 286);
+  
+        for (const key in mapContentsGenus) {
+          if (mapContentsGenus[key].cx) {
+            delete mapContentsGenus[key].cx;
+            delete mapContentsGenus[key].cy;
+          };
+  
+          if (mapContentsGenus.hasOwnProperty(key)) {
+            const mapX = screen.width + 25, mapY = 310 + (20 * keyCount);
+            ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
+            
+            mapContentsGenus[key].cx = mapX;
+            mapContentsGenus[key].cy = mapY - 12;
+            mapContentsGenus[key].width = 130;
+            mapContentsGenus[key].height = 20;
+          };
+  
           keyCount++;
+  
+          if(keyCount === 20) break;
+        }; 
+      } else if (activeButtonFlag) {
+        ctx.drawImage( ui, scrollMapBtns.inactiveUp.sx, scrollMapBtns.inactiveUp.sy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.dx, scrollMapBtns.inactiveUp.dy, scrollMapBtns.inactiveUp.pixelSize, scrollMapBtns.inactiveUp.pixelSize );
+        ctx.drawImage( ui, scrollMapBtns.activeDown.sx, scrollMapBtns.activeDown.sy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.dx, scrollMapBtns.activeDown.dy, scrollMapBtns.activeDown.pixelSize, scrollMapBtns.activeDown.pixelSize );
+        let keyCount = 0, yAxis = 0;
+  
+        ctx.font = '0.8rem Arial';
+        ctx.fillText("Genus Island Contents", screen.width + 15, 286);
+  
+        for (const key in mapContentsGenus) {
+          if (mapContentsGenus[key].cx) {
+            delete mapContentsGenus[key].cx;
+            delete mapContentsGenus[key].cy;
+          };
+  
+          if (mapContentsGenus.hasOwnProperty(key)) {
+            keyCount++;
+          };
+  
+          if (keyCount > 20) {
+            const mapX = screen.width + 25, mapY = 310 + (20 * yAxis);
+            ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
+  
+            mapContentsGenus[key].cx = mapX;
+            mapContentsGenus[key].cy = mapY - 12;
+            mapContentsGenus[key].width = 130;
+            mapContentsGenus[key].height = 20;
+            yAxis++;
+          };
+  
+          if (keyCount >= 26) break;
         };
-
-        if (keyCount > 20) {
-          const mapX = screen.width + 25, mapY = 310 + (20 * yAxis);
-          ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
-
-          mapContentsGenus[key].cx = mapX;
-          mapContentsGenus[key].cy = mapY - 12;
-          mapContentsGenus[key].width = 130;
-          mapContentsGenus[key].height = 20;
-          yAxis++;
-        };
-
-        if (keyCount >= 26) break;
       };
     };
   };
@@ -368,8 +380,15 @@ window.addEventListener('load', (event) => {
     if (backpack) {
       switch (backpack) {
         case 'backpack':
-          for (let row = 0 ; row < 5 ; row ++) {
+          
+          ctx.drawImage(
+            
+          )
+          let count = 0;
+
+          for (let row = 0 ; row < 4 ; row ++) {
             for (let slot = 0 ; slot < 6 ; slot++) {
+              count++;
               ctx.drawImage(
                 ui,
                 64,
@@ -377,10 +396,11 @@ window.addEventListener('load', (event) => {
                 32,
                 32,
                 screen.width + (slot * 32),
-                256 + (row * 32),
+                288 + (row * 32),
                 32,
                 32
               );
+              if (count === 20) break;
             };
           };
           break;
@@ -397,6 +417,10 @@ window.addEventListener('load', (event) => {
           break;
       }
     }
+  };
+
+  const drawItemsInInventory = (inventory, start) => {
+
   };
 
   const drawInterface = (input = 'inventorybtn') => {
@@ -422,8 +446,8 @@ window.addEventListener('load', (event) => {
   };
 
   // Utility Functions
-  const initItem = (id, type, name, { source, destination }) => {
-    const rpgItem = new Item(id, type, name, { source, destination });
+  const initItem = (id, type, name, sx, sy, dx, dy) => {
+    const rpgItem = new Item(id, type, name, sx, sy, dx, dy);
     
     for (const category in resources.itemData) {
       if (category === type) {
@@ -437,7 +461,7 @@ window.addEventListener('load', (event) => {
       };
     };
     console.log(`${rpgItem.name} created - `, rpgItem);
-    inWorldObjects.push(rpgItem);
+    items.push(rpgItem);
   };
 
   const isInPlayerRange = (objX, objY) => {
@@ -451,10 +475,10 @@ window.addEventListener('load', (event) => {
   
   const isMouseOverItem = (mouseX, mouseY, item) => {
     return (
-      mouseX >= item.destination.dx &&
-      mouseX <= item.destination.dx + item.pixelSize * item.scale &&
-      mouseY >= item.destination.dy &&
-      mouseY <= item.destination.dy + item.pixelSize * item.scale
+      mouseX >= item.dx &&
+      mouseX <= item.dx + item.pixelSize * item.scale &&
+      mouseY >= item.dy &&
+      mouseY <= item.dy + item.pixelSize * item.scale
     );
   };
 
@@ -470,12 +494,14 @@ window.addEventListener('load', (event) => {
   };
 
   const isMouseOverMapScrollButton = (mouseX, mouseY, btn) => {
-    return (
-      mouseX >= btn.dx &&
-      mouseX <= btn.dx + btn.pixelSize &&
-      mouseY >= btn.dy &&
-      mouseY <= btn.dy + btn.pixelSize
-    );
+    if (currentInterface === 'mapbtn') {
+      return (
+        mouseX >= btn.dx &&
+        mouseX <= btn.dx + btn.pixelSize &&
+        mouseY >= btn.dy &&
+        mouseY <= btn.dy + btn.pixelSize
+      );
+    };
   };
 
   const isMouseOverContent = (mouseX, mouseY, content) => {
@@ -588,10 +614,10 @@ window.addEventListener('load', (event) => {
 
   const isInEquipArea = (item) => {
     return (
-      item.destination.dx < screen.width + 192 &&
-      item.destination.dx + item.pixelSize > screen.width &&
-      item.destination.dy < 192 &&
-      item.destination.dy + item.pixelSize > 0
+      item.dx < screen.width + 192 &&
+      item.dx + item.pixelSize > screen.width &&
+      item.dy < 192 &&
+      item.dy + item.pixelSize > 0
     );
   };
 
@@ -600,49 +626,151 @@ window.addEventListener('load', (event) => {
       switch(item.type) {
         case 'neck':
           if (equip.neck.slot) {
-            
-          }
+            const prev = equip.neck.slot;
+            if (prev.id !== item.id) {
+              equip.neck.slot = null;
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              items.push(prev);
+              // player.equipped.neck = 'empty';
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (equip.neck.slot === null) {
+            equip.neck.slot = item;
+            item.dx = equip.neck.x;
+            item.dy = equip.neck.y;
+            item.scale = 0.5;
+            equipped.push(item);
+            // player.equipped.neck = item;
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquip();
           break;
         case 'head':
           if (equip.head.slot) {
-            
-          }
+            const prev = equip.head.slot;
+            if (prev.id !== item.id) {
+              equip.head.slot = null;
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (equip.head.slot === null) {
+            equip.head.slot = item;
+            item.dx = equip.head.x;
+            item.dy = equip.head.y;
+            item.scale = 0.5;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquip();
           break;
         case 'back':
           if (equip.back.slot) {
-            
-          }
+            const prev = equip.back.slot;
+            if (prev.id !== item.id) {
+              equip.back.slot = null;
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (equip.back.slot === null) {
+            equip.back.slot = item;
+            item.dx = equip.back.x;
+            item.dy = equip.back.y;
+            item.scale = 0.5;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquip();
           break;
         case 'chest':
           if (equip.chest.slot) {
-            
-          }
+            const prev = equip.chest.slot;
+            if (prev.id !== item.id) {
+              equip.chest.slot = null;
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (equip.chest.slot === null) {
+            equip.chest.slot = item;
+            item.dx = equip.chest.x;
+            item.dy = equip.chest.y;
+            item.scale = 0.5;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquip();
           break;
         case 'offhand':
           if (equip.offhand.slot) {
-            
-          }
+            const prev = equip.offhand.slot;
+            if (prev.id !== item.id) {
+              equip.offhand.slot = null;
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (equip.offhand.slot === null) {
+            equip.offhand.slot = item;
+            item.dx = equip.offhand.x;
+            item.dy = equip.offhand.y;
+            item.scale = 0.5;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquip();
           break;
         case 'mainhand':
           if (equip.mainhand.slot) {
             const prev = equip.mainhand.slot;
             if (prev.id !== item.id) {
               equip.mainhand.slot = null;
-              prev.destination.dx = player.destination.dx + 16;
-              prev.destination.dy = player.destination.dy + 16;
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
               prev.scale = 1;
-              inWorldObjects.push(prev);
+              items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
 
           if (equip.mainhand.slot === null) {
             equip.mainhand.slot = item;
-            item.destination.dx = equip.mainhand.x;
-            item.destination.dy = equip.mainhand.y;
+            item.dx = equip.mainhand.x;
+            item.dy = equip.mainhand.y;
             item.scale = 0.5;
             equipped.push(item);
-            inWorldObjects.splice(inWorldObjects.indexOf(item), 1);
+            items.splice(items.indexOf(item), 1);
           };
 
           drawGenus({ player });
@@ -650,13 +778,53 @@ window.addEventListener('load', (event) => {
           break;
         case 'legs':
           if (equip.legs.slot) {
-            
-          }
+            const prev = equip.legs.slot;
+            if (prev.id !== item.id) {
+              equip.legs.slot = null;
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (equip.legs.slot === null) {
+            equip.legs.slot = item;
+            item.dx = equip.legs.x;
+            item.dy = equip.legs.y;
+            item.scale = 0.5;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquip();
           break;
         case 'feet':
           if (equip.feet.slot) {
-            
-          }
+            const prev = equip.feet.slot;
+            if (prev.id !== item.id) {
+              equip.feet.slot = null;
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (equip.feet.slot === null) {
+            equip.feet.slot = item;
+            item.dx = equip.feet.x;
+            item.dy = equip.feet.y;
+            item.scale = 0.5;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquip();
           break;
         default: break;
       };
@@ -695,10 +863,10 @@ window.addEventListener('load', (event) => {
 
   const isInInventoryArea = (item) => {
     return (
-      item.destination.dx < screen.width + 192 &&
-      item.destination.dx + item.pixelSize > screen.width &&
-      item.destination.dy < screen.height &&
-      item.destination.dy + item.pixelSize > 256
+      item.dx < screen.width + 192 &&
+      item.dx + item.pixelSize > screen.width &&
+      item.dy < screen.height &&
+      item.dy + item.pixelSize > 256
     );
   };
   
@@ -706,24 +874,24 @@ window.addEventListener('load', (event) => {
   addEventListener('mousedown', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    const selectedItem = findItemUnderMouse(mouseX, mouseY, inWorldObjects);
+    const selectedItem = findItemUnderMouse(mouseX, mouseY, items);
     const equippedItem = findItemUnderMouse(mouseX, mouseY, equipped);
     
     if (currentInterface === 'inventorybtn' && equippedItem) {
       equippedItem.isDragging = true;
       canvas.style.cursor = 'grabbing';
       originalItemPosition = {
-        x: equippedItem.destination.dx,
-        y: equippedItem.destination.dy
+        x: equippedItem.dx,
+        y: equippedItem.dy
       }; 
     };
 
-    if (selectedItem && isInPlayerRange(selectedItem.destination.dx, selectedItem.destination.dy)) {
+    if (selectedItem && isInPlayerRange(selectedItem.dx, selectedItem.dy)) {
       selectedItem.isDragging = true;
       canvas.style.cursor = 'grabbing';
       originalItemPosition = {
-        x: selectedItem.destination.dx,
-        y: selectedItem.destination.dy
+        x: selectedItem.dx,
+        y: selectedItem.dy
       };
     };
 
@@ -750,11 +918,11 @@ window.addEventListener('load', (event) => {
   addEventListener('mousemove', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    const selectedItem = findItemUnderMouse(mouseX, mouseY, inWorldObjects);
+    const selectedItem = findItemUnderMouse(mouseX, mouseY, items);
 
     if (selectedItem && !selectedItem.isDragging) {
       switch(selectedItem.type) {
-        case 'container':
+        case 'back':
           itemData.innerHTML = `
             ${selectedItem.name}<br>
             contains: ${selectedItem.slots} items<br>
@@ -768,7 +936,7 @@ window.addEventListener('load', (event) => {
             defense skill: ${selectedItem.defense}<br>
           `;
           break;
-        case 'helmet':
+        case 'head':
           itemData.innerHTML = `
             ${selectedItem.name}<br>
             defense: ${selectedItem.defense}<br>
@@ -863,8 +1031,8 @@ window.addEventListener('load', (event) => {
     };
 
     if (selectedItem && selectedItem.isDragging) {
-      inWorldObjects.splice(inWorldObjects.indexOf(selectedItem), 1);
-      inWorldObjects.push(selectedItem);      
+      items.splice(items.indexOf(selectedItem), 1);
+      items.push(selectedItem);      
     };
 
     if (currentInterface === 'mapbtn') {
@@ -880,19 +1048,19 @@ window.addEventListener('load', (event) => {
   });
   
   addEventListener('mouseup', (e) => {
-    inWorldObjects.forEach(item => {
-      if (item.isDragging && isInPlayerRange(item.destination.dx, item.destination.dy)) {
+    items.forEach(item => {
+      if (item.isDragging && isInPlayerRange(item.dx, item.dy)) {
         let posX = e.clientX - canvas.getBoundingClientRect().left;
         let posY = e.clientY - canvas.getBoundingClientRect().top;
-        item.destination.dx = Math.floor(posX / 64) * 64;
-        item.destination.dy = Math.floor(posY / 64) * 64;
+        item.dx = Math.floor(posX / 64) * 64;
+        item.dy = Math.floor(posY / 64) * 64;
         
-        if (waterDetect(item.destination.dx, item.destination.dy)) {
-          inWorldObjects.splice(inWorldObjects.indexOf(item), 1);
+        if (waterDetect(item.dx, item.dy)) {
+          items.splice(items.indexOf(item), 1);
         } else if (
-          collisionDetect(item.destination.dx, item.destination.dy)) {
-          item.destination.dx = originalItemPosition.x;
-          item.destination.dy = originalItemPosition.y;
+          collisionDetect(item.dx, item.dy)) {
+          item.dx = originalItemPosition.x;
+          item.dy = originalItemPosition.y;
         };
 
         item.isDragging = false;
@@ -906,27 +1074,27 @@ window.addEventListener('load', (event) => {
         if (item.isDragging) {
           let posX = e.clientX - canvas.getBoundingClientRect().left;
           let posY = e.clientY - canvas.getBoundingClientRect().top;
-          item.destination.dx = Math.floor(posX / 64) * 64;
-          item.destination.dy = Math.floor(posY / 64) * 64;
+          item.dx = Math.floor(posX / 64) * 64;
+          item.dy = Math.floor(posY / 64) * 64;
 
-          if (waterDetect(item.destination.dx, item.destination.dy)) {
+          if (waterDetect(item.dx, item.dy)) {
             resetEquipSlot(item);
             equipped.splice(equipped.indexOf(item), 1);
             drawEquip();
-          } else if (collisionDetect(item.destination.dx, item.destination.dy)) {
-            item.destination.dx = originalItemPosition.x;
-            item.destination.dy = originalItemPosition.y;
+          } else if (collisionDetect(item.dx, item.dy)) {
+            item.dx = originalItemPosition.x;
+            item.dy = originalItemPosition.y;
             item.isDragging = false;
           } else if (
-            item.destination.dx + item.pixelSize < screen.width &&
-            item.destination.dx > 0 &&
-            item.destination.dy + item.pixelSize < screen.height &&
-            item.destination.dy > 0 &&
-            collisionDetect(item.destination.dx, item.destination.dy) === false
+            item.dx + item.pixelSize < screen.width &&
+            item.dx > 0 &&
+            item.dy + item.pixelSize < screen.height &&
+            item.dy > 0 &&
+            collisionDetect(item.dx, item.dy) === false
           ) {
             item.scale = 1;
             item.isDragging = false;
-            inWorldObjects.push(item);
+            items.push(item);
             resetEquipSlot(item);
             equipped.splice(equipped.indexOf(item), 1);
             drawGenus({ player });
@@ -977,9 +1145,9 @@ window.addEventListener('load', (event) => {
         player.data.performance.location.x += valX;
         player.data.performance.location.y += valY;
         // update object's locations in world
-        inWorldObjects.forEach(item => {
-          item.destination.dx -= valX * item.pixelSize * item.scale;
-          item.destination.dy -= valY * item.pixelSize * item.scale;
+        items.forEach(item => {
+          item.dx -= valX * item.pixelSize * item.scale;
+          item.dy -= valY * item.pixelSize * item.scale;
         });
       };
 
@@ -1005,33 +1173,83 @@ window.addEventListener('load', (event) => {
   setTimeout(() => {
     // item 1
     initItem(
-      inWorldObjects.length + 1,
-      'mainhand',
-      'tigerclaws', 
-      {
-        source: {sx: 256, sy: 64 }, 
-        destination: { dx: 384, dy: 384 }
-      }  
+      items.length + 1,
+      'head',
+      'hood', 
+      0,
+      0, 
+      384,
+      256
     );
     // item 2
     initItem(
-      inWorldObjects.length + 1,
-      'mainhand',
-      'broadaxe', 
-      {
-        source: { sx: 448, sy: 64 },
-        destination: { dx: 324, dy: 384 }
-      }  
+      items.length + 1,
+      'chest',
+      'tunic', 
+      64,
+      0,
+      384,
+      320
     );
     // item 3
     initItem(
-      inWorldObjects.length + 1,
-      'tool',
-      'fishingpole', 
-      { 
-        source: { sx: 256, sy: 128 },
-        destination: { dx: 448, dy: 384 } 
-      }
+      items.length + 1,
+      'legs',
+      'pants', 
+      128,
+      0,
+      384,
+      384
+    );
+    // item 4
+    initItem(
+      items.length + 1,
+      'neck',
+      'fanged', 
+      448,
+      128, 
+      320,
+      256
+    );
+    // item 5
+    initItem(
+      items.length + 1,
+      'mainhand',
+      'sword', 
+      320,
+      64,
+      320,
+      320
+    );
+    // item 6
+    initItem(
+      items.length + 1,
+      'offhand',
+      'heater', 
+      576,
+      128,
+      320,
+      384
+    );
+    // item 7
+    initItem(
+      items.length + 1,
+      'feet',
+      'shoes', 
+      192,
+      0,
+      448,
+      320  
+    );
+    // item 8
+    initItem(
+      items.length + 1,
+      'back',
+      'backpack', 
+      0, 
+      448,
+      448,
+      384
     );
   }, 500);
 });

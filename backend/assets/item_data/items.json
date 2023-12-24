@@ -3,7 +3,9 @@
     "depot":{
       "slots":50,
       "capacity":"n/a"
-    },
+    }
+  },
+  "back":{
     "backpack":{
       "slots":18,
       "capacity":0.5
@@ -21,7 +23,7 @@
       "capacity":0.5
     }
   },
-  "necklace":{
+  "neck":{
     "fanged":{
       "offense":1,
       "defense":"n/a"
@@ -31,7 +33,7 @@
       "defense":1
     }
   },
-  "helmet":{
+  "head":{
     "hood":{
       "defense":1,
       "capacity":0.5

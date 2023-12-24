@@ -35,14 +35,16 @@ export class Tile {
 };
 
 export class Item {
-  constructor(id, type, name, { source, destination }) {
+  constructor(id, type, name, sx, sy, dx, dy) {
     this.image = new Image();
     this.image.src = './backend/assets/item_data/genus-items-64.png';
     this.id = id;
     this.type = type;
     this.name = name;
-    this.source = source;
-    this.destination = destination;
+    this.sx = sx;
+    this.sy = sy;
+    this.dx = dx;
+    this.dy = dy;
     this.pixelSize = 64;
     this.scale = 1;
     this.isDragging = false;
@@ -51,12 +53,12 @@ export class Item {
   draw = (ctx) => {  
     ctx.drawImage(
       this.image,
-      this.source.sx,
-      this.source.sy,
+      this.sx,
+      this.sy,
       this.pixelSize,
       this.pixelSize,
-      this.destination.dx,
-      this.destination.dy,
+      this.dx,
+      this.dy,
       this.pixelSize * this.scale,
       this.pixelSize * this.scale
     );

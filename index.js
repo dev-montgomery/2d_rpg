@@ -27,7 +27,11 @@ window.addEventListener('load', (event) => {
   ui.toggleUIButtons = {
     mapbtn: { sx: 96, sy: 320, dx: screen.width + 16, dy: 208, width: 32, height: 32 },
     inventorybtn: { sx: 128, sy: 320, dx: screen.width + 80, dy: 208, width: 32, height: 32 },
-    listbtn: { sx: 160, sy: 320, dx: screen.width + 142, dy: 208, width: 32, height: 32 }
+    listbtn: { sx: 160, sy: 320, dx: screen.width + 142, dy: 208, width: 32, height: 32 },
+    attack: { sx: 96, sy: 352, dx: screen.width, dy: 640, width: 32, height: 32, scale: 2 },
+    defend: { sx: 128, sy: 352, dx: screen.width + 64, dy: 640, width: 32, height: 32, scale: 2 },
+    passive: { sx: 160, sy: 352, dx: screen.width + 128, dy: 640, width: 32, height: 32, scale: 2 },
+    selector: { sx: 96, sy: 256, dx: screen.width + 64, dy: 640, size: 32, scale: 2}
   };
 
   const mapModal = new Image();
@@ -51,14 +55,14 @@ window.addEventListener('load', (event) => {
     activeUp: { sx: 32, sy: 352, dx: screen.width + 160, dy: 256, pixelSize: 32 }
   };
   const mapContentsGenus = {
-    1: { location: { x: 493, y: 588 }, area: "The Genus Temple", description: "An antiquated sanctuary said to have been constructed when gods wandered the Oasis. In service to the old world, warpriest Heremal welcomes new generations of warriors." },
-    2: { location: { x: 530, y: 545 }, area: "Willow's Rest", description: "It lacks charm, comfort, and cleanliness. It is not a mystical retreat, nor a grove of tranquility. It is a place where warriors sleep." },
+    1: { location: { x: 493, y: 588 }, area: "The Genus Temple", description: "An antiquated sanctuary said to have been constructed when the gods wandered the Oasis. In service to the old world, warpriest Heremal welcomes new generations of warriors." },
+    2: { location: { x: 530, y: 545 }, area: "Willow's Rest", description: "It lacks charm, comfort, and cleanliness. It is not a mystical retreat, nor a grove of tranquility. It is just a place where warriors rest their warrior bones." },
     3: { location: { x: 489, y: 549 }, area: "Spell's Antica", description: "Unleash the power within and embark on a journey where every incantation opens a door of possibility. Your adventure in the arcane begins here." },
     4: { location: { x: 451, y: 534 }, area: "Textiles and Tools", description: "Your clothes and your tools are a reflection of you. Begin your journey with the right weapon, a tunic that covers your nipples, and a fishing pole so you won't go hungry." },
     5: { location: { x: 454, y: 557 }, area: "Genus Harvest", description: "Unique foods offer a unique experience. The right meal can fill you with the warmth of a thousand hearths. The wrong one can send you on a gastronomic adventure." },
     6: { location: { x: 525, y: 420 }, area: "House Militem", description: "Set forth into the world with a foundation of physical prowess as a knight of the East Oasis. A symbol of strength and valor. Their tales are sung by bards. Their deeds, etched into the tapestry of the Oasis." },
     7: { location: { x: 506, y: 444 }, area: "Pillar of The Militem", description: "Etched on a plaque near the base: \"Arm Day, every day.\" - Knight Aalok" },
-    8: { location: { x: 456, y: 496 }, area: "House Arcus", description: "The archer of the East Oasis is the harbinger of swift and precise justice. Every arrow, a choice, shaping destiny." },
+    8: { location: { x: 456, y: 496 }, area: "House Arcus", description: "The archer of the East Oasis is the harbinger of swift and precise justice. Every arrow, closing the distance of battle, shaping the probability of outcomes." },
     9: { location: { x: 476, y: 472 }, area: "Pillar of The Arcus", description: "Etched on a plaque near the base: \"Pew Pew Pew!\" - Guy With Bow" },
     10: { location: { x: 456, y: 420 }, area: "House Maleficus", description: "Those of the East Oasis who embrace the arcane seek the rawest form of power. Many fear it like the storm, but never has an arrow broken a storm. Never has a shield stopped its path." },
     11: { location: { x: 476, y: 444 }, area: "Pillar of The Maleficus", description: "Etched on a plaque near the base: \"Ancient spirits of evil...\" - Mumm-Ra" },
@@ -89,12 +93,21 @@ window.addEventListener('load', (event) => {
     legs: { slot: null, x: screen.width + (offsetEquip * 5), y: offsetEquip * 9 },
     feet: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip * 9 },
   };
+  const inventoryContainerSizes = {
+    x: screen.width,
+    y: 256,
+    fullArea: { width: 192, height: 384 },
+    inventory: { width: 192, height: 160 },
+    depot: { width: 192, height: 320 },
+    body: { width: 192, height: 128 }
+  };
   const itemData = document.querySelector('#item-info');
   const form = document.querySelector('.form-container');
   const login = document.getElementById('login-form');
 
   // Let Variables - Strings | Bools | Arrays | Objects
   let currentInterface = 'inventorybtn';
+  let stance = 'defend';
   let activeButtonFlag = false;
   let chatbox = false;
   let boundaries = [], wateries = [];
@@ -111,6 +124,7 @@ window.addEventListener('load', (event) => {
 
   // Append Stats
   const appendPlayerData = ({ player }) => {
+    
     document.querySelector('#player-name').textContent = player.data.name;
     document.querySelector('#player-level').textContent = player.data.performance.lvls.lvl;
     document.querySelector('#player-magic-level').textContent = player.data.performance.lvls.mglvl;
@@ -122,9 +136,10 @@ window.addEventListener('load', (event) => {
     document.querySelector('#player-skill-defense').textContent = player.data.performance.skills.defense;
     document.querySelector('#player-skill-fishing').textContent = player.data.performance.skills.fishing;
 
-    // for (const piece in player.equipped) {
-    //   if (player.equipped[piece] !== 'empty') {
-    //     const item = player.equipped[piece];
+    // const equipment = player.performance.equipped;
+    // for (const piece in equipment) {
+    //   if (equipment[piece] !== 'empty') {
+    //     const item = equipment[piece];
     //     initItem(item.id, item.type, item.name, item.sx, item.sy, item.dx, item.dy);
     //   };
     // };
@@ -174,7 +189,7 @@ window.addEventListener('load', (event) => {
   };
 
   // Draw Functions
-  const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
+  const drawGenus = async ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     boundaries = [];
     wateries = [];
 
@@ -265,7 +280,7 @@ window.addEventListener('load', (event) => {
     });
   };
 
-  const drawInterfaceToggle = (selected = 'inventorybtn') => {
+  const drawInterfaceToggleMenu = (selected = 'inventorybtn') => {
     let active;
     switch(selected) {
       case 'mapbtn':
@@ -373,17 +388,18 @@ window.addEventListener('load', (event) => {
   };
 
   const drawInventory = (backpack = 'backpack', container = null) => {
-    ctx.clearRect(screen.width, 256, 192, 448);
+    ctx.clearRect(inventoryContainerSizes.x, inventoryContainerSizes.y, inventoryContainerSizes.fullArea.width, inventoryContainerSizes.fullArea.height);
     ctx.fillStyle = '#fff';
-    ctx.fillRect(screen.width, 256, 192, 448)
+    ctx.fillRect(inventoryContainerSizes.x, inventoryContainerSizes.y, inventoryContainerSizes.fullArea.width, inventoryContainerSizes.fullArea.height);
     
     if (backpack) {
       switch (backpack) {
         case 'backpack':
           
-          ctx.drawImage(
+          // ctx.drawImage(
             
-          )
+          // )
+
           let count = 0;
 
           for (let row = 0 ; row < 4 ; row ++) {
@@ -419,27 +435,71 @@ window.addEventListener('load', (event) => {
     }
   };
 
-  const drawItemsInInventory = (inventory, start) => {
-
-  };
-
   const drawInterface = (input = 'inventorybtn') => {
     ctx.clearRect( screen.width, 0, 192, 704 );
     drawGenus({ player });
     switch(input) {
       case 'mapbtn':
         // mapbtn functions
-        drawInterfaceToggle(input);
+        drawInterfaceToggleMenu(input);
         drawMapContentSection();
         break;
       case 'inventorybtn':
         drawEquip();
-        drawInterfaceToggle(input);
+        drawInterfaceToggleMenu(input);
         drawInventory();
+        drawStance(0, 0, stance);
       break;
       case 'listbtn':
         // list functions
-        drawInterfaceToggle(input);
+        drawInterfaceToggleMenu(input);
+        break;
+      default: break;
+    };
+  };
+
+  const drawStance = (mouseX, mouseY, stance) => {
+    ctx.clearRect(screen.width, 640, 192, 64);
+    ctx.drawImage(ui, ui.toggleUIButtons.attack.sx, ui.toggleUIButtons.attack.sy, 96, 32, screen.width, 640, 192, 64);
+    switch(stance) {
+      case 'attack':
+        ctx.drawImage(
+          ui,
+          ui.toggleUIButtons.selector.sx,
+          ui.toggleUIButtons.selector.sy,
+          ui.toggleUIButtons.selector.size,
+          ui.toggleUIButtons.selector.size,
+          ui.toggleUIButtons.attack.dx,
+          ui.toggleUIButtons.attack.dy,
+          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale,
+          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale
+        );
+        break;
+      case 'defend':
+        ctx.drawImage(
+          ui,
+          ui.toggleUIButtons.selector.sx,
+          ui.toggleUIButtons.selector.sy,
+          ui.toggleUIButtons.selector.size,
+          ui.toggleUIButtons.selector.size,
+          ui.toggleUIButtons.defend.dx,
+          ui.toggleUIButtons.defend.dy,
+          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale,
+          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale
+        );
+        break;
+      case 'passive':
+        ctx.drawImage(
+          ui,
+          ui.toggleUIButtons.selector.sx,
+          ui.toggleUIButtons.selector.sy,
+          ui.toggleUIButtons.selector.size,
+          ui.toggleUIButtons.selector.size,
+          ui.toggleUIButtons.passive.dx,
+          ui.toggleUIButtons.passive.dy,
+          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale,
+          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale
+        );
         break;
       default: break;
     };
@@ -633,7 +693,7 @@ window.addEventListener('load', (event) => {
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
               items.push(prev);
-              // player.equipped.neck = 'empty';
+              // player.performance.equipped.neck = 'empty';
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
@@ -644,7 +704,7 @@ window.addEventListener('load', (event) => {
             item.dy = equip.neck.y;
             item.scale = 0.5;
             equipped.push(item);
-            // player.equipped.neck = item;
+            // player.performance.equipped.neck = item;
             items.splice(items.indexOf(item), 1);
           };
 
@@ -869,239 +929,279 @@ window.addEventListener('load', (event) => {
       item.dy + item.pixelSize > 256
     );
   };
+
+  const checkStance = (mouseX, mouseY) => {
+    if (
+      mouseX >= ui.toggleUIButtons.attack.dx &&
+      mouseX <= ui.toggleUIButtons.attack.dx + ui.toggleUIButtons.attack.width * ui.toggleUIButtons.attack.scale &&
+      mouseY >= ui.toggleUIButtons.attack.dy &&
+      mouseY <= ui.toggleUIButtons.attack.dy + ui.toggleUIButtons.attack.height * ui.toggleUIButtons.attack.scale
+    ) {
+      return 'attack';
+    };
+
+    if (
+      mouseX >= ui.toggleUIButtons.defend.dx &&
+      mouseX <= ui.toggleUIButtons.defend.dx + ui.toggleUIButtons.defend.width * ui.toggleUIButtons.defend.scale &&
+      mouseY >= ui.toggleUIButtons.defend.dy &&
+      mouseY <= ui.toggleUIButtons.defend.dy + ui.toggleUIButtons.defend.height * ui.toggleUIButtons.defend.scale
+    ) {
+      return 'defend';
+    };
+
+    if (
+      mouseX >= ui.toggleUIButtons.passive.dx &&
+      mouseX <= ui.toggleUIButtons.passive.dx + ui.toggleUIButtons.passive.width * ui.toggleUIButtons.passive.scale &&
+      mouseY >= ui.toggleUIButtons.passive.dy &&
+      mouseY <= ui.toggleUIButtons.passive.dy + ui.toggleUIButtons.passive.height * ui.toggleUIButtons.passive.scale
+    ) {
+      return 'passive';
+    };
+  };
   
   // Event Listeners
   addEventListener('mousedown', (e) => {
-    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
-    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    const selectedItem = findItemUnderMouse(mouseX, mouseY, items);
-    const equippedItem = findItemUnderMouse(mouseX, mouseY, equipped);
-    
-    if (currentInterface === 'inventorybtn' && equippedItem) {
-      equippedItem.isDragging = true;
-      canvas.style.cursor = 'grabbing';
-      originalItemPosition = {
-        x: equippedItem.dx,
-        y: equippedItem.dy
-      }; 
-    };
-
-    if (selectedItem && isInPlayerRange(selectedItem.dx, selectedItem.dy)) {
-      selectedItem.isDragging = true;
-      canvas.style.cursor = 'grabbing';
-      originalItemPosition = {
-        x: selectedItem.dx,
-        y: selectedItem.dy
+    if (form.closed) {
+      const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+      const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+      const selectedItem = findItemUnderMouse(mouseX, mouseY, items);
+      const equippedItem = findItemUnderMouse(mouseX, mouseY, equipped);
+      
+      if (currentInterface === 'inventorybtn' && equippedItem) {
+        equippedItem.isDragging = true;
+        canvas.style.cursor = 'grabbing';
+        originalItemPosition = {
+          x: equippedItem.dx,
+          y: equippedItem.dy
+        }; 
       };
-    };
-
-    if (checkToggle(mouseX, mouseY)) {
-      currentInterface = checkToggle(mouseX, mouseY);
-      drawInterface(checkToggle(mouseX, mouseY));
-    };
-
-    for (let btn in scrollMapBtns) {
-      if (isMouseOverMapScrollButton(mouseX, mouseY, scrollMapBtns[btn])) {
-        if (btn == 'activeDown') {
-          activeButtonFlag = true;
-          ctx.clearRect(screen.width, 256, 192, 448);
-          drawMapContentSection();
-        } else {
-          activeButtonFlag = false;
-          ctx.clearRect(screen.width, 256, 192, 448);
-          drawMapContentSection();
+  
+      if (selectedItem && isInPlayerRange(selectedItem.dx, selectedItem.dy)) {
+        selectedItem.isDragging = true;
+        canvas.style.cursor = 'grabbing';
+        originalItemPosition = {
+          x: selectedItem.dx,
+          y: selectedItem.dy
         };
       };
-    };  
+  
+      if (checkToggle(mouseX, mouseY)) {
+        currentInterface = checkToggle(mouseX, mouseY);
+        drawInterface(checkToggle(mouseX, mouseY));
+      };
+  
+      for (let btn in scrollMapBtns) {
+        if (isMouseOverMapScrollButton(mouseX, mouseY, scrollMapBtns[btn])) {
+          if (btn == 'activeDown') {
+            activeButtonFlag = true;
+            ctx.clearRect(screen.width, 256, 192, 448);
+            drawMapContentSection();
+          } else {
+            activeButtonFlag = false;
+            ctx.clearRect(screen.width, 256, 192, 448);
+            drawMapContentSection();
+          };
+        };
+      };
+      
+      if (currentInterface === 'inventorybtn' && checkStance(mouseX, mouseY)) {
+        stance = checkStance(mouseX, mouseY);
+        drawStance(mouseX, mouseY, stance);
+      };
+    };
   });
   
   addEventListener('mousemove', (e) => {
-    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
-    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    const selectedItem = findItemUnderMouse(mouseX, mouseY, items);
+    if (form.closed) {
+      const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+      const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+      const selectedItem = findItemUnderMouse(mouseX, mouseY, items);
 
-    if (selectedItem && !selectedItem.isDragging) {
-      switch(selectedItem.type) {
-        case 'back':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            contains: ${selectedItem.slots} items<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'necklace':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            offense skill: ${selectedItem.offense}<br>
-            defense skill: ${selectedItem.defense}<br>
-          `;
-          break;
-        case 'head':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            defense: ${selectedItem.defense}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'chest':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            defense: ${selectedItem.defense}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'legs':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            defense: ${selectedItem.defense}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'feet':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            defense: ${selectedItem.defense}<br>
-            speed: ${selectedItem.speed}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'mainhand':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            damage: ${selectedItem.offense}<br>
-            speed: ${selectedItem.speed}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'offhand':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            defense: ${selectedItem.defense}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'tool':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'currency':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            amount: ${selectedItem.amount}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'consumable':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            purpose: ${selectedItem.purpose}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'rubbish':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'decor':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        case 'literature':
-          itemData.innerHTML = `
-            ${selectedItem.name}<br>
-            capweight: ${selectedItem.capacity}
-          `;
-          break;
-        default: break;
+      if (selectedItem && !selectedItem.isDragging) {
+        switch(selectedItem.type) {
+          case 'back':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              contains: ${selectedItem.slots} items<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'necklace':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              offense skill: ${selectedItem.offense}<br>
+              defense skill: ${selectedItem.defense}<br>
+            `;
+            break;
+          case 'head':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              defense: ${selectedItem.defense}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'chest':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              defense: ${selectedItem.defense}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'legs':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              defense: ${selectedItem.defense}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'feet':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              defense: ${selectedItem.defense}<br>
+              speed: ${selectedItem.speed}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'mainhand':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              damage: ${selectedItem.offense}<br>
+              speed: ${selectedItem.speed}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'offhand':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              defense: ${selectedItem.defense}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'tool':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'currency':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              amount: ${selectedItem.amount}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'consumable':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              purpose: ${selectedItem.purpose}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'rubbish':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'decor':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          case 'literature':
+            itemData.innerHTML = `
+              ${selectedItem.name}<br>
+              capweight: ${selectedItem.capacity}
+            `;
+            break;
+          default: break;
+        };
+
+        itemData.style.display = 'block';
+        itemData.style.border = '1px solid #fff';
+        canvas.style.cursor = 'grab';
+      } else {
+        itemData.style.display = 'none';
+        itemData.style.border = 'none';
+        canvas.style.cursor = 'pointer';
       };
 
-      itemData.style.display = 'block';
-      itemData.style.border = '1px solid #fff';
-      canvas.style.cursor = 'grab';
-    } else {
-      itemData.style.display = 'none';
-      itemData.style.border = 'none';
-      canvas.style.cursor = 'pointer';
-    };
+      if (selectedItem && selectedItem.isDragging) {
+        items.splice(items.indexOf(selectedItem), 1);
+        items.push(selectedItem);      
+      };
 
-    if (selectedItem && selectedItem.isDragging) {
-      items.splice(items.indexOf(selectedItem), 1);
-      items.push(selectedItem);      
-    };
-
-    if (currentInterface === 'mapbtn') {
-      const content = findContentUnderMouse(mouseX, mouseY);
-      
-      if (content) {
-        ctx.clearRect(150, 20, screen.width - 300, screen.height - 40);  
-        fillLinesOfText(content.area, content.description, 26);
-        ctx.drawImage(mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40);
-        ctx.drawImage(ui, 96, 288, 32, 32, content.location.x, content.location.y, 32, 32)
+      if (currentInterface === 'mapbtn') {
+        const content = findContentUnderMouse(mouseX, mouseY);
+        
+        if (content) {
+          ctx.clearRect(150, 20, screen.width - 300, screen.height - 40);  
+          fillLinesOfText(content.area, content.description, 26);
+          ctx.drawImage(mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40);
+          ctx.drawImage(ui, 96, 288, 32, 32, content.location.x, content.location.y, 32, 32)
+        };
       };
     };
   });
   
   addEventListener('mouseup', (e) => {
-    items.forEach(item => {
-      if (item.isDragging && isInPlayerRange(item.dx, item.dy)) {
-        let posX = e.clientX - canvas.getBoundingClientRect().left;
-        let posY = e.clientY - canvas.getBoundingClientRect().top;
-        item.dx = Math.floor(posX / 64) * 64;
-        item.dy = Math.floor(posY / 64) * 64;
-        
-        if (waterDetect(item.dx, item.dy)) {
-          items.splice(items.indexOf(item), 1);
-        } else if (
-          collisionDetect(item.dx, item.dy)) {
-          item.dx = originalItemPosition.x;
-          item.dy = originalItemPosition.y;
-        };
-
-        item.isDragging = false;
-        if (currentInterface === 'inventorybtn') handleEquipping(item);
-        drawGenus({ player });
-      };
-    });
-
-    if (currentInterface === 'inventorybtn') {
-      equipped.forEach(item => {
-        if (item.isDragging) {
+    if (form.closed) {
+      items.forEach(item => {
+        if (item.isDragging && isInPlayerRange(item.dx, item.dy)) {
           let posX = e.clientX - canvas.getBoundingClientRect().left;
           let posY = e.clientY - canvas.getBoundingClientRect().top;
           item.dx = Math.floor(posX / 64) * 64;
           item.dy = Math.floor(posY / 64) * 64;
-
+          
           if (waterDetect(item.dx, item.dy)) {
-            resetEquipSlot(item);
-            equipped.splice(equipped.indexOf(item), 1);
-            drawEquip();
-          } else if (collisionDetect(item.dx, item.dy)) {
+            items.splice(items.indexOf(item), 1);
+          } else if (
+            collisionDetect(item.dx, item.dy)) {
             item.dx = originalItemPosition.x;
             item.dy = originalItemPosition.y;
-            item.isDragging = false;
-          } else if (
-            item.dx + item.pixelSize < screen.width &&
-            item.dx > 0 &&
-            item.dy + item.pixelSize < screen.height &&
-            item.dy > 0 &&
-            collisionDetect(item.dx, item.dy) === false
-          ) {
-            item.scale = 1;
-            item.isDragging = false;
-            items.push(item);
-            resetEquipSlot(item);
-            equipped.splice(equipped.indexOf(item), 1);
-            drawGenus({ player });
-            drawEquip();
           };
+
+          item.isDragging = false;
+          if (currentInterface === 'inventorybtn') handleEquipping(item);
+          drawGenus({ player });
         };
       });
+
+      if (currentInterface === 'inventorybtn') {
+        equipped.forEach(item => {
+          if (item.isDragging) {
+            let posX = e.clientX - canvas.getBoundingClientRect().left;
+            let posY = e.clientY - canvas.getBoundingClientRect().top;
+            item.dx = Math.floor(posX / 64) * 64;
+            item.dy = Math.floor(posY / 64) * 64;
+
+            if (waterDetect(item.dx, item.dy)) {
+              resetEquipSlot(item);
+              equipped.splice(equipped.indexOf(item), 1);
+              drawEquip();
+            } else if (collisionDetect(item.dx, item.dy)) {
+              item.dx = originalItemPosition.x;
+              item.dy = originalItemPosition.y;
+              item.isDragging = false;
+            } else if (
+              item.dx + item.pixelSize < screen.width &&
+              item.dx > 0 &&
+              item.dy + item.pixelSize < screen.height &&
+              item.dy > 0 &&
+              collisionDetect(item.dx, item.dy) === false
+            ) {
+              item.scale = 1;
+              item.isDragging = false;
+              items.push(item);
+              resetEquipSlot(item);
+              equipped.splice(equipped.indexOf(item), 1);
+              drawGenus({ player });
+              drawEquip();
+            };
+          };
+        });
+      };
     };
   });
 
@@ -1178,7 +1278,7 @@ window.addEventListener('load', (event) => {
       'hood', 
       0,
       0, 
-      384,
+      256,
       256
     );
     // item 2
@@ -1188,7 +1288,7 @@ window.addEventListener('load', (event) => {
       'tunic', 
       64,
       0,
-      384,
+      256,
       320
     );
     // item 3
@@ -1198,7 +1298,7 @@ window.addEventListener('load', (event) => {
       'pants', 
       128,
       0,
-      384,
+      256,
       384
     );
     // item 4
@@ -1208,7 +1308,7 @@ window.addEventListener('load', (event) => {
       'fanged', 
       448,
       128, 
-      320,
+      192,
       256
     );
     // item 5
@@ -1218,7 +1318,90 @@ window.addEventListener('load', (event) => {
       'sword', 
       320,
       64,
+      192,
+      320
+    );
+    // item 6
+    initItem(
+      items.length + 1,
+      'offhand',
+      'kite', 
+      576,
+      64,
       320,
+      320
+    );
+    // item 7
+    initItem(
+      items.length + 1,
+      'feet',
+      'shoes', 
+      192,
+      0,
+      256,
+      448  
+    );
+    // item 8
+    initItem(
+      items.length + 1,
+      'back',
+      'backpack', 
+      0, 
+      448,
+      320,
+      256
+    );
+  }, 500);
+
+  setTimeout(() => {
+    // item 1
+    initItem(
+      items.length + 1,
+      'head',
+      'coif', 
+      0,
+      128, 
+      512,
+      256
+    );
+    // item 2
+    initItem(
+      items.length + 1,
+      'chest',
+      'chainmail', 
+      64,
+      128,
+      512,
+      320
+    );
+    // item 3
+    initItem(
+      items.length + 1,
+      'legs',
+      'chainmail kilt', 
+      128,
+      128,
+      512,
+      384
+    );
+    // item 4
+    initItem(
+      items.length + 1,
+      'neck',
+      'silver', 
+      512,
+      128, 
+      448,
+      256
+    );
+    // item 5
+    initItem(
+      items.length + 1,
+      'mainhand',
+      'spear', 
+      512,
+      64,
+      448,
       320
     );
     // item 6
@@ -1228,28 +1411,28 @@ window.addEventListener('load', (event) => {
       'heater', 
       576,
       128,
-      320,
-      384
+      576,
+      320
     );
     // item 7
     initItem(
       items.length + 1,
       'feet',
-      'shoes', 
+      'chausses', 
       192,
-      0,
-      448,
-      320  
+      128,
+      512,
+      448  
     );
-    // item 8
-    initItem(
-      items.length + 1,
-      'back',
-      'backpack', 
-      0, 
-      448,
-      448,
-      384
-    );
+    // // item 8
+    // initItem(
+    //   items.length + 1,
+    //   'consumable',
+    //   'health', 
+    //   512, 
+    //   384,
+    //   512,
+    //   448
+    // );
   }, 500);
 });

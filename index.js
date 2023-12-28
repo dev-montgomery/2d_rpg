@@ -28,11 +28,17 @@ window.addEventListener('load', (event) => {
     mapbtn: { sx: 96, sy: 320, dx: screen.width + 16, dy: 208, width: 32, height: 32 },
     inventorybtn: { sx: 128, sy: 320, dx: screen.width + 80, dy: 208, width: 32, height: 32 },
     listbtn: { sx: 160, sy: 320, dx: screen.width + 142, dy: 208, width: 32, height: 32 },
-    attack: { sx: 96, sy: 352, dx: screen.width, dy: 640, width: 32, height: 32, scale: 2 },
-    defend: { sx: 128, sy: 352, dx: screen.width + 64, dy: 640, width: 32, height: 32, scale: 2 },
-    passive: { sx: 160, sy: 352, dx: screen.width + 128, dy: 640, width: 32, height: 32, scale: 2 },
-    selector: { sx: 96, sy: 256, dx: screen.width + 64, dy: 640, size: 32, scale: 2}
+    attackInactive: { sx: 96, sy: 352, dx: screen.width, dy: 640, size: 32, scale: 2 },
+    defendInactive: { sx: 128, sy: 352, dx: screen.width + 64, dy: 640, size: 32, scale: 2 },
+    passiveInactive: { sx: 160, sy: 352, dx: screen.width + 128, dy: 640, size: 32, scale: 2 },
+    attackActive: { sx: 96, sy: 384, dx: screen.width, dy: 640, size: 32, scale: 2 },
+    defendActive: { sx: 128, sy: 384, dx: screen.width + 64, dy: 640, size: 32, scale: 2 },
+    passiveActive: { sx: 160, sy: 384, dx: screen.width + 128, dy: 640, size: 32, scale: 2 }
   };
+
+  const itemAssets = new Image();
+  itemAssets.src = './backend/assets/item_data/genus-items-64.png';
+  itemAssets.pixelSize = 64;
 
   const mapModal = new Image();
   mapModal.src = './backend/assets/map_data/genus_01.png';
@@ -56,13 +62,13 @@ window.addEventListener('load', (event) => {
   };
   const mapContentsGenus = {
     1: { location: { x: 493, y: 588 }, area: "The Genus Temple", description: "An antiquated sanctuary said to have been constructed when the gods wandered the Oasis. In service to the old world, warpriest Heremal welcomes new generations of warriors." },
-    2: { location: { x: 530, y: 545 }, area: "Willow's Rest", description: "It lacks charm, comfort, and cleanliness. It is not a mystical retreat, nor a grove of tranquility. It is just a place where warriors rest their warrior bones." },
+    2: { location: { x: 530, y: 545 }, area: "Willow's Rest", description: "It lacks charm, comfort, and cleanliness... but it does have beds." },
     3: { location: { x: 489, y: 549 }, area: "Spell's Antica", description: "Unleash the power within and embark on a journey where every incantation opens a door of possibility. Your adventure in the arcane begins here." },
-    4: { location: { x: 451, y: 534 }, area: "Textiles and Tools", description: "Your clothes and your tools are a reflection of you. Begin your journey with the right weapon, a tunic that covers your nipples, and a fishing pole so you won't go hungry." },
+    4: { location: { x: 451, y: 534 }, area: "Textiles and Tools", description: "Your clothes and your tools are a reflection of you. Begin your journey with the right weapon, some clothes, and a fishing pole so you won't go hungry." },
     5: { location: { x: 454, y: 557 }, area: "Genus Harvest", description: "Unique foods offer a unique experience. The right meal can fill you with the warmth of a thousand hearths. The wrong one can send you on a gastronomic adventure." },
     6: { location: { x: 525, y: 420 }, area: "House Militem", description: "Set forth into the world with a foundation of physical prowess as a knight of the East Oasis. A symbol of strength and valor. Their tales are sung by bards. Their deeds, etched into the tapestry of the Oasis." },
     7: { location: { x: 506, y: 444 }, area: "Pillar of The Militem", description: "Etched on a plaque near the base: \"Arm Day, every day.\" - Knight Aalok" },
-    8: { location: { x: 456, y: 496 }, area: "House Arcus", description: "The archer of the East Oasis is the harbinger of swift and precise justice. Every arrow, closing the distance of battle, shaping the probability of outcomes." },
+    8: { location: { x: 456, y: 496 }, area: "House Arcus", description: "The archer of the East Oasis is the harbinger of swift and precise justice. A symbol of courage and independence. Every arrow, shaping the outcome on the battlefield." },
     9: { location: { x: 476, y: 472 }, area: "Pillar of The Arcus", description: "Etched on a plaque near the base: \"Pew Pew Pew!\" - Guy With Bow" },
     10: { location: { x: 456, y: 420 }, area: "House Maleficus", description: "Those of the East Oasis who embrace the arcane seek the rawest form of power. Many fear it like the storm, but never has an arrow broken a storm. Never has a shield stopped its path." },
     11: { location: { x: 476, y: 444 }, area: "Pillar of The Maleficus", description: "Etched on a plaque near the base: \"Ancient spirits of evil...\" - Mumm-Ra" },
@@ -94,13 +100,11 @@ window.addEventListener('load', (event) => {
     feet: { slot: null, x: screen.width + (offsetEquip * 9), y: offsetEquip * 9 },
   };
   const inventoryContainerSizes = {
-    x: screen.width,
-    y: 256,
-    fullArea: { width: 192, height: 384 },
-    inventory: { width: 192, height: 160 },
-    depot: { width: 192, height: 320 },
-    body: { width: 192, height: 128 }
-  };
+      location: { x: screen.width, y: 256 },
+      section: { backpackOpen: false, containerOpen: false },
+      first: { x: screen.width, y: 256 }, 
+      second: { x: screen.width, y: 416 },
+    };
   const itemData = document.querySelector('#item-info');
   const form = document.querySelector('.form-container');
   const login = document.getElementById('login-form');
@@ -387,52 +391,143 @@ window.addEventListener('load', (event) => {
     equipped.forEach(item => item.draw(ctx));
   };
 
-  const drawInventory = (backpack = 'backpack', container = null) => {
-    ctx.clearRect(inventoryContainerSizes.x, inventoryContainerSizes.y, inventoryContainerSizes.fullArea.width, inventoryContainerSizes.fullArea.height);
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(inventoryContainerSizes.x, inventoryContainerSizes.y, inventoryContainerSizes.fullArea.width, inventoryContainerSizes.fullArea.height);
-    
-    if (backpack) {
-      switch (backpack) {
-        case 'backpack':
-          
-          // ctx.drawImage(
-            
-          // )
-
-          let count = 0;
-
-          for (let row = 0 ; row < 4 ; row ++) {
-            for (let slot = 0 ; slot < 6 ; slot++) {
-              count++;
-              ctx.drawImage(
-                ui,
-                64,
-                288,
-                32,
-                32,
-                screen.width + (slot * 32),
-                288 + (row * 32),
-                32,
-                32
-              );
-              if (count === 20) break;
-            };
+  const drawInventory = (backpack = 'backpack') => {
+    const inventoryScroll = (toggle = 'up') => {
+      if (toggle === 'up') {
+        for (let row = 0 ; row < 4 ; row ++) {
+          for (let slot = 0 ; slot < 6 ; slot++) {
+            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + (slot * 32), 288 + (row * 32), 32, 32 );
           };
-          break;
-        case 'labledbackpack':
+        };
+      };
 
-          break;
-        case 'enchantedbackpack':
+      if (toggle === 'down') {
+        for (let row = 0 ; row < 2 ; row ++) {
+          for (let slot = 0 ; slot < 6 ; slot++) {
+            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + (slot * 32), 288 + (row * 32), 32, 32 );
+          };
+        };
+      };
+    };
 
-          break;
-        case 'labeledenchantedbackpack':
+    ctx.clearRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 384);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 384);
+    
+    switch (backpack) {
+      case 'backpack':
+        inventoryContainerSizes.section.backpackOpen = true;
+        ctx.drawImage(
+          itemAssets,
+          0,
+          448,
+          itemAssets.pixelSize,
+          itemAssets.pixelSize,
+          inventoryContainerSizes.first.x,
+          inventoryContainerSizes.first.y,
+          itemAssets.pixelSize * 0.5,
+          itemAssets.pixelSize * 0.5
+        )
 
-          break;
-        default:
-          break;
-      }
-    }
+        inventoryScroll(inventory);
+        break;
+      case 'labeledbackpack':
+        inventoryContainerSizes.section.backpackOpen = true;
+        ctx.drawImage(
+          itemAssets,
+          0,
+          512,
+          itemAssets.pixelSize,
+          itemAssets.pixelSize,
+          inventoryContainerSizes.first.x,
+          inventoryContainerSizes.first.y,
+          itemAssets.pixelSize * 0.5,
+          itemAssets.pixelSize * 0.5
+        )
+
+        // use form to append name
+
+        for (let row = 0 ; row < 4 ; row ++) {
+          for (let slot = 0 ; slot < 6 ; slot++) {
+            ctx.drawImage(
+              ui,
+              64,
+              288,
+              32,
+              32,
+              screen.width + (slot * 32),
+              288 + (row * 32),
+              32,
+              32
+            );
+          };
+        };
+        break;
+      case 'enchantedbackpack':
+        inventoryContainerSizes.section.backpackOpen = true;
+        ctx.drawImage(
+          itemAssets,
+          64,
+          448,
+          itemAssets.pixelSize,
+          itemAssets.pixelSize,
+          inventoryContainerSizes.first.x,
+          inventoryContainerSizes.first.y,
+          itemAssets.pixelSize * 0.5,
+          itemAssets.pixelSize * 0.5
+        )
+
+        for (let row = 0 ; row < 6 ; row ++) {
+          for (let slot = 0 ; slot < 6 ; slot++) {
+            ctx.drawImage(
+              ui,
+              64,
+              288,
+              32,
+              32,
+              screen.width + (slot * 32),
+              288 + (row * 32),
+              32,
+              32
+            );
+          };
+        };
+        break;
+      case 'labeledenchantedbackpack':
+        inventoryContainerSizes.section.backpackOpen = true;
+        ctx.drawImage(
+          itemAssets,
+          64,
+          512,
+          itemAssets.pixelSize,
+          itemAssets.pixelSize,
+          inventoryContainerSizes.first.x,
+          inventoryContainerSizes.first.y,
+          itemAssets.pixelSize * 0.5,
+          itemAssets.pixelSize * 0.5
+        )
+
+        // use form to append name
+
+        for (let row = 0 ; row < 6 ; row ++) {
+          for (let slot = 0 ; slot < 6 ; slot++) {
+            ctx.drawImage(
+              ui,
+              64,
+              288,
+              32,
+              32,
+              screen.width + (slot * 32),
+              288 + (row * 32),
+              32,
+              32
+            );
+          };
+        };
+        break;
+      default:
+        break;
+    };
   };
 
   const drawInterface = (input = 'inventorybtn') => {
@@ -460,45 +555,45 @@ window.addEventListener('load', (event) => {
 
   const drawStance = (mouseX, mouseY, stance) => {
     ctx.clearRect(screen.width, 640, 192, 64);
-    ctx.drawImage(ui, ui.toggleUIButtons.attack.sx, ui.toggleUIButtons.attack.sy, 96, 32, screen.width, 640, 192, 64);
+    ctx.drawImage(ui, ui.toggleUIButtons.attackInactive.sx, ui.toggleUIButtons.attackInactive.sy, 96, 32, screen.width, 640, 192, 64);
     switch(stance) {
       case 'attack':
         ctx.drawImage(
           ui,
-          ui.toggleUIButtons.selector.sx,
-          ui.toggleUIButtons.selector.sy,
-          ui.toggleUIButtons.selector.size,
-          ui.toggleUIButtons.selector.size,
-          ui.toggleUIButtons.attack.dx,
-          ui.toggleUIButtons.attack.dy,
-          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale,
-          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale
+          ui.toggleUIButtons.attackActive.sx,
+          ui.toggleUIButtons.attackActive.sy,
+          ui.toggleUIButtons.attackActive.size,
+          ui.toggleUIButtons.attackActive.size,
+          ui.toggleUIButtons.attackActive.dx,
+          ui.toggleUIButtons.attackActive.dy,
+          ui.toggleUIButtons.attackActive.size * ui.toggleUIButtons.attackActive.scale,
+          ui.toggleUIButtons.attackActive.size * ui.toggleUIButtons.attackActive.scale
         );
         break;
       case 'defend':
         ctx.drawImage(
           ui,
-          ui.toggleUIButtons.selector.sx,
-          ui.toggleUIButtons.selector.sy,
-          ui.toggleUIButtons.selector.size,
-          ui.toggleUIButtons.selector.size,
-          ui.toggleUIButtons.defend.dx,
-          ui.toggleUIButtons.defend.dy,
-          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale,
-          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale
+          ui.toggleUIButtons.defendActive.sx,
+          ui.toggleUIButtons.defendActive.sy,
+          ui.toggleUIButtons.defendActive.size,
+          ui.toggleUIButtons.defendActive.size,
+          ui.toggleUIButtons.defendActive.dx,
+          ui.toggleUIButtons.defendActive.dy,
+          ui.toggleUIButtons.defendActive.size * ui.toggleUIButtons.defendActive.scale,
+          ui.toggleUIButtons.defendActive.size * ui.toggleUIButtons.defendActive.scale
         );
         break;
       case 'passive':
         ctx.drawImage(
           ui,
-          ui.toggleUIButtons.selector.sx,
-          ui.toggleUIButtons.selector.sy,
-          ui.toggleUIButtons.selector.size,
-          ui.toggleUIButtons.selector.size,
-          ui.toggleUIButtons.passive.dx,
-          ui.toggleUIButtons.passive.dy,
-          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale,
-          ui.toggleUIButtons.selector.size * ui.toggleUIButtons.selector.scale
+          ui.toggleUIButtons.passiveActive.sx,
+          ui.toggleUIButtons.passiveActive.sy,
+          ui.toggleUIButtons.passiveActive.size,
+          ui.toggleUIButtons.passiveActive.size,
+          ui.toggleUIButtons.passiveActive.dx,
+          ui.toggleUIButtons.passiveActive.dy,
+          ui.toggleUIButtons.passiveActive.size * ui.toggleUIButtons.passiveActive.scale,
+          ui.toggleUIButtons.passiveActive.size * ui.toggleUIButtons.passiveActive.scale
         );
         break;
       default: break;
@@ -921,39 +1016,52 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  const isInInventoryArea = (item) => {
+  const isInInventoryArea = (backpack, mouseX, mouseY) => {
+    switch(backpack) {
+      case 'backpack':
+        
+        break;
+      case 'labeledbackpack':
+        break;
+      case 'enchantedbackpack':
+        break;
+      case 'labeledenchantedbackpack':
+        break;
+      default: break;
+    };
+
     return (
-      item.dx < screen.width + 192 &&
-      item.dx + item.pixelSize > screen.width &&
-      item.dy < screen.height &&
-      item.dy + item.pixelSize > 256
+      mouseX > screen.width &&
+      mouseX < screen.width + 192 &&
+      mouseY > 256 &&
+      mouseY < screen.height - 64
     );
   };
 
   const checkStance = (mouseX, mouseY) => {
     if (
-      mouseX >= ui.toggleUIButtons.attack.dx &&
-      mouseX <= ui.toggleUIButtons.attack.dx + ui.toggleUIButtons.attack.width * ui.toggleUIButtons.attack.scale &&
-      mouseY >= ui.toggleUIButtons.attack.dy &&
-      mouseY <= ui.toggleUIButtons.attack.dy + ui.toggleUIButtons.attack.height * ui.toggleUIButtons.attack.scale
+      mouseX >= ui.toggleUIButtons.attackInactive.dx &&
+      mouseX <= ui.toggleUIButtons.attackInactive.dx + ui.toggleUIButtons.attackInactive.size * ui.toggleUIButtons.attackInactive.scale &&
+      mouseY >= ui.toggleUIButtons.attackInactive.dy &&
+      mouseY <= ui.toggleUIButtons.attackInactive.dy + ui.toggleUIButtons.attackInactive.size * ui.toggleUIButtons.attackInactive.scale
     ) {
       return 'attack';
     };
 
     if (
-      mouseX >= ui.toggleUIButtons.defend.dx &&
-      mouseX <= ui.toggleUIButtons.defend.dx + ui.toggleUIButtons.defend.width * ui.toggleUIButtons.defend.scale &&
-      mouseY >= ui.toggleUIButtons.defend.dy &&
-      mouseY <= ui.toggleUIButtons.defend.dy + ui.toggleUIButtons.defend.height * ui.toggleUIButtons.defend.scale
+      mouseX >= ui.toggleUIButtons.defendInactive.dx &&
+      mouseX <= ui.toggleUIButtons.defendInactive.dx + ui.toggleUIButtons.defendInactive.size * ui.toggleUIButtons.defendInactive.scale &&
+      mouseY >= ui.toggleUIButtons.defendInactive.dy &&
+      mouseY <= ui.toggleUIButtons.defendInactive.dy + ui.toggleUIButtons.defendInactive.size * ui.toggleUIButtons.defendInactive.scale
     ) {
       return 'defend';
     };
 
     if (
-      mouseX >= ui.toggleUIButtons.passive.dx &&
-      mouseX <= ui.toggleUIButtons.passive.dx + ui.toggleUIButtons.passive.width * ui.toggleUIButtons.passive.scale &&
-      mouseY >= ui.toggleUIButtons.passive.dy &&
-      mouseY <= ui.toggleUIButtons.passive.dy + ui.toggleUIButtons.passive.height * ui.toggleUIButtons.passive.scale
+      mouseX >= ui.toggleUIButtons.passiveInactive.dx &&
+      mouseX <= ui.toggleUIButtons.passiveInactive.dx + ui.toggleUIButtons.passiveInactive.size * ui.toggleUIButtons.passiveInactive.scale &&
+      mouseY >= ui.toggleUIButtons.passiveInactive.dy &&
+      mouseY <= ui.toggleUIButtons.passiveInactive.dy + ui.toggleUIButtons.passiveInactive.size * ui.toggleUIButtons.passiveInactive.scale
     ) {
       return 'passive';
     };
@@ -1157,7 +1265,11 @@ window.addEventListener('load', (event) => {
           if (waterDetect(item.dx, item.dy)) {
             items.splice(items.indexOf(item), 1);
           } else if (
-            collisionDetect(item.dx, item.dy)) {
+            collisionDetect(item.dx, item.dy)
+
+            // --- check if item is outside of visible area
+
+          ) {
             item.dx = originalItemPosition.x;
             item.dy = originalItemPosition.y;
           };
@@ -1424,15 +1536,15 @@ window.addEventListener('load', (event) => {
       512,
       448  
     );
-    // // item 8
-    // initItem(
+    // item 8
+    // inventory.push(initItem(
     //   items.length + 1,
-    //   'consumable',
-    //   'health', 
-    //   512, 
-    //   384,
+    //   'neck',
+    //   'silver', 
     //   512,
-    //   448
-    // );
+    //   128, 
+    //   448,
+    //   256
+    // ));
   }, 500);
 });

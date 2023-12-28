@@ -7,19 +7,21 @@
   },
   "back":{
     "backpack":{
-      "slots":18,
+      "slots":24,
       "capacity":0.5
     },
     "labledbackpack":{
-      "slots":18,
+      "name": null,
+      "slots":24,
       "capacity":0.5
     },
     "enchantedbackpack":{
-      "slots":50,
+      "slots":36,
       "capacity":0.5
     },
     "labeledenchantedbackpack":{
-      "slots":50,
+      "name": null,
+      "slots":36,
       "capacity":0.5
     }
   },

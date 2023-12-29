@@ -22,8 +22,8 @@ window.addEventListener('load', (event) => {
 
   const ui = new Image();
   ui.src = './backend/assets/interface/genus-interface-assets.png';
-  ui.size = 64;
-  ui.scale = 0.5;
+  ui.pixelSize = 32;
+  ui.scale = 2;
   ui.toggleUIButtons = {
     mapbtn: { sx: 96, sy: 320, dx: screen.width + 16, dy: 208, width: 32, height: 32 },
     inventorybtn: { sx: 128, sy: 320, dx: screen.width + 80, dy: 208, width: 32, height: 32 },
@@ -35,10 +35,6 @@ window.addEventListener('load', (event) => {
     defendActive: { sx: 128, sy: 384, dx: screen.width + 64, dy: 640, size: 32, scale: 2 },
     passiveActive: { sx: 160, sy: 384, dx: screen.width + 128, dy: 640, size: 32, scale: 2 }
   };
-
-  const itemAssets = new Image();
-  itemAssets.src = './backend/assets/item_data/genus-items-64.png';
-  itemAssets.pixelSize = 64;
 
   const mapModal = new Image();
   mapModal.src = './backend/assets/map_data/genus_01.png';
@@ -166,6 +162,7 @@ window.addEventListener('load', (event) => {
       appendPlayerData({ player });
       canvas.style.background = '#464646';
       document.querySelector('.game-container').style.boxShadow = '0 0 10px black';
+      loadEquippedItems();
       genus.loaded && drawGenus({ player });
       drawInterface();
     }, 500);
@@ -391,20 +388,32 @@ window.addEventListener('load', (event) => {
     equipped.forEach(item => item.draw(ctx));
   };
 
-  const drawInventory = (backpack = 'backpack') => {
-    const inventoryScroll = (toggle = 'up') => {
+  const drawInventory = (backpack = 'empty') => {
+    const inventoryScroll = (inventory, toggle = 'up', first = 24, second = 12) => {
       if (toggle === 'up') {
-        for (let row = 0 ; row < 4 ; row ++) {
-          for (let slot = 0 ; slot < 6 ; slot++) {
-            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + (slot * 32), 288 + (row * 32), 32, 32 );
+        for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
+          const x = i % 6 * 32;
+          const y = Math.floor(i / 6) * 32;
+          if (i < first) {
+            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
+          };
+          if (inventory[i]) {
+            const item = inventory[i];
+            ctx.drawImage( item, item.sx, item.sy, item.pixelSize, item.pixelSize, x, y, item.pixelSize * 0.5, item.pixelSize * 0.5 );
           };
         };
       };
 
       if (toggle === 'down') {
-        for (let row = 0 ; row < 2 ; row ++) {
-          for (let slot = 0 ; slot < 6 ; slot++) {
-            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + (slot * 32), 288 + (row * 32), 32, 32 );
+        for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
+          const x = i % 6 * 32;
+          const y = Math.floor(i / 6) * 32;
+          if (i < second) {
+            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
+          };
+          if (inventory[i + first - 1]) {
+            const item = inventory[i + first - 1];
+            ctx.drawImage( item, item.sx, item.sy, item.pixelSize, item.pixelSize, x, y, item.pixelSize * 0.5, item.pixelSize * 0.5 );
           };
         };
       };
@@ -418,114 +427,69 @@ window.addEventListener('load', (event) => {
       case 'backpack':
         inventoryContainerSizes.section.backpackOpen = true;
         ctx.drawImage(
-          itemAssets,
+          ui,
           0,
-          448,
-          itemAssets.pixelSize,
-          itemAssets.pixelSize,
+          256,
+          ui.pixelSize,
+          ui.pixelSize,
           inventoryContainerSizes.first.x,
           inventoryContainerSizes.first.y,
-          itemAssets.pixelSize * 0.5,
-          itemAssets.pixelSize * 0.5
-        )
+          ui.pixelSize,
+          ui.pixelSize
+        );
 
         inventoryScroll(inventory);
         break;
       case 'labeledbackpack':
         inventoryContainerSizes.section.backpackOpen = true;
         ctx.drawImage(
-          itemAssets,
+          ui,
           0,
-          512,
-          itemAssets.pixelSize,
-          itemAssets.pixelSize,
+          288,
+          ui.pixelSize,
+          ui.pixelSize,
           inventoryContainerSizes.first.x,
           inventoryContainerSizes.first.y,
-          itemAssets.pixelSize * 0.5,
-          itemAssets.pixelSize * 0.5
-        )
+          ui.pixelSize,
+          ui.pixelSize
+        );
 
-        // use form to append name
-
-        for (let row = 0 ; row < 4 ; row ++) {
-          for (let slot = 0 ; slot < 6 ; slot++) {
-            ctx.drawImage(
-              ui,
-              64,
-              288,
-              32,
-              32,
-              screen.width + (slot * 32),
-              288 + (row * 32),
-              32,
-              32
-            );
-          };
-        };
+        inventoryScroll(inventory);
         break;
       case 'enchantedbackpack':
         inventoryContainerSizes.section.backpackOpen = true;
         ctx.drawImage(
-          itemAssets,
-          64,
-          448,
-          itemAssets.pixelSize,
-          itemAssets.pixelSize,
+          ui,
+          32,
+          256,
+          ui.pixelSize,
+          ui.pixelSize,
           inventoryContainerSizes.first.x,
           inventoryContainerSizes.first.y,
-          itemAssets.pixelSize * 0.5,
-          itemAssets.pixelSize * 0.5
-        )
+          ui.pixelSize,
+          ui.pixelSize
+        );
 
-        for (let row = 0 ; row < 6 ; row ++) {
-          for (let slot = 0 ; slot < 6 ; slot++) {
-            ctx.drawImage(
-              ui,
-              64,
-              288,
-              32,
-              32,
-              screen.width + (slot * 32),
-              288 + (row * 32),
-              32,
-              32
-            );
-          };
-        };
+        inventoryScroll(inventory);
         break;
       case 'labeledenchantedbackpack':
         inventoryContainerSizes.section.backpackOpen = true;
         ctx.drawImage(
-          itemAssets,
-          64,
-          512,
-          itemAssets.pixelSize,
-          itemAssets.pixelSize,
+          ui,
+          32,
+          288,
+          ui.pixelSize,
+          ui.pixelSize,
           inventoryContainerSizes.first.x,
           inventoryContainerSizes.first.y,
-          itemAssets.pixelSize * 0.5,
-          itemAssets.pixelSize * 0.5
-        )
+          ui.pixelSize,
+          ui.pixelSize
+        );
 
-        // use form to append name
-
-        for (let row = 0 ; row < 6 ; row ++) {
-          for (let slot = 0 ; slot < 6 ; slot++) {
-            ctx.drawImage(
-              ui,
-              64,
-              288,
-              32,
-              32,
-              screen.width + (slot * 32),
-              288 + (row * 32),
-              32,
-              32
-            );
-          };
-        };
+        inventoryScroll(inventory);
         break;
-      default:
+      case 'empty':
+        inventoryContainerSizes.section.backpackOpen = false;
         break;
     };
   };
@@ -535,18 +499,16 @@ window.addEventListener('load', (event) => {
     drawGenus({ player });
     switch(input) {
       case 'mapbtn':
-        // mapbtn functions
         drawInterfaceToggleMenu(input);
         drawMapContentSection();
         break;
       case 'inventorybtn':
         drawEquip();
         drawInterfaceToggleMenu(input);
-        drawInventory();
+        drawInventory(player.data.performance.equipped.back.name);
         drawStance(0, 0, stance);
       break;
       case 'listbtn':
-        // list functions
         drawInterfaceToggleMenu(input);
         break;
       default: break;
@@ -767,6 +729,28 @@ window.addEventListener('load', (event) => {
     return false;
   };
 
+  const loadEquippedItems = () => {
+    if (player.data.performance.equipped.back) {
+      const item = player.data.performance.equipped.back;
+      initItem(
+        item.id,
+        item.type,
+        item.name,
+        item.sx,
+        item.sy,
+        player.destination.dx + 16,
+        player.destination.dy + 16
+      )
+      const newItem = items.find(piece => piece.id === item.id);
+      newItem.scale = 0.5;
+      newItem.dx = equip.back.x;
+      newItem.dy = equip.back.y;
+      equip.back.slot = newItem;
+      equipped.push(newItem);
+      items.splice(items.indexOf(newItem), 1);
+    };
+  };
+
   const isInEquipArea = (item) => {
     return (
       item.dx < screen.width + 192 &&
@@ -787,8 +771,8 @@ window.addEventListener('load', (event) => {
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
+              // player.data.performance.equipped.neck = 'empty';
               items.push(prev);
-              // player.performance.equipped.neck = 'empty';
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
@@ -798,8 +782,8 @@ window.addEventListener('load', (event) => {
             item.dx = equip.neck.x;
             item.dy = equip.neck.y;
             item.scale = 0.5;
+            // player.data.performance.equipped.neck = item;
             equipped.push(item);
-            // player.performance.equipped.neck = item;
             items.splice(items.indexOf(item), 1);
           };
 
@@ -814,6 +798,7 @@ window.addEventListener('load', (event) => {
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
+              // player.data.performance.equipped.head = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
@@ -824,6 +809,7 @@ window.addEventListener('load', (event) => {
             item.dx = equip.head.x;
             item.dy = equip.head.y;
             item.scale = 0.5;
+            // player.data.performance.equipped.head = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
@@ -839,22 +825,24 @@ window.addEventListener('load', (event) => {
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
+              player.data.performance.equipped.back = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
-
+          
           if (equip.back.slot === null) {
             equip.back.slot = item;
             item.dx = equip.back.x;
             item.dy = equip.back.y;
             item.scale = 0.5;
+            player.data.performance.equipped.back = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
-
           drawGenus({ player });
           drawEquip();
+          drawInventory(player.data.performance.equipped.back.name);
           break;
         case 'chest':
           if (equip.chest.slot) {
@@ -864,6 +852,7 @@ window.addEventListener('load', (event) => {
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
+              // player.data.performance.equipped.chest = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
@@ -874,6 +863,7 @@ window.addEventListener('load', (event) => {
             item.dx = equip.chest.x;
             item.dy = equip.chest.y;
             item.scale = 0.5;
+            // player.data.performance.equipped.chest = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
@@ -889,6 +879,7 @@ window.addEventListener('load', (event) => {
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
+              // player.data.performance.equipped.offhand = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
@@ -899,6 +890,7 @@ window.addEventListener('load', (event) => {
             item.dx = equip.offhand.x;
             item.dy = equip.offhand.y;
             item.scale = 0.5;
+            // player.data.performance.equipped.offhand = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
@@ -914,6 +906,7 @@ window.addEventListener('load', (event) => {
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
+              // player.data.performance.equipped.mainhand = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
@@ -924,6 +917,7 @@ window.addEventListener('load', (event) => {
             item.dx = equip.mainhand.x;
             item.dy = equip.mainhand.y;
             item.scale = 0.5;
+            // player.data.performance.equipped.mainhand = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
@@ -939,6 +933,7 @@ window.addEventListener('load', (event) => {
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
+              // player.data.performance.equipped.legs = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
@@ -949,6 +944,7 @@ window.addEventListener('load', (event) => {
             item.dx = equip.legs.x;
             item.dy = equip.legs.y;
             item.scale = 0.5;
+            // player.data.performance.equipped.legs = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
@@ -964,6 +960,7 @@ window.addEventListener('load', (event) => {
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
+              // player.data.performance.equipped.feet = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
@@ -974,6 +971,7 @@ window.addEventListener('load', (event) => {
             item.dx = equip.feet.x;
             item.dy = equip.feet.y;
             item.scale = 0.5;
+            // player.data.performance.equipped.feet = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
@@ -1016,20 +1014,7 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  const isInInventoryArea = (backpack, mouseX, mouseY) => {
-    switch(backpack) {
-      case 'backpack':
-        
-        break;
-      case 'labeledbackpack':
-        break;
-      case 'enchantedbackpack':
-        break;
-      case 'labeledenchantedbackpack':
-        break;
-      default: break;
-    };
-
+  const isInInventoryArea = (mouseX, mouseY) => {
     return (
       mouseX > screen.width &&
       mouseX < screen.width + 192 &&
@@ -1275,7 +1260,9 @@ window.addEventListener('load', (event) => {
           };
 
           item.isDragging = false;
-          if (currentInterface === 'inventorybtn') handleEquipping(item);
+          if (currentInterface === 'inventorybtn') {
+            handleEquipping(item);
+          };
           drawGenus({ player });
         };
       });
@@ -1308,8 +1295,11 @@ window.addEventListener('load', (event) => {
               items.push(item);
               resetEquipSlot(item);
               equipped.splice(equipped.indexOf(item), 1);
+              // switch case for items
+              player.data.performance.equipped.back = 'empty';
               drawGenus({ player });
               drawEquip();
+              drawInventory();
             };
           };
         });

@@ -40,7 +40,21 @@
         "equipped": {
           "neck": "empty",
           "head": "empty",
-          "back": "empty",
+          "back": {
+            "image": {},
+            "id": 8,
+            "type": "back",
+            "name": "backpack",
+            "sx": 0,
+            "sy": 448,
+            "dx": 976,
+            "dy": 16,
+            "pixelSize": 64,
+            "scale": 0.5,
+            "isDragging": false,
+            "slots": 24,
+            "capacity": 0.5
+          },
           "hands": "empty",
           "chest": "empty",
           "shield": "empty",

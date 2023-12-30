@@ -5,7 +5,7 @@ export class Player {
     this.source = source;
     this.destination = destination;
     this.direction = { sx: 0, sy: 0 };
-    this.pixelSize = 64;
+    this.size = 64;
     this.offset = 16;
     this.speed = 500;
     this.cooldown = false;
@@ -16,12 +16,12 @@ export class Player {
       this.image,
       this.direction.sx,
       this.direction.sy,
-      this.pixelSize,
-      this.pixelSize,
+      this.size,
+      this.size,
       this.destination.dx,
       this.destination.dy,
-      this.pixelSize,
-      this.pixelSize
+      this.size,
+      this.size
     );
   };
 };
@@ -30,12 +30,12 @@ export class Tile {
   constructor({ source, destination }) {
     this.source = source;
     this.destination = destination;
-    this.pixelSize = 64;
+    this.size = 64;
   };
 };
 
 export class Item {
-  constructor(id, type, name, sx, sy, dx, dy) {
+  constructor(id, type, name, sx, sy, dx, dy, scale) {
     this.image = new Image();
     this.image.src = './backend/assets/item_data/genus-items-64.png';
     this.id = id;
@@ -45,8 +45,8 @@ export class Item {
     this.sy = sy;
     this.dx = dx;
     this.dy = dy;
-    this.pixelSize = 64;
-    this.scale = 1;
+    this.scale = scale;
+    this.size = 64;
     this.isDragging = false;
   }
 
@@ -55,12 +55,12 @@ export class Item {
       this.image,
       this.sx,
       this.sy,
-      this.pixelSize,
-      this.pixelSize,
+      this.size,
+      this.size,
       this.dx,
       this.dy,
-      this.pixelSize * this.scale,
-      this.pixelSize * this.scale
+      this.size * this.scale,
+      this.size * this.scale
     );
   };
 };

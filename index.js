@@ -190,7 +190,8 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  // Draw Functions
+  // ---------------------------------------------------------------------
+  // Handle Map Creation | Collision Tiles | Water Tiles | Uppermost Tiles
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     const visibleMapSection = [], uppermost = [];
     boundaries = [];
@@ -210,7 +211,7 @@ window.addEventListener('load', (event) => {
       };
       visibleMapSection.push(tiles);
     }); // Create visibleMapSection of player location
-  
+
     visibleMapSection.forEach(layer => {
       layer.forEach((tileID, i) => {
         if (tileID > 0) {
@@ -233,12 +234,12 @@ window.addEventListener('load', (event) => {
           if (waterTiles.includes(tileID)) {
             const water = new Tile({
               source: {
-                wsx: sx,
-                wsy: sy
+                sx: sx,
+                sy: sy
               },
               destination: {
-                wdx: dx,
-                wdy: dy
+                dx: dx,
+                dy: dy
               },
               size: 64
             });
@@ -248,7 +249,7 @@ window.addEventListener('load', (event) => {
           // Check for collision tiles
           if (tileID === 25) { 
             const boundary = new Tile({
-              destination: { bdx: dx, bdy: dy }
+              destination: { dx: dx, dy: dy }
             });
             boundaries.push(boundary);
           } else {
@@ -279,27 +280,39 @@ window.addEventListener('load', (event) => {
     });
   };
 
-  const drawRightSideUI = () => {
-    ctx.clearRect(screen.width, 0, 192, 704);
-    drawGenus({ player });
-    switch(currentMenu) {
-      case 'mapbtn':
-        drawMenuSection(currentMenu);
-        // drawInterfaceToggleMenu(string);
-        break;
-      case 'inventorybtn':
-        drawMenuSection(currentMenu);
-        drawEquipmentSection(equipped);
-        drawInventorySection(player.data.performance.equipped.back.name);
-        // drawStancestring(0, 0, stance);
-      break;
-      case 'listbtn':
-        drawMenuSection(currentMenu);
-        break;
-      default: break;
+  const collisionDetect = (newX, newY) => {
+    for (let i = 0 ; i < boundaries.length ; i++) {
+      const boundary = boundaries[i];
+
+      if (
+        newX < boundary.destination.dx + boundary.size &&
+        newX + player.size > boundary.destination.dx &&
+        newY < boundary.destination.dy + boundary.size &&
+        newY + player.size > boundary.destination.dy
+      ) {
+        return true;
+      };
     };
+    return false;
   };
-  
+
+  const waterDetect = (newX, newY) => {
+    for (let i = 0 ; i < wateries.length ; i++) {
+      const water = wateries[i];
+
+      if (
+        newX < water.destination.dx + water.size &&
+        newX + player.size > water.destination.dx &&
+        newY < water.destination.dy + water.size &&
+        newY + player.size > water.destination.dy
+      ) {
+        return true;
+      };
+    };
+    return false;
+  };
+
+  // Handle Right Side UI
   const drawMenuSection = (string) => {
     let current;
     switch(string) {
@@ -330,11 +343,63 @@ window.addEventListener('load', (event) => {
     };
   };
 
+  const drawRightSideUI = () => {
+    ctx.clearRect(screen.width, 0, 192, 704);
+    drawGenus({ player });
+    switch(currentMenu) {
+      case 'mapbtn':
+        drawMenuSection(currentMenu);
+        // drawInterfaceToggleMenu(string);
+        break;
+      case 'inventorybtn':
+        drawMenuSection(currentMenu);
+        drawEquipmentSection(equipped);
+        drawInventorySection(player.data.performance.equipped.back.name);
+        // drawStanceSection(0, 0, stance);
+      break;
+      case 'listbtn':
+        drawMenuSection(currentMenu);
+        drawStanceSection(0, 0, stance);
+        break;
+      default: break;
+    };
+  };
+
+  const checkToggle = (mouseX, mouseY) => {
+    if (
+      mouseX >= ui.buttons.menu.mapbtn.dx &&
+      mouseX <= ui.buttons.menu.mapbtn.dx + ui.buttons.menu.mapbtn.size &&
+      mouseY >= ui.buttons.menu.mapbtn.dy &&
+      mouseY <= ui.buttons.menu.mapbtn.dy + ui.buttons.menu.mapbtn.size
+    ) {
+      return 'mapbtn';
+    };
+
+    if (
+      mouseX >= ui.buttons.menu.inventorybtn.dx &&
+      mouseX <= ui.buttons.menu.inventorybtn.dx + ui.buttons.menu.inventorybtn.size &&
+      mouseY >= ui.buttons.menu.inventorybtn.dy &&
+      mouseY <= ui.buttons.menu.inventorybtn.dy + ui.buttons.menu.inventorybtn.size
+    ) {
+      return 'inventorybtn';
+    };
+
+    if (
+      mouseX >= ui.buttons.menu.listbtn.dx &&
+      mouseX <= ui.buttons.menu.listbtn.dx + ui.buttons.menu.listbtn.size &&
+      mouseY >= ui.buttons.menu.listbtn.dy &&
+      mouseY <= ui.buttons.menu.listbtn.dy + ui.buttons.menu.listbtn.size
+      ) {
+      return 'listbtn';
+    };
+  };
+  
+  // Right Side - Map Section
   const drawMapContentSection = () => {
     if (currentMenu === 'mapbtn') {
       ctx.clearRect(screen.width, 0, 192, 192);
       ctx.clearRect(screen.width, 256, 192, 448);
-      ctx.drawImage( mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40 );
+      ctx.drawImage(mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40);
       ctx.font = '1.5rem Arial';
       ctx.fillText('Genus Island', screen.width + 20, 50);
       ctx.font = '1rem Arial';
@@ -368,8 +433,8 @@ window.addEventListener('load', (event) => {
           if(keyCount === 20) break;
         }; 
       } else if (btnToggle) {
-        ctx.drawImage( ui, ui.toggle.inactiveUp.sx, ui.toggle.inactiveUp.sy, ui.toggle.inactiveUp.size, ui.toggle.inactiveUp.size, ui.toggle.inactiveUp.dx, ui.toggle.inactiveUp.dy, ui.toggle.inactiveUp.size, ui.toggle.inactiveUp.size );
-        ctx.drawImage( ui, ui.toggle.activeDown.sx, ui.toggle.activeDown.sy, ui.toggle.activeDown.size, ui.toggle.activeDown.size, ui.toggle.activeDown.dx, ui.toggle.activeDown.dy, ui.toggle.activeDown.size, ui.toggle.activeDown.size );
+        ctx.drawImage( ui, ui.buttons.mapSectionScroll.inactiveUp.sx, ui.buttons.mapSectionScroll.inactiveUp.sy, ui.buttons.mapSectionScroll.inactiveUp.size, ui.buttons.mapSectionScroll.inactiveUp.size, ui.buttons.mapSectionScroll.inactiveUp.dx, ui.buttons.mapSectionScroll.inactiveUp.dy, ui.buttons.mapSectionScroll.inactiveUp.size, ui.buttons.mapSectionScroll.inactiveUp.size );
+        ctx.drawImage( ui, ui.buttons.mapSectionScroll.activeDown.sx, ui.buttons.mapSectionScroll.activeDown.sy, ui.buttons.mapSectionScroll.activeDown.size, ui.buttons.mapSectionScroll.activeDown.size, ui.buttons.mapSectionScroll.activeDown.dx, ui.buttons.mapSectionScroll.activeDown.dy, ui.buttons.mapSectionScroll.activeDown.size, ui.buttons.mapSectionScroll.activeDown.size );
         let keyCount = 0, yAxis = 0;
   
         ctx.font = '0.8rem Arial';
@@ -387,7 +452,7 @@ window.addEventListener('load', (event) => {
   
           if (keyCount > 20) {
             const mapX = screen.width + 25, mapY = 310 + (20 * yAxis);
-            ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
+            ctx.fillText(mapContentsGenus[key].area, mapX, mapY);
   
             mapContentsGenus[key].x = mapX;
             mapContentsGenus[key].y = mapY - 12;
@@ -402,248 +467,11 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  const drawEquipmentSection = (array) => {
-    ctx.clearRect(screen.width, 0, 192, 192);
-    ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
-    array.forEach(item => item.draw(ctx));
-  };
-
-  const drawInventorySection = (backpack = 'empty') => {
-    const inventoryScroll = (inventory, toggle = 'up', first = 24, second = 12) => {
-      if (toggle === 'up') {
-        for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
-          const x = i % 6 * 32;
-          const y = Math.floor(i / 6) * 32;
-          if (i < first) {
-            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
-          };
-          if (inventory[i]) {
-            const item = inventory[i];
-            ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
-          };
-        };
-      };
-
-      if (toggle === 'down') {
-        for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
-          const x = i % 6 * 32;
-          const y = Math.floor(i / 6) * 32;
-          if (i < second) {
-            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
-          };
-          if (inventory[i + first - 1]) {
-            const item = inventory[i + first - 1];
-            ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
-          };
-        };
-      };
-    };
-
-    ctx.clearRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 384);
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 384);
-    
-    switch (backpack) {
-      case 'backpack':
-        inventoryContainerSizes.open.backpack = true;
-        ctx.drawImage(
-          ui,
-          0,
-          256,
-          ui.size,
-          ui.size,
-          inventoryContainerSizes.inventorySection.x,
-          inventoryContainerSizes.inventorySection.y,
-          ui.size,
-          ui.size
-        );
-
-        inventoryScroll(inventory);
-        break;
-      case 'labeledbackpack':
-        inventoryContainerSizes.open.backpack = true;
-        ctx.drawImage(
-          ui,
-          0,
-          288,
-          ui.size,
-          ui.size,
-          inventoryContainerSizes.inventorySection.x,
-          inventoryContainerSizes.inventorySection.y,
-          ui.size,
-          ui.size
-        );
-
-        inventoryScroll(inventory);
-        break;
-      case 'enchantedbackpack':
-        inventoryContainerSizes.open.backpack = true;
-        ctx.drawImage(
-          ui,
-          32,
-          256,
-          ui.size,
-          ui.size,
-          inventoryContainerSizes.inventorySection.x,
-          inventoryContainerSizes.inventorySection.y,
-          ui.size,
-          ui.size
-        );
-
-        inventoryScroll(inventory);
-        break;
-      case 'labeledenchantedbackpack':
-        inventoryContainerSizes.open.backpack = true;
-        ctx.drawImage(
-          ui,
-          32,
-          288,
-          ui.size,
-          ui.size,
-          inventoryContainerSizes.inventorySection.x,
-          inventoryContainerSizes.inventorySection.y,
-          ui.size,
-          ui.size
-        );
-
-        inventoryScroll(inventory);
-        break;
-      case 'empty':
-        inventoryContainerSizes.open.backpack = false;
-        break;
-    };
-  };
-
-  const drawStance = (mouseX, mouseY, stance) => {
-    ctx.clearRect(screen.width, 640, 192, 64);
-    ctx.drawImage(ui, ui.toggle.attackInactive.sx, ui.toggle.attackInactive.sy, 96, 32, screen.width, 640, 192, 64);
-    switch(stance) {
-      case 'attack':
-        ctx.drawImage(
-          ui,
-          ui.toggle.attackActive.sx,
-          ui.toggle.attackActive.sy,
-          ui.toggle.attackActive.size,
-          ui.toggle.attackActive.size,
-          ui.toggle.attackActive.dx,
-          ui.toggle.attackActive.dy,
-          ui.toggle.attackActive.size * ui.toggle.attackActive.scale,
-          ui.toggle.attackActive.size * ui.toggle.attackActive.scale
-        );
-        break;
-      case 'defend':
-        ctx.drawImage(
-          ui,
-          ui.toggle.defendActive.sx,
-          ui.toggle.defendActive.sy,
-          ui.toggle.defendActive.size,
-          ui.toggle.defendActive.size,
-          ui.toggle.defendActive.dx,
-          ui.toggle.defendActive.dy,
-          ui.toggle.defendActive.size * ui.toggle.defendActive.scale,
-          ui.toggle.defendActive.size * ui.toggle.defendActive.scale
-        );
-        break;
-      case 'passive':
-        ctx.drawImage(
-          ui,
-          ui.toggle.passiveActive.sx,
-          ui.toggle.passiveActive.sy,
-          ui.toggle.passiveActive.size,
-          ui.toggle.passiveActive.size,
-          ui.toggle.passiveActive.dx,
-          ui.toggle.passiveActive.dy,
-          ui.toggle.passiveActive.size * ui.toggle.passiveActive.scale,
-          ui.toggle.passiveActive.size * ui.toggle.passiveActive.scale
-        );
-        break;
-      default: break;
-    };
-  };
-
-  // Utility Functions
-  const initItem = (id, type, name, sx, sy, dx, dy, scale = 1) => {
-    const rpgItem = new Item(id, type, name, sx, sy, dx, dy, scale);
-    
-    for (const category in resources.itemData) {
-      if (category === type) {
-        for (const item in resources.itemData[category]) {
-          if (item === name) {
-            for (const property in resources.itemData[category][item]) {
-              rpgItem[property] = resources.itemData[category][item][property];
-            };
-          };
-        };
-      };
-    };
-    console.log(`${rpgItem.name} created - `, rpgItem);
-
-    if (
-      rpgItem.dx > screen.width && 
-      rpgItem.dx + rpgItem.size < canvas.width && 
-      rpgItem.dy > 0 && 
-      rpgItem.dy + rpgItem.size < 192
-    ) {
-      equipped.push(rpgItem);
-    } else {
-      items.push(rpgItem);
-    };
-  };
-
-  const isInPlayerRange = (objX, objY) => {
-    return (
-      objX >= screen.width / 2 - 96 &&
-      objX < screen.width / 2 + 96 &&
-      objY >= screen.height / 2 - 96 &&
-      objY < screen.height / 2 + 96
-    );
-  };
-  
-  const isMouseOverItem = (mouseX, mouseY, item) => {
-    return (
-      mouseX >= item.dx &&
-      mouseX <= item.dx + item.size * item.scale &&
-      mouseY >= item.dy &&
-      mouseY <= item.dy + item.size * item.scale
-    );
-  };
-
-  const findItemUnderMouse = (mouseX, mouseY, array) => {
-    canvas.style.cursor = 'grab';
-    for (let i = array.length - 1 ; i >= 0 ; i--) {
-      const currentItem = array[i];
-      if (isMouseOverItem(mouseX, mouseY, currentItem)) {
-        return currentItem;
-      };
-    };
-    return null;
-  };
-
-  const isMouseOverMapScrollButton = (mouseX, mouseY, btn) => {
-    if (currentMenu === 'mapbtn') {
-      return (
-        mouseX >= btn.dx &&
-        mouseX <= btn.dx + btn.size &&
-        mouseY >= btn.dy &&
-        mouseY <= btn.dy + btn.size
-      );
-    };
-  };
-
-  const isMouseOverContent = (mouseX, mouseY, content) => {
-    return (
-      mouseX >= content.x &&
-      mouseX <= content.x + content.size &&
-      mouseY >= content.y &&
-      mouseY <= content.y + content.size
-    );
-  };
-
   const findContentUnderMouse = (mouseX, mouseY) => {
-    for (let content in mapContentsGenus) {
-      const currentContent = mapContentsGenus[content];
-      if (isMouseOverContent(mouseX, mouseY, currentContent)) {
-        return currentContent;
+    for (const key in mapContentsGenus) {
+      const content = mapContentsGenus[key];
+      if (isMouseOverContent(mouseX, mouseY, content)) {
+        return content;
       };
     };
     return null;
@@ -677,90 +505,16 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  const checkToggle = (mouseX, mouseY) => {
-    if (
-      mouseX >= ui.buttons.menu.mapbtn.dx &&
-      mouseX <= ui.buttons.menu.mapbtn.dx + ui.buttons.menu.mapbtn.size &&
-      mouseY >= ui.buttons.menu.mapbtn.dy &&
-      mouseY <= ui.buttons.menu.mapbtn.dy + ui.buttons.menu.mapbtn.size
-    ) {
-      return 'mapbtn';
-    };
-
-    if (
-      mouseX >= ui.buttons.menu.inventorybtn.dx &&
-      mouseX <= ui.buttons.menu.inventorybtn.dx + ui.buttons.menu.inventorybtn.size &&
-      mouseY >= ui.buttons.menu.inventorybtn.dy &&
-      mouseY <= ui.buttons.menu.inventorybtn.dy + ui.buttons.menu.inventorybtn.size
-    ) {
-      return 'inventorybtn';
-    };
-
-    if (
-      mouseX >= ui.buttons.menu.listbtn.dx &&
-      mouseX <= ui.buttons.menu.listbtn.dx + ui.buttons.menu.listbtn.size &&
-      mouseY >= ui.buttons.menu.listbtn.dy &&
-      mouseY <= ui.buttons.menu.listbtn.dy + ui.buttons.menu.listbtn.size
-    ) {
-      return 'listbtn';
-    };
+  // Right Side - Inventory Section
+  const drawEquipmentSection = (array) => {
+    if (currentMenu === 'inventorybtn') {
+      ctx.clearRect(screen.width, 0, 192, 192);
+      ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
+      array.forEach(item => item.draw(ctx));
+    }
   };
 
-  const collisionDetect = (newX, newY) => {
-    for (let i = 0 ; i < boundaries.length ; i++) {
-      const boundary = boundaries[i];
-
-      if (
-        newX < boundary.destination.bdx + boundary.size &&
-        newX + player.size > boundary.destination.bdx &&
-        newY < boundary.destination.bdy + boundary.size &&
-        newY + player.size > boundary.destination.bdy
-      ) {
-        return true;
-      };
-    };
-    return false;
-  };
-
-  const waterDetect = (newX, newY) => {
-    for (let i = 0 ; i < wateries.length ; i++) {
-      const water = wateries[i];
-
-      if (
-        newX < water.destination.wdx + water.size &&
-        newX + player.size > water.destination.wdx &&
-        newY < water.destination.wdy + water.size &&
-        newY + player.size > water.destination.wdy
-      ) {
-        return true;
-      };
-    };
-    return false;
-  };
-
-  const loadEquippedItems = () => {
-    if (player.data.performance.equipped.back) {
-      const item = player.data.performance.equipped.back;
-      initItem(
-        item.id,
-        item.type,
-        item.name,
-        item.sx,
-        item.sy,
-        player.destination.dx + 16,
-        player.destination.dy + 16
-      )
-      const newItem = items.find(piece => piece.id === item.id);
-      newItem.scale = 0.5;
-      newItem.dx = equip.back.x;
-      newItem.dy = equip.back.y;
-      equip.back.slot = newItem;
-      equipped.push(newItem);
-      items.splice(items.indexOf(newItem), 1);
-    };
-  };
-
-  const isInEquipArea = (item) => {
+  const isInEquipmentSection = (item) => {
     return (
       item.dx < screen.width + 192 &&
       item.dx + item.size > screen.width &&
@@ -770,28 +524,28 @@ window.addEventListener('load', (event) => {
   };
 
   const handleEquipping = (item) => {
-    if (isInEquipArea(item)) {
+    if (isInEquipmentSection(item)) {
       switch(item.type) {
         case 'neck':
-          if (equip.neck.slot) {
+          if (player.data.performance.equipped.neck) {
             const prev = equip.neck.slot;
             if (prev.id !== item.id) {
               equip.neck.slot = null;
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
-              // player.data.performance.equipped.neck = 'empty';
+              player.data.performance.equipped.neck = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
 
-          if (equip.neck.slot === null) {
+          if (player.data.performance.equipped.neck = 'empty') {
             equip.neck.slot = item;
             item.dx = equip.neck.x;
             item.dy = equip.neck.y;
             item.scale = 0.5;
-            // player.data.performance.equipped.neck = item;
+            player.data.performance.equipped.neck = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
@@ -995,30 +749,138 @@ window.addEventListener('load', (event) => {
   const resetEquipSlot = (item) => {
     switch(item.type) {
       case 'neck':
-        equip.neck.slot = null;
+        player.data.performance.equipped.neck = 'empty';
         break;
       case 'head':
-        equip.head.slot = null;
+        player.data.performance.equipped.head = 'empty';
         break;
       case 'back':
-        equip.back.slot = null;
+        player.data.performance.equipped.back = 'empty';
         break;
       case 'chest':
-        equip.chest.slot = null;
+        player.data.performance.equipped.chest = 'empty';
         break;
       case 'offhand':
-        equip.offhand.slot = null;
+        player.data.performance.equipped.offhand = 'empty';
         break;
       case 'mainhand':
-        equip.mainhand.slot = null;  
+        player.data.performance.equipped.mainhand = 'empty';
         break;
       case 'legs':
-        equip.legs.slot = null;
+        player.data.performance.equipped.legs = 'empty';
         break;
       case 'feet':
-        equip.feet.slot = null;
+        player.data.performance.equipped.feet = 'empty';
         break;
       default: break;
+    };
+  };
+
+  const drawInventorySection = (backpack = 'empty') => {
+    if (currentMenu === 'inventorybtn') {
+      const inventoryScroll = (inventory, toggle = 'up', first = 24, second = 12) => {
+        if (toggle === 'up') {
+          for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
+            const x = i % 6 * 32;
+            const y = Math.floor(i / 6) * 32;
+            if (i < first) {
+              ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
+            };
+            if (inventory[i]) {
+              const item = inventory[i];
+              ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
+            };
+          };
+        };
+
+        if (toggle === 'down') {
+          for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
+            const x = i % 6 * 32;
+            const y = Math.floor(i / 6) * 32;
+            if (i < second) {
+              ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
+            };
+            if (inventory[i + first - 1]) {
+              const item = inventory[i + first - 1];
+              ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
+            };
+          };
+        };
+      };
+
+      ctx.clearRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 448);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 448);
+      
+      switch (backpack) {
+        case 'backpack':
+          inventoryContainerSizes.open.backpack = true;
+          ctx.drawImage(
+            ui,
+            0,
+            256,
+            ui.size,
+            ui.size,
+            inventoryContainerSizes.inventorySection.x,
+            inventoryContainerSizes.inventorySection.y,
+            ui.size,
+            ui.size
+          );
+
+          inventoryScroll(inventory);
+          break;
+        case 'labeledbackpack':
+          inventoryContainerSizes.open.backpack = true;
+          ctx.drawImage(
+            ui,
+            0,
+            288,
+            ui.size,
+            ui.size,
+            inventoryContainerSizes.inventorySection.x,
+            inventoryContainerSizes.inventorySection.y,
+            ui.size,
+            ui.size
+          );
+
+          inventoryScroll(inventory);
+          break;
+        case 'enchantedbackpack':
+          inventoryContainerSizes.open.backpack = true;
+          ctx.drawImage(
+            ui,
+            32,
+            256,
+            ui.size,
+            ui.size,
+            inventoryContainerSizes.inventorySection.x,
+            inventoryContainerSizes.inventorySection.y,
+            ui.size,
+            ui.size
+          );
+
+          inventoryScroll(inventory);
+          break;
+        case 'labeledenchantedbackpack':
+          inventoryContainerSizes.open.backpack = true;
+          ctx.drawImage(
+            ui,
+            32,
+            288,
+            ui.size,
+            ui.size,
+            inventoryContainerSizes.inventorySection.x,
+            inventoryContainerSizes.inventorySection.y,
+            ui.size,
+            ui.size
+          );
+
+          inventoryScroll(inventory);
+          break;
+        case 'empty':
+          inventoryContainerSizes.open.backpack = false;
+          break;
+      };
     };
   };
 
@@ -1031,34 +893,185 @@ window.addEventListener('load', (event) => {
     );
   };
 
-  const checkStance = (mouseX, mouseY) => {
-    if (
-      mouseX >= ui.buttons.stances.attackInactive.dx &&
-      mouseX <= ui.buttons.stances.attackInactive.dx + ui.buttons.stances.attackInactive.size * ui.buttons.stances.attackInactive.scale &&
-      mouseY >= ui.buttons.stances.attackInactive.dy &&
-      mouseY <= ui.buttons.stances.attackInactive.dy + ui.buttons.stances.attackInactive.size * ui.buttons.stances.attackInactive.scale
-    ) {
-      return 'attack';
-    };
-
-    if (
-      mouseX >= ui.buttons.stances.defendInactive.dx &&
-      mouseX <= ui.buttons.stances.defendInactive.dx + ui.buttons.stances.defendInactive.size * ui.buttons.stances.defendInactive.scale &&
-      mouseY >= ui.buttons.stances.defendInactive.dy &&
-      mouseY <= ui.buttons.stances.defendInactive.dy + ui.buttons.stances.defendInactive.size * ui.buttons.stances.defendInactive.scale
-    ) {
-      return 'defend';
-    };
-
-    if (
-      mouseX >= ui.buttons.stances.passiveInactive.dx &&
-      mouseX <= ui.buttons.stances.passiveInactive.dx + ui.buttons.stances.passiveInactive.size * ui.buttons.stances.passiveInactive.scale &&
-      mouseY >= ui.buttons.stances.passiveInactive.dy &&
-      mouseY <= ui.buttons.stances.passiveInactive.dy + ui.buttons.stances.passiveInactive.size * ui.buttons.stances.passiveInactive.scale
-    ) {
-      return 'passive';
+  // Right Side - Enemy Section
+  const drawStanceSection = (mouseX, mouseY, stance) => {
+    if (currentMenu === 'listbtn') {
+      ctx.clearRect(screen.width, 640, 192, 64);
+      ctx.drawImage(ui, ui.buttons.stances.attackInactive.sx, ui.buttons.stances.attackInactive.sy, 96, 32, screen.width, 640, 192, 64);
+      switch(stance) {
+        case 'attack':
+          ctx.drawImage(
+            ui,
+            ui.buttons.stances.attackActive.sx,
+            ui.buttons.stances.attackActive.sy,
+            ui.buttons.stances.attackActive.size,
+            ui.buttons.stances.attackActive.size,
+            ui.buttons.stances.attackActive.dx,
+            ui.buttons.stances.attackActive.dy,
+            ui.buttons.stances.attackActive.size * ui.buttons.stances.attackActive.scale,
+            ui.buttons.stances.attackActive.size * ui.buttons.stances.attackActive.scale
+          );
+          break;
+        case 'defend':
+          ctx.drawImage(
+            ui,
+            ui.buttons.stances.defendActive.sx,
+            ui.buttons.stances.defendActive.sy,
+            ui.buttons.stances.defendActive.size,
+            ui.buttons.stances.defendActive.size,
+            ui.buttons.stances.defendActive.dx,
+            ui.buttons.stances.defendActive.dy,
+            ui.buttons.stances.defendActive.size * ui.buttons.stances.defendActive.scale,
+            ui.buttons.stances.defendActive.size * ui.buttons.stances.defendActive.scale
+          );
+          break;
+        case 'passive':
+          ctx.drawImage(
+            ui,
+            ui.buttons.stances.passiveActive.sx,
+            ui.buttons.stances.passiveActive.sy,
+            ui.buttons.stances.passiveActive.size,
+            ui.buttons.stances.passiveActive.size,
+            ui.buttons.stances.passiveActive.dx,
+            ui.buttons.stances.passiveActive.dy,
+            ui.buttons.stances.passiveActive.size * ui.buttons.stances.passiveActive.scale,
+            ui.buttons.stances.passiveActive.size * ui.buttons.stances.passiveActive.scale
+          );
+          break;
+        default: break;
+      };
     };
   };
+
+  const checkStance = (mouseX, mouseY) => {
+    if (currentMenu === 'listbtn') {
+      if (
+        mouseX >= ui.buttons.stances.attackInactive.dx &&
+        mouseX <= ui.buttons.stances.attackInactive.dx + ui.buttons.stances.attackInactive.size * ui.buttons.stances.attackInactive.scale &&
+        mouseY >= ui.buttons.stances.attackInactive.dy &&
+        mouseY <= ui.buttons.stances.attackInactive.dy + ui.buttons.stances.attackInactive.size * ui.buttons.stances.attackInactive.scale
+      ) {
+        return 'attack';
+      };
+  
+      if (
+        mouseX >= ui.buttons.stances.defendInactive.dx &&
+        mouseX <= ui.buttons.stances.defendInactive.dx + ui.buttons.stances.defendInactive.size * ui.buttons.stances.defendInactive.scale &&
+        mouseY >= ui.buttons.stances.defendInactive.dy &&
+        mouseY <= ui.buttons.stances.defendInactive.dy + ui.buttons.stances.defendInactive.size * ui.buttons.stances.defendInactive.scale
+      ) {
+        return 'defend';
+      };
+  
+      if (
+        mouseX >= ui.buttons.stances.passiveInactive.dx &&
+        mouseX <= ui.buttons.stances.passiveInactive.dx + ui.buttons.stances.passiveInactive.size * ui.buttons.stances.passiveInactive.scale &&
+        mouseY >= ui.buttons.stances.passiveInactive.dy &&
+        mouseY <= ui.buttons.stances.passiveInactive.dy + ui.buttons.stances.passiveInactive.size * ui.buttons.stances.passiveInactive.scale
+      ) {
+        return 'passive';
+      };
+    };
+  };
+
+  // Create Items
+  const initItem = (id, type, name, sx, sy, dx, dy, scale = 1) => {
+    const rpgItem = new Item(id, type, name, sx, sy, dx, dy, scale);
+    
+    for (const category in resources.itemData) {
+      if (category === type) {
+        for (const item in resources.itemData[category]) {
+          if (item === name) {
+            for (const property in resources.itemData[category][item]) {
+              rpgItem[property] = resources.itemData[category][item][property];
+            };
+          };
+        };
+      };
+    };
+    console.log(`${rpgItem.name} created - `, rpgItem);
+
+    if (
+      rpgItem.dx > screen.width && 
+      rpgItem.dx + rpgItem.size < canvas.width && 
+      rpgItem.dy > 0 && 
+      rpgItem.dy + rpgItem.size < 192
+    ) {
+      equipped.push(rpgItem);
+    } else {
+      items.push(rpgItem);
+    };
+  };
+
+  // Move Items In Range of Player
+  const inInRangeOfPlayer = (objX, objY) => {
+    return (
+      objX >= screen.width / 2 - 96 &&
+      objX < screen.width / 2 + 96 &&
+      objY >= screen.height / 2 - 96 &&
+      objY < screen.height / 2 + 96
+    );
+  };
+  
+  const isMouseOverItem = (mouseX, mouseY, item) => {
+    return (
+      mouseX >= item.dx &&
+      mouseX <= item.dx + item.size * item.scale &&
+      mouseY >= item.dy &&
+      mouseY <= item.dy + item.size * item.scale
+    );
+  };
+
+  const findItemUnderMouse = (mouseX, mouseY, array) => {
+    canvas.style.cursor = 'grab';
+    for (let i = array.length - 1 ; i >= 0 ; i--) {
+      const currentItem = array[i];
+      if (isMouseOverItem(mouseX, mouseY, currentItem)) {
+        return currentItem;
+      };
+    };
+    return null;
+  };
+
+  const isMouseOverButton = (mouseX, mouseY, obj) => {
+    return (
+      mouseX >= obj.dx &&
+      mouseX <= obj.dx + obj.size &&
+      mouseY >= obj.dy &&
+      mouseY <= obj.dy + obj.size
+    );
+  };
+
+  const isMouseOverContent = (mouseX, mouseY, content) => {
+    return (
+      mouseX >= content.x &&
+      mouseX <= content.x + content.size &&
+      mouseY >= content.y &&
+      mouseY <= content.y + content.size
+    );
+  };
+
+  // const loadEquippedItems = () => {
+  //   if (player.data.performance.equipped.back) {
+  //     const item = player.data.performance.equipped.back;
+  //     initItem(
+  //       item.id,
+  //       item.type,
+  //       item.name,
+  //       item.sx,
+  //       item.sy,
+  //       player.destination.dx + 16,
+  //       player.destination.dy + 16
+  //     )
+  //     const newItem = items.find(piece => piece.id === item.id);
+  //     newItem.scale = 0.5;
+  //     newItem.dx = equip.back.x;
+  //     newItem.dy = equip.back.y;
+  //     equip.back.slot = newItem;
+  //     equipped.push(newItem);
+  //     items.splice(items.indexOf(newItem), 1);
+  //   };
+  // };
   
   // Event Listeners
   addEventListener('mousedown', (e) => {
@@ -1077,7 +1090,7 @@ window.addEventListener('load', (event) => {
         }; 
       };
   
-      if (selectedItem && isInPlayerRange(selectedItem.dx, selectedItem.dy)) {
+      if (selectedItem && inInRangeOfPlayer(selectedItem.dx, selectedItem.dy)) {
         selectedItem.isDragging = true;
         canvas.style.cursor = 'grabbing';
         originalItemPosition = {
@@ -1092,7 +1105,7 @@ window.addEventListener('load', (event) => {
       };
   
       for (let btn in ui.buttons.menu) {
-        if (isMouseOverMapScrollButton(mouseX, mouseY, ui.buttons.menu[btn])) {
+        if (isMouseOverButton(mouseX, mouseY, ui.buttons.menu[btn])) {
           if (btn == 'activeDown') {
             btnToggle = true;
             ctx.clearRect(screen.width, 256, 192, 448);
@@ -1107,7 +1120,7 @@ window.addEventListener('load', (event) => {
       
       if (currentMenu === 'inventorybtn' && checkStance(mouseX, mouseY)) {
         stance = checkStance(mouseX, mouseY);
-        drawStance(mouseX, mouseY, stance);
+        drawStanceSection(mouseX, mouseY, stance);
       };
     };
   });
@@ -1249,7 +1262,7 @@ window.addEventListener('load', (event) => {
   addEventListener('mouseup', (e) => {
     if (form.closed) {
       items.forEach(item => {
-        if (item.isDragging && isInPlayerRange(item.dx, item.dy)) {
+        if (item.isDragging && inInRangeOfPlayer(item.dx, item.dy)) {
           let posX = e.clientX - canvas.getBoundingClientRect().left;
           let posY = e.clientY - canvas.getBoundingClientRect().top;
           item.dx = Math.floor(posX / 64) * 64;

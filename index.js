@@ -325,7 +325,6 @@ window.addEventListener('load', (event) => {
         drawMenuSection(currentMenu);
         drawEquipmentSection();
         // drawInventorySection(player.data.performance.equipped.back.name);
-        // drawStanceSection(0, 0, stance);
       break;
       case 'listbtn':
         drawMenuSection(currentMenu);
@@ -534,10 +533,10 @@ window.addEventListener('load', (event) => {
 
   const isInEquipmentSection = (item) => {
     return (
-      item.dx > screen.width &&
-      item.dx + item.size < screen.width + 192 &&
-      item.dy > 0 &&
-      item.dy + item.size < 192
+      item.dx + item.size > screen.width &&
+      item.dx < screen.width + 192 &&
+      item.dy + item.size > 0 &&
+      item.dy < 192
     );
   };
 
@@ -545,7 +544,7 @@ window.addEventListener('load', (event) => {
     if (currentMenu === 'inventorybtn') {
       switch(item.type) {
         case 'neck':
-          if (player.data.performance.equipped.neck) {
+          if (player.data.performance.equipped.neck !== 'empty') {
             const prev = player.data.performance.equipped.neck;
             if (prev.id !== item.id) {
               prev.dx = originalItemPosition.x;
@@ -570,25 +569,179 @@ window.addEventListener('load', (event) => {
           drawEquipmentSection();
           break;
         case 'head':
-          
+          if (player.data.performance.equipped.head !== 'empty') {
+            const prev = player.data.performance.equipped.head;
+            if (prev.id !== item.id) {
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              player.data.performance.equipped.head = 'empty';
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (player.data.performance.equipped.head = 'empty') {
+            item.dx = equipmentSlotLocations.head.x;
+            item.dy = equipmentSlotLocations.head.y;
+            item.scale = 0.5;
+            player.data.performance.equipped.head = item;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquipmentSection();
           break;
         case 'back':
-          
+          if (player.data.performance.equipped.back !== 'empty') {
+            const prev = player.data.performance.equipped.back;
+            if (prev.id !== item.id) {
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              player.data.performance.equipped.back = 'empty';
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (player.data.performance.equipped.back = 'empty') {
+            item.dx = equipmentSlotLocations.back.x;
+            item.dy = equipmentSlotLocations.back.y;
+            item.scale = 0.5;
+            player.data.performance.equipped.back = item;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquipmentSection();
           break;
         case 'chest':
-          
+          if (player.data.performance.equipped.chest !== 'empty') {
+            const prev = player.data.performance.equipped.chest;
+            if (prev.id !== item.id) {
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              player.data.performance.equipped.chest = 'empty';
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (player.data.performance.equipped.chest = 'empty') {
+            item.dx = equipmentSlotLocations.chest.x;
+            item.dy = equipmentSlotLocations.chest.y;
+            item.scale = 0.5;
+            player.data.performance.equipped.chest = item;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquipmentSection();
           break;
         case 'offhand':
-          
+          if (player.data.performance.equipped.offhand !== 'empty') {
+            const prev = player.data.performance.equipped.offhand;
+            if (prev.id !== item.id) {
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              player.data.performance.equipped.offhand = 'empty';
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (player.data.performance.equipped.offhand = 'empty') {
+            item.dx = equipmentSlotLocations.offhand.x;
+            item.dy = equipmentSlotLocations.offhand.y;
+            item.scale = 0.5;
+            player.data.performance.equipped.offhand = item;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquipmentSection();
           break;
         case 'mainhand':
-          
+          if (player.data.performance.equipped.mainhand !== 'empty') {
+            const prev = player.data.performance.equipped.mainhand;
+            if (prev.id !== item.id) {
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              player.data.performance.equipped.mainhand = 'empty';
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (player.data.performance.equipped.mainhand = 'empty') {
+            item.dx = equipmentSlotLocations.mainhand.x;
+            item.dy = equipmentSlotLocations.mainhand.y;
+            item.scale = 0.5;
+            player.data.performance.equipped.mainhand = item;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquipmentSection();
           break;
         case 'legs':
-          
+          if (player.data.performance.equipped.legs !== 'empty') {
+            const prev = player.data.performance.equipped.legs;
+            if (prev.id !== item.id) {
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              player.data.performance.equipped.legs = 'empty';
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (player.data.performance.equipped.legs = 'empty') {
+            item.dx = equipmentSlotLocations.legs.x;
+            item.dy = equipmentSlotLocations.legs.y;
+            item.scale = 0.5;
+            player.data.performance.equipped.legs = item;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquipmentSection();
           break;
         case 'feet':
-          
+          if (player.data.performance.equipped.feet !== 'empty') {
+            const prev = player.data.performance.equipped.feet;
+            if (prev.id !== item.id) {
+              prev.dx = originalItemPosition.x;
+              prev.dy = originalItemPosition.y;
+              prev.scale = 1;
+              player.data.performance.equipped.feet = 'empty';
+              items.push(prev);
+              equipped.splice(equipped.indexOf(prev), 1);
+            };
+          };
+
+          if (player.data.performance.equipped.feet = 'empty') {
+            item.dx = equipmentSlotLocations.feet.x;
+            item.dy = equipmentSlotLocations.feet.y;
+            item.scale = 0.5;
+            player.data.performance.equipped.feet = item;
+            equipped.push(item);
+            items.splice(items.indexOf(item), 1);
+          };
+
+          drawGenus({ player });
+          drawEquipmentSection();
           break;
         default: break;
       };
@@ -840,12 +993,7 @@ window.addEventListener('load', (event) => {
     };
     console.log(`${rpgItem.name} created - `, rpgItem);
 
-    if (
-      rpgItem.dx > screen.width && 
-      rpgItem.dx + rpgItem.size < canvas.width && 
-      rpgItem.dy > 0 && 
-      rpgItem.dy + rpgItem.size < 192
-    ) {
+    if (isInEquipmentSection(rpgItem)) {
       equipped.push(rpgItem);
     } else {
       items.push(rpgItem);
@@ -1107,12 +1255,14 @@ window.addEventListener('load', (event) => {
           ) {
             item.dx = originalItemPosition.x;
             item.dy = originalItemPosition.y;
-          } else if (isInEquipmentSection(item)) {
-            handleEquipping(item);
           };
-
+          
           item.isDragging = false;
           drawGenus({ player });
+          
+          if (isInEquipmentSection(item)) {
+            handleEquipping(item);
+          };
         };
       });
 

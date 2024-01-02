@@ -60,32 +60,32 @@ window.addEventListener('load', (event) => {
   const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
   const waterTiles = [ 1, 2, 3, 4, 5, 6, 7, 8 ];
   const mapContentsGenus = {
-    1: { x: 493, y: 588, area: "The Genus Temple", description: "An antiquated sanctuary said to have been constructed when the gods wandered the Oasis. In service to the old world, warpriest Heremal welcomes new generations of warriors." },
-    2: { x: 530, y: 545, area: "Willow's Rest", description: "It lacks charm, comfort, and cleanliness... but it does have beds." },
-    3: { x: 489, y: 549, area: "Spell's Antica", description: "Unleash the power within and embark on a journey where every incantation opens a door of possibility. Your adventure in the arcane begins here." },
-    4: { x: 451, y: 534, area: "Textiles and Tools", description: "Your clothes and your tools are a reflection of you. Begin your journey with the right weapon, some clothes, and a fishing pole so you won't go hungry." },
-    5: { x: 454, y: 557, area: "Genus Harvest", description: "Unique foods offer a unique experience. The right meal can fill you with the warmth of a thousand hearths. The wrong one can send you on a gastronomic adventure." },
-    6: { x: 525, y: 420, area: "House Militem", description: "Set forth into the world with a foundation of physical prowess as a knight of the East Oasis. A symbol of strength and valor. Their tales are sung by bards. Their deeds, etched into the tapestry of the Oasis." },
-    7: { x: 506, y: 444, area: "Pillar of The Militem", description: "Etched on a plaque near the base: \"Arm Day, every day.\" - Knight Aalok" },
-    8: { x: 456, y: 496, area: "House Arcus", description: "The archer of the East Oasis is the harbinger of swift and precise justice. A symbol of courage and independence. Every arrow, shaping the outcome on the battlefield." },
-    9: { x: 476, y: 472, area: "Pillar of The Arcus", description: "Etched on a plaque near the base: \"Pew Pew Pew!\" - Guy With Bow" },
-    10: { x: 456, y: 420, area: "House Maleficus", description: "Those of the East Oasis who embrace the arcane seek the rawest form of power. Many fear it like the storm, but never has an arrow broken a storm. Never has a shield stopped its path." },
-    11: { x: 476, y: 444, area: "Pillar of The Maleficus", description: "Etched on a plaque near the base: \"Ancient spirits of evil...\" - Mumm-Ra" },
-    12: { x: 525, y: 496, area: "House Medicus", description: "Discover the power derived from nature as a guardian of its secrets. To be a harbinger of life is to also be an arbiter of death." },
-    13: { x: 506, y: 472, area: "Pillar of The Medicus", description: "Etched on a plaque near the base: \"We surreptitiously live surrounded by magic... in the petals. the leaves, the roots of Oasis trees. Those who take the time to appreciate it are bound to learn from it.\" - Riker" },
-    14: { x: 403, y: 477, area: "Swiftpost: Genus", description: "Purchase a letter to send to a friend or a parcel to ship items. The Swiftpost is where you may also purchase labels for your backpacks." },
-    15: { x: 395, y: 433, area: "Depot: Genus", description: "A place to hang your rope, stash your shovel, deposit your coin, and do business with others; however, buyer beware. Trades are not guaranteed." },
-    16: { x: 458, y: 386, area: "Feybrew Flasks", description: "A wise man once said, \"buy some flasks.\" These flasks will meet your needs. A quick heal, some desired energy, a cure for what ails you. You'll be hard-pressed to find more suitable potions on Genus." },
-    17: { x: 511, y: 380, area: "Genus Weaponsmith", description: "If you are finding your adventures across Genus difficult, it may very well be because you are ill equipped. Purchase a finer weapon and mind your skills. Maybe visit the armory." },
-    18: { x: 571, y: 395, area: "Genus Armory", description: "For a hefty price, you may acquire some of the island's finest armor. For a moderate price you can buy something else." },
-    19: { x: 585, y: 435, area: "The Ugly Door Tavern", description: "\"Where's this ugly door?\" That's not important. Enter and enjoy a bad selection of liquor. It's the best." },
-    20: { x: 575, y: 482, area: "Ye Old Curio", description: "Want to see the Troll King's Cudgel? Or a necklace from a dig of an ancient Merk city? What about the horns of a Minos? Ye Old Curio is a store filled with curious items found across Genus." },
-    21: { x: 285, y: 462, area: "Westbridge", description: "The bridge in the west is currently inaccessible." },
-    22: { x: 660, y: 462, area: "Eastbridge", description: "The bridge in the east is currently inaccessible." },
-    23: { x: 250, y: 80, area: "The Poison Fields", description: "Beware the spiders in the poison fields. You may be strong enough to handle the spiders, but their poison often proves deadly. On a separate note, The Poison Fields is the only area the Genus Rose grows." },
-    24: { x: 560, y: 270, area: "The Fanged Glen", description: "North of town is a spacious area known for its wolf population. Be careful running into packs of wolves. It becomes exponentially difficult to defend against multiple foes." },
-    25: { x: 252, y: 360, area: "The River Den", description: "Discover the ocean river below, but beware the area's rats and spiders that roam the den." },
-    26: { x: 190, y: 210, area: "The Grottos", description: "Some dangerous creatures can be found in the light of day. More fearsome creatures lurk in its shadows. There are long told tales of a Troll King somewhere beneathe the islands. Beware in the Grottos." } 
+    1: { mapx: 493, mapy: 588, area: "The Genus Temple", description: "An antiquated sanctuary said to have been constructed when the gods wandered the Oasis. In service to the old world, warpriest Heremal welcomes new generations of warriors." },
+    2: { mapx: 530, mapy: 545, area: "Willow's Rest", description: "It lacks charm, comfort, and cleanliness... but it does have beds." },
+    3: { mapx: 489, mapy: 549, area: "Spell's Antica", description: "Unleash the power within and embark on a journey where every incantation opens a door of possibility. Your adventure in the arcane begins here." },
+    4: { mapx: 451, mapy: 534, area: "Textiles and Tools", description: "Your clothes and your tools are a reflection of you. Begin your journey with the right weapon, some clothes, and a fishing pole so you won't go hungry." },
+    5: { mapx: 454, mapy: 557, area: "Genus Harvest", description: "Unique foods offer a unique experience. The right meal can fill you with the warmth of a thousand hearths. The wrong one can send you on a gastronomic adventure." },
+    6: { mapx: 525, mapy: 420, area: "House Militem", description: "Set forth into the world with a foundation of physical prowess as a knight of the East Oasis. A symbol of strength and valor. Their tales are sung by bards. Their deeds, etched into the tapestry of the Oasis." },
+    7: { mapx: 506, mapy: 444, area: "Pillar of The Militem", description: "Etched on a plaque near the base: \"Arm Day, every day.\" - Knight Aalok" },
+    8: { mapx: 456, mapy: 496, area: "House Arcus", description: "The archer of the East Oasis is the harbinger of swift and precise justice. A symbol of courage and independence. Every arrow, shaping the outcome on the battlefield." },
+    9: { mapx: 476, mapy: 472, area: "Pillar of The Arcus", description: "Etched on a plaque near the base: \"Pew Pew Pew!\" - Guy With Bow" },
+    10: { mapx: 456, mapy: 420, area: "House Maleficus", description: "Those of the East Oasis who embrace the arcane seek the rawest form of power. Many fear it like the storm, but never has an arrow broken a storm. Never has a shield stopped its path." },
+    11: { mapx: 476, mapy: 444, area: "Pillar of The Maleficus", description: "Etched on a plaque near the base: \"Ancient spirits of evil...\" - Mumm-Ra" },
+    12: { mapx: 525, mapy: 496, area: "House Medicus", description: "Discover the power derived from nature as a guardian of its secrets. To be a harbinger of life is to also be an arbiter of death." },
+    13: { mapx: 506, mapy: 472, area: "Pillar of The Medicus", description: "Etched on a plaque near the base: \"We surreptitiously live surrounded by magic... in the petals. the leaves, the roots of Oasis trees. Those who take the time to appreciate it are bound to learn from it.\" - Riker" },
+    14: { mapx: 403, mapy: 477, area: "Swiftpost: Genus", description: "Purchase a letter to send to a friend or a parcel to ship items. The Swiftpost is where you may also purchase labels for your backpacks." },
+    15: { mapx: 395, mapy: 433, area: "Depot: Genus", description: "A place to hang your rope, stash your shovel, deposit your coin, and do business with others; however, buyer beware. Trades are not guaranteed." },
+    16: { mapx: 458, mapy: 386, area: "Feybrew Flasks", description: "A wise man once said, \"buy some flasks.\" These flasks will meet your needs. A quick heal, some desired energy, a cure for what ails you. You'll be hard-pressed to find more suitable potions on Genus." },
+    17: { mapx: 511, mapy: 380, area: "Genus Weaponsmith", description: "If you are finding your adventures across Genus difficult, it may very well be because you are ill equipped. Purchase a finer weapon and mind your skills. Maybe visit the armory." },
+    18: { mapx: 571, mapy: 395, area: "Genus Armory", description: "For a hefty price, you may acquire some of the island's finest armor. For a moderate price you can buy something else." },
+    19: { mapx: 585, mapy: 435, area: "The Ugly Door Tavern", description: "\"Where's this ugly door?\" That's not important. Enter and enjoy a bad selection of liquor. It's the best." },
+    20: { mapx: 575, mapy: 482, area: "Ye Old Curio", description: "Want to see the Troll King's Cudgel? Or a necklace from a dig of an ancient Merk city? What about the horns of a Minos? Ye Old Curio is a store filled with curious items found across Genus." },
+    21: { mapx: 285, mapy: 462, area: "Westbridge", description: "The bridge in the west is currently inaccessible." },
+    22: { mapx: 660, mapy: 462, area: "Eastbridge", description: "The bridge in the east is currently inaccessible." },
+    23: { mapx: 250, mapy: 80, area: "The Poison Fields", description: "Beware the spiders in the poison fields. You may be strong enough to handle the spiders, but their poison often proves deadly. On a separate note, the Poison Fields is the only area where the Genus Rose grows." },
+    24: { mapx: 560, mapy: 270, area: "The Fanged Glen", description: "North of town is a spacious area known for its wolf population. Be careful running into packs of wolves. It becomes exponentially difficult to defend against multiple foes." },
+    25: { mapx: 252, mapy: 360, area: "The River Den", description: "Discover the ocean river below, but beware the area's rats and spiders that roam the den." },
+    26: { mapx: 190, mapy: 210, area: "The Grottos", description: "Some dangerous creatures can be found in the light of day. More fearsome creatures lurk in its shadows. There are long told tales of a Troll King somewhere beneathe the islands. Beware in the Grottos." } 
   };
   const equipmentSlotLocations = {
     neck: { x: screen.width + offsetEquip, y: offsetEquip },
@@ -110,7 +110,7 @@ window.addEventListener('load', (event) => {
   // Let Variables - Strings | Bools | Arrays | Objects
   let currentMenu = 'inventorybtn';
   let stance = 'defend';
-  let btnToggle = false;
+  let mapContentButton = false;
   let chatbox = false;
   let boundaries = [], wateries = [];
   let items = [];
@@ -190,7 +190,8 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  // Draw Functions
+  // ---------------------------------------------------------------------
+  // Handle Map Creation | Collision Tiles | Water Tiles | Uppermost Tiles
   const drawGenus = ({ player }, currentMap = resources.mapData.isLoaded && resources.mapData.genus01.layers) => {
     const visibleMapSection = [], uppermost = [];
     boundaries = [];
@@ -210,7 +211,7 @@ window.addEventListener('load', (event) => {
       };
       visibleMapSection.push(tiles);
     }); // Create visibleMapSection of player location
-  
+
     visibleMapSection.forEach(layer => {
       layer.forEach((tileID, i) => {
         if (tileID > 0) {
@@ -233,12 +234,12 @@ window.addEventListener('load', (event) => {
           if (waterTiles.includes(tileID)) {
             const water = new Tile({
               source: {
-                wsx: sx,
-                wsy: sy
+                sx: sx,
+                sy: sy
               },
               destination: {
-                wdx: dx,
-                wdy: dy
+                dx: dx,
+                dy: dy
               },
               size: 64
             });
@@ -248,7 +249,7 @@ window.addEventListener('load', (event) => {
           // Check for collision tiles
           if (tileID === 25) { 
             const boundary = new Tile({
-              destination: { bdx: dx, bdy: dy }
+              destination: { dx: dx, dy: dy }
             });
             boundaries.push(boundary);
           } else {
@@ -279,22 +280,55 @@ window.addEventListener('load', (event) => {
     });
   };
 
+  const collisionDetect = (newX, newY) => {
+    for (let i = 0 ; i < boundaries.length ; i++) {
+      const boundary = boundaries[i];
+
+      if (
+        newX < boundary.destination.dx + boundary.size &&
+        newX + player.size > boundary.destination.dx &&
+        newY < boundary.destination.dy + boundary.size &&
+        newY + player.size > boundary.destination.dy
+      ) {
+        return true;
+      };
+    };
+    return false;
+  };
+
+  const waterDetect = (newX, newY) => {
+    for (let i = 0 ; i < wateries.length ; i++) {
+      const water = wateries[i];
+
+      if (
+        newX < water.destination.dx + water.size &&
+        newX + player.size > water.destination.dx &&
+        newY < water.destination.dy + water.size &&
+        newY + player.size > water.destination.dy
+      ) {
+        return true;
+      };
+    };
+    return false;
+  };
+
+  // Handle Right Side UI
   const drawRightSideUI = () => {
     ctx.clearRect(screen.width, 0, 192, 704);
     drawGenus({ player });
     switch(currentMenu) {
       case 'mapbtn':
         drawMenuSection(currentMenu);
-        // drawInterfaceToggleMenu(string);
+        drawMapContentSection();
         break;
       case 'inventorybtn':
         drawMenuSection(currentMenu);
-        drawEquipmentSection(equipped);
-        drawInventorySection(player.data.performance.equipped.back.name);
-        // drawStancestring(0, 0, stance);
+        drawEquipmentSection();
+        // drawInventorySection(player.data.performance.equipped.back.name);
       break;
       case 'listbtn':
         drawMenuSection(currentMenu);
+        drawStanceSection(0, 0, stance);
         break;
       default: break;
     };
@@ -330,16 +364,47 @@ window.addEventListener('load', (event) => {
     };
   };
 
+  const checkMenuToggle = (mouseX, mouseY) => {
+    if (
+      mouseX >= ui.buttons.menu.mapbtn.dx &&
+      mouseX <= ui.buttons.menu.mapbtn.dx + ui.buttons.menu.mapbtn.size &&
+      mouseY >= ui.buttons.menu.mapbtn.dy &&
+      mouseY <= ui.buttons.menu.mapbtn.dy + ui.buttons.menu.mapbtn.size
+    ) {
+      return 'mapbtn';
+    };
+
+    if (
+      mouseX >= ui.buttons.menu.inventorybtn.dx &&
+      mouseX <= ui.buttons.menu.inventorybtn.dx + ui.buttons.menu.inventorybtn.size &&
+      mouseY >= ui.buttons.menu.inventorybtn.dy &&
+      mouseY <= ui.buttons.menu.inventorybtn.dy + ui.buttons.menu.inventorybtn.size
+    ) {
+      return 'inventorybtn';
+    };
+
+    if (
+      mouseX >= ui.buttons.menu.listbtn.dx &&
+      mouseX <= ui.buttons.menu.listbtn.dx + ui.buttons.menu.listbtn.size &&
+      mouseY >= ui.buttons.menu.listbtn.dy &&
+      mouseY <= ui.buttons.menu.listbtn.dy + ui.buttons.menu.listbtn.size
+      ) {
+      return 'listbtn';
+    };
+  };
+  
+  // Right Side - Map Section
   const drawMapContentSection = () => {
     if (currentMenu === 'mapbtn') {
       ctx.clearRect(screen.width, 0, 192, 192);
       ctx.clearRect(screen.width, 256, 192, 448);
-      ctx.drawImage( mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40 );
+      ctx.drawImage(mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40);
       ctx.font = '1.5rem Arial';
+      ctx.fillStyle = '#fff';
       ctx.fillText('Genus Island', screen.width + 20, 50);
       ctx.font = '1rem Arial';
       ctx.fillText('Town and Outskirts', screen.width + 20, 80);
-      if (!btnToggle) {
+      if (!mapContentButton) {
         ctx.drawImage(ui, ui.buttons.mapSectionScroll.activeUp.sx, ui.buttons.mapSectionScroll.activeUp.sy, ui.buttons.mapSectionScroll.activeUp.size, ui.buttons.mapSectionScroll.activeUp.size, ui.buttons.mapSectionScroll.activeUp.dx, ui.buttons.mapSectionScroll.activeUp.dy, ui.buttons.mapSectionScroll.activeUp.size, ui.buttons.mapSectionScroll.activeUp.size);
         ctx.drawImage(ui, ui.buttons.mapSectionScroll.inactiveDown.sx, ui.buttons.mapSectionScroll.inactiveDown.sy, ui.buttons.mapSectionScroll.inactiveDown.size, ui.buttons.mapSectionScroll.inactiveDown.size, ui.buttons.mapSectionScroll.inactiveDown.dx, ui.buttons.mapSectionScroll.inactiveDown.dy, ui.buttons.mapSectionScroll.inactiveDown.size, ui.buttons.mapSectionScroll.inactiveDown.size);
         let keyCount = 0;
@@ -355,8 +420,7 @@ window.addEventListener('load', (event) => {
   
           if (mapContentsGenus.hasOwnProperty(key)) {
             const mapX = screen.width + 25, mapY = 310 + (20 * keyCount);
-            ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
-            
+            ctx.fillText(mapContentsGenus[key].area, mapX, mapY);
             mapContentsGenus[key].x = mapX;
             mapContentsGenus[key].y = mapY - 12;
             mapContentsGenus[key].width = 130;
@@ -367,9 +431,9 @@ window.addEventListener('load', (event) => {
   
           if(keyCount === 20) break;
         }; 
-      } else if (btnToggle) {
-        ctx.drawImage( ui, ui.toggle.inactiveUp.sx, ui.toggle.inactiveUp.sy, ui.toggle.inactiveUp.size, ui.toggle.inactiveUp.size, ui.toggle.inactiveUp.dx, ui.toggle.inactiveUp.dy, ui.toggle.inactiveUp.size, ui.toggle.inactiveUp.size );
-        ctx.drawImage( ui, ui.toggle.activeDown.sx, ui.toggle.activeDown.sy, ui.toggle.activeDown.size, ui.toggle.activeDown.size, ui.toggle.activeDown.dx, ui.toggle.activeDown.dy, ui.toggle.activeDown.size, ui.toggle.activeDown.size );
+      } else if (mapContentButton) {
+        ctx.drawImage( ui, ui.buttons.mapSectionScroll.inactiveUp.sx, ui.buttons.mapSectionScroll.inactiveUp.sy, ui.buttons.mapSectionScroll.inactiveUp.size, ui.buttons.mapSectionScroll.inactiveUp.size, ui.buttons.mapSectionScroll.inactiveUp.dx, ui.buttons.mapSectionScroll.inactiveUp.dy, ui.buttons.mapSectionScroll.inactiveUp.size, ui.buttons.mapSectionScroll.inactiveUp.size );
+        ctx.drawImage( ui, ui.buttons.mapSectionScroll.activeDown.sx, ui.buttons.mapSectionScroll.activeDown.sy, ui.buttons.mapSectionScroll.activeDown.size, ui.buttons.mapSectionScroll.activeDown.size, ui.buttons.mapSectionScroll.activeDown.dx, ui.buttons.mapSectionScroll.activeDown.dy, ui.buttons.mapSectionScroll.activeDown.size, ui.buttons.mapSectionScroll.activeDown.size );
         let keyCount = 0, yAxis = 0;
   
         ctx.font = '0.8rem Arial';
@@ -387,7 +451,7 @@ window.addEventListener('load', (event) => {
   
           if (keyCount > 20) {
             const mapX = screen.width + 25, mapY = 310 + (20 * yAxis);
-            ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
+            ctx.fillText(mapContentsGenus[key].area, mapX, mapY);
   
             mapContentsGenus[key].x = mapX;
             mapContentsGenus[key].y = mapY - 12;
@@ -402,251 +466,32 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  const drawEquipmentSection = (array) => {
-    ctx.clearRect(screen.width, 0, 192, 192);
-    ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
-    array.forEach(item => item.draw(ctx));
-  };
-
-  const drawInventorySection = (backpack = 'empty') => {
-    const inventoryScroll = (inventory, toggle = 'up', first = 24, second = 12) => {
-      if (toggle === 'up') {
-        for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
-          const x = i % 6 * 32;
-          const y = Math.floor(i / 6) * 32;
-          if (i < first) {
-            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
-          };
-          if (inventory[i]) {
-            const item = inventory[i];
-            ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
-          };
-        };
-      };
-
-      if (toggle === 'down') {
-        for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
-          const x = i % 6 * 32;
-          const y = Math.floor(i / 6) * 32;
-          if (i < second) {
-            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
-          };
-          if (inventory[i + first - 1]) {
-            const item = inventory[i + first - 1];
-            ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
-          };
-        };
-      };
-    };
-
-    ctx.clearRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 384);
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 384);
-    
-    switch (backpack) {
-      case 'backpack':
-        inventoryContainerSizes.open.backpack = true;
-        ctx.drawImage(
-          ui,
-          0,
-          256,
-          ui.size,
-          ui.size,
-          inventoryContainerSizes.inventorySection.x,
-          inventoryContainerSizes.inventorySection.y,
-          ui.size,
-          ui.size
-        );
-
-        inventoryScroll(inventory);
-        break;
-      case 'labeledbackpack':
-        inventoryContainerSizes.open.backpack = true;
-        ctx.drawImage(
-          ui,
-          0,
-          288,
-          ui.size,
-          ui.size,
-          inventoryContainerSizes.inventorySection.x,
-          inventoryContainerSizes.inventorySection.y,
-          ui.size,
-          ui.size
-        );
-
-        inventoryScroll(inventory);
-        break;
-      case 'enchantedbackpack':
-        inventoryContainerSizes.open.backpack = true;
-        ctx.drawImage(
-          ui,
-          32,
-          256,
-          ui.size,
-          ui.size,
-          inventoryContainerSizes.inventorySection.x,
-          inventoryContainerSizes.inventorySection.y,
-          ui.size,
-          ui.size
-        );
-
-        inventoryScroll(inventory);
-        break;
-      case 'labeledenchantedbackpack':
-        inventoryContainerSizes.open.backpack = true;
-        ctx.drawImage(
-          ui,
-          32,
-          288,
-          ui.size,
-          ui.size,
-          inventoryContainerSizes.inventorySection.x,
-          inventoryContainerSizes.inventorySection.y,
-          ui.size,
-          ui.size
-        );
-
-        inventoryScroll(inventory);
-        break;
-      case 'empty':
-        inventoryContainerSizes.open.backpack = false;
-        break;
-    };
-  };
-
-  const drawStance = (mouseX, mouseY, stance) => {
-    ctx.clearRect(screen.width, 640, 192, 64);
-    ctx.drawImage(ui, ui.toggle.attackInactive.sx, ui.toggle.attackInactive.sy, 96, 32, screen.width, 640, 192, 64);
-    switch(stance) {
-      case 'attack':
-        ctx.drawImage(
-          ui,
-          ui.toggle.attackActive.sx,
-          ui.toggle.attackActive.sy,
-          ui.toggle.attackActive.size,
-          ui.toggle.attackActive.size,
-          ui.toggle.attackActive.dx,
-          ui.toggle.attackActive.dy,
-          ui.toggle.attackActive.size * ui.toggle.attackActive.scale,
-          ui.toggle.attackActive.size * ui.toggle.attackActive.scale
-        );
-        break;
-      case 'defend':
-        ctx.drawImage(
-          ui,
-          ui.toggle.defendActive.sx,
-          ui.toggle.defendActive.sy,
-          ui.toggle.defendActive.size,
-          ui.toggle.defendActive.size,
-          ui.toggle.defendActive.dx,
-          ui.toggle.defendActive.dy,
-          ui.toggle.defendActive.size * ui.toggle.defendActive.scale,
-          ui.toggle.defendActive.size * ui.toggle.defendActive.scale
-        );
-        break;
-      case 'passive':
-        ctx.drawImage(
-          ui,
-          ui.toggle.passiveActive.sx,
-          ui.toggle.passiveActive.sy,
-          ui.toggle.passiveActive.size,
-          ui.toggle.passiveActive.size,
-          ui.toggle.passiveActive.dx,
-          ui.toggle.passiveActive.dy,
-          ui.toggle.passiveActive.size * ui.toggle.passiveActive.scale,
-          ui.toggle.passiveActive.size * ui.toggle.passiveActive.scale
-        );
-        break;
-      default: break;
-    };
-  };
-
-  // Utility Functions
-  const initItem = (id, type, name, sx, sy, dx, dy, scale = 1) => {
-    const rpgItem = new Item(id, type, name, sx, sy, dx, dy, scale);
-    
-    for (const category in resources.itemData) {
-      if (category === type) {
-        for (const item in resources.itemData[category]) {
-          if (item === name) {
-            for (const property in resources.itemData[category][item]) {
-              rpgItem[property] = resources.itemData[category][item][property];
-            };
-          };
-        };
-      };
-    };
-    console.log(`${rpgItem.name} created - `, rpgItem);
-
-    if (
-      rpgItem.dx > screen.width && 
-      rpgItem.dx + rpgItem.size < canvas.width && 
-      rpgItem.dy > 0 && 
-      rpgItem.dy + rpgItem.size < 192
-    ) {
-      equipped.push(rpgItem);
-    } else {
-      items.push(rpgItem);
-    };
-  };
-
-  const isInPlayerRange = (objX, objY) => {
+  const isMouseOverButton = (mouseX, mouseY, button) => {
     return (
-      objX >= screen.width / 2 - 96 &&
-      objX < screen.width / 2 + 96 &&
-      objY >= screen.height / 2 - 96 &&
-      objY < screen.height / 2 + 96
-    );
-  };
-  
-  const isMouseOverItem = (mouseX, mouseY, item) => {
-    return (
-      mouseX >= item.dx &&
-      mouseX <= item.dx + item.size * item.scale &&
-      mouseY >= item.dy &&
-      mouseY <= item.dy + item.size * item.scale
+      mouseX >= button.dx &&
+      mouseX <= button.dx + button.size &&
+      mouseY >= button.dy &&
+      mouseY <= button.dy + button.size
     );
   };
 
-  const findItemUnderMouse = (mouseX, mouseY, array) => {
-    canvas.style.cursor = 'grab';
-    for (let i = array.length - 1 ; i >= 0 ; i--) {
-      const currentItem = array[i];
-      if (isMouseOverItem(mouseX, mouseY, currentItem)) {
-        return currentItem;
+  const findContentUnderMouse = (mouseX, mouseY) => {
+    for (const key in mapContentsGenus) {
+      const content = mapContentsGenus[key];
+      if (isMouseOverContent(mouseX, mouseY, content)) {
+        return content;
       };
     };
     return null;
-  };
-
-  const isMouseOverMapScrollButton = (mouseX, mouseY, btn) => {
-    if (currentMenu === 'mapbtn') {
-      return (
-        mouseX >= btn.dx &&
-        mouseX <= btn.dx + btn.size &&
-        mouseY >= btn.dy &&
-        mouseY <= btn.dy + btn.size
-      );
-    };
   };
 
   const isMouseOverContent = (mouseX, mouseY, content) => {
     return (
       mouseX >= content.x &&
-      mouseX <= content.x + content.size &&
+      mouseX <= content.x + content.width &&
       mouseY >= content.y &&
-      mouseY <= content.y + content.size
+      mouseY <= content.y + content.height
     );
-  };
-
-  const findContentUnderMouse = (mouseX, mouseY) => {
-    for (let content in mapContentsGenus) {
-      const currentContent = mapContentsGenus[content];
-      if (isMouseOverContent(mouseX, mouseY, currentContent)) {
-        return currentContent;
-      };
-    };
-    return null;
   };
 
   const fillLinesOfText = (name, text, width) => {
@@ -677,350 +522,369 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  const checkToggle = (mouseX, mouseY) => {
-    if (
-      mouseX >= ui.buttons.menu.mapbtn.dx &&
-      mouseX <= ui.buttons.menu.mapbtn.dx + ui.buttons.menu.mapbtn.size &&
-      mouseY >= ui.buttons.menu.mapbtn.dy &&
-      mouseY <= ui.buttons.menu.mapbtn.dy + ui.buttons.menu.mapbtn.size
-    ) {
-      return 'mapbtn';
-    };
-
-    if (
-      mouseX >= ui.buttons.menu.inventorybtn.dx &&
-      mouseX <= ui.buttons.menu.inventorybtn.dx + ui.buttons.menu.inventorybtn.size &&
-      mouseY >= ui.buttons.menu.inventorybtn.dy &&
-      mouseY <= ui.buttons.menu.inventorybtn.dy + ui.buttons.menu.inventorybtn.size
-    ) {
-      return 'inventorybtn';
-    };
-
-    if (
-      mouseX >= ui.buttons.menu.listbtn.dx &&
-      mouseX <= ui.buttons.menu.listbtn.dx + ui.buttons.menu.listbtn.size &&
-      mouseY >= ui.buttons.menu.listbtn.dy &&
-      mouseY <= ui.buttons.menu.listbtn.dy + ui.buttons.menu.listbtn.size
-    ) {
-      return 'listbtn';
+  // Right Side - Inventory Section
+  const drawEquipmentSection = () => {
+    if (currentMenu === 'inventorybtn') {
+      ctx.clearRect(screen.width, 0, 192, 192);
+      ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
+      equipped.forEach(item => item.draw(ctx));
     };
   };
 
-  const collisionDetect = (newX, newY) => {
-    for (let i = 0 ; i < boundaries.length ; i++) {
-      const boundary = boundaries[i];
-
-      if (
-        newX < boundary.destination.bdx + boundary.size &&
-        newX + player.size > boundary.destination.bdx &&
-        newY < boundary.destination.bdy + boundary.size &&
-        newY + player.size > boundary.destination.bdy
-      ) {
-        return true;
-      };
-    };
-    return false;
-  };
-
-  const waterDetect = (newX, newY) => {
-    for (let i = 0 ; i < wateries.length ; i++) {
-      const water = wateries[i];
-
-      if (
-        newX < water.destination.wdx + water.size &&
-        newX + player.size > water.destination.wdx &&
-        newY < water.destination.wdy + water.size &&
-        newY + player.size > water.destination.wdy
-      ) {
-        return true;
-      };
-    };
-    return false;
-  };
-
-  const loadEquippedItems = () => {
-    if (player.data.performance.equipped.back) {
-      const item = player.data.performance.equipped.back;
-      initItem(
-        item.id,
-        item.type,
-        item.name,
-        item.sx,
-        item.sy,
-        player.destination.dx + 16,
-        player.destination.dy + 16
-      )
-      const newItem = items.find(piece => piece.id === item.id);
-      newItem.scale = 0.5;
-      newItem.dx = equip.back.x;
-      newItem.dy = equip.back.y;
-      equip.back.slot = newItem;
-      equipped.push(newItem);
-      items.splice(items.indexOf(newItem), 1);
-    };
-  };
-
-  const isInEquipArea = (item) => {
+  const isInEquipmentSection = (item) => {
     return (
-      item.dx < screen.width + 192 &&
       item.dx + item.size > screen.width &&
-      item.dy < 192 &&
-      item.dy + item.size > 0
+      item.dx < screen.width + 192 &&
+      item.dy + item.size > 0 &&
+      item.dy < 192
     );
   };
 
   const handleEquipping = (item) => {
-    if (isInEquipArea(item)) {
+    if (currentMenu === 'inventorybtn') {
       switch(item.type) {
         case 'neck':
-          if (equip.neck.slot) {
-            const prev = equip.neck.slot;
+          if (player.data.performance.equipped.neck !== 'empty') {
+            const prev = player.data.performance.equipped.neck;
             if (prev.id !== item.id) {
-              equip.neck.slot = null;
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
-              // player.data.performance.equipped.neck = 'empty';
+              player.data.performance.equipped.neck = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
 
-          if (equip.neck.slot === null) {
-            equip.neck.slot = item;
-            item.dx = equip.neck.x;
-            item.dy = equip.neck.y;
+          if (player.data.performance.equipped.neck = 'empty') {
+            item.dx = equipmentSlotLocations.neck.x;
+            item.dy = equipmentSlotLocations.neck.y;
             item.scale = 0.5;
-            // player.data.performance.equipped.neck = item;
+            player.data.performance.equipped.neck = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
 
           drawGenus({ player });
-          drawEquip();
+          drawEquipmentSection();
           break;
         case 'head':
-          if (equip.head.slot) {
-            const prev = equip.head.slot;
+          if (player.data.performance.equipped.head !== 'empty') {
+            const prev = player.data.performance.equipped.head;
             if (prev.id !== item.id) {
-              equip.head.slot = null;
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
-              // player.data.performance.equipped.head = 'empty';
+              player.data.performance.equipped.head = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
 
-          if (equip.head.slot === null) {
-            equip.head.slot = item;
-            item.dx = equip.head.x;
-            item.dy = equip.head.y;
+          if (player.data.performance.equipped.head = 'empty') {
+            item.dx = equipmentSlotLocations.head.x;
+            item.dy = equipmentSlotLocations.head.y;
             item.scale = 0.5;
-            // player.data.performance.equipped.head = item;
+            player.data.performance.equipped.head = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
 
           drawGenus({ player });
-          drawEquip();
+          drawEquipmentSection();
           break;
         case 'back':
-          if (equip.back.slot) {
-            const prev = equip.back.slot;
+          if (player.data.performance.equipped.back !== 'empty') {
+            const prev = player.data.performance.equipped.back;
             if (prev.id !== item.id) {
-              equip.back.slot = null;
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
+              player.data.performance.equipped.back = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
-          
-          if (equip.back.slot === null) {
-            equip.back.slot = item;
-            item.dx = equip.back.x;
-            item.dy = equip.back.y;
+
+          if (player.data.performance.equipped.back = 'empty') {
+            item.dx = equipmentSlotLocations.back.x;
+            item.dy = equipmentSlotLocations.back.y;
             item.scale = 0.5;
             player.data.performance.equipped.back = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
+
           drawGenus({ player });
-          drawEquip();
-          drawInventory(player.data.performance.equipped.back.name);
+          drawEquipmentSection();
           break;
         case 'chest':
-          if (equip.chest.slot) {
-            const prev = equip.chest.slot;
+          if (player.data.performance.equipped.chest !== 'empty') {
+            const prev = player.data.performance.equipped.chest;
             if (prev.id !== item.id) {
-              equip.chest.slot = null;
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
-              // player.data.performance.equipped.chest = 'empty';
+              player.data.performance.equipped.chest = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
 
-          if (equip.chest.slot === null) {
-            equip.chest.slot = item;
-            item.dx = equip.chest.x;
-            item.dy = equip.chest.y;
+          if (player.data.performance.equipped.chest = 'empty') {
+            item.dx = equipmentSlotLocations.chest.x;
+            item.dy = equipmentSlotLocations.chest.y;
             item.scale = 0.5;
-            // player.data.performance.equipped.chest = item;
+            player.data.performance.equipped.chest = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
 
           drawGenus({ player });
-          drawEquip();
+          drawEquipmentSection();
           break;
         case 'offhand':
-          if (equip.offhand.slot) {
-            const prev = equip.offhand.slot;
+          if (player.data.performance.equipped.offhand !== 'empty') {
+            const prev = player.data.performance.equipped.offhand;
             if (prev.id !== item.id) {
-              equip.offhand.slot = null;
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
-              // player.data.performance.equipped.offhand = 'empty';
+              player.data.performance.equipped.offhand = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
 
-          if (equip.offhand.slot === null) {
-            equip.offhand.slot = item;
-            item.dx = equip.offhand.x;
-            item.dy = equip.offhand.y;
+          if (player.data.performance.equipped.offhand = 'empty') {
+            item.dx = equipmentSlotLocations.offhand.x;
+            item.dy = equipmentSlotLocations.offhand.y;
             item.scale = 0.5;
-            // player.data.performance.equipped.offhand = item;
+            player.data.performance.equipped.offhand = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
 
           drawGenus({ player });
-          drawEquip();
+          drawEquipmentSection();
           break;
         case 'mainhand':
-          if (equip.mainhand.slot) {
-            const prev = equip.mainhand.slot;
+          if (player.data.performance.equipped.mainhand !== 'empty') {
+            const prev = player.data.performance.equipped.mainhand;
             if (prev.id !== item.id) {
-              equip.mainhand.slot = null;
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
-              // player.data.performance.equipped.mainhand = 'empty';
+              player.data.performance.equipped.mainhand = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
 
-          if (equip.mainhand.slot === null) {
-            equip.mainhand.slot = item;
-            item.dx = equip.mainhand.x;
-            item.dy = equip.mainhand.y;
+          if (player.data.performance.equipped.mainhand = 'empty') {
+            item.dx = equipmentSlotLocations.mainhand.x;
+            item.dy = equipmentSlotLocations.mainhand.y;
             item.scale = 0.5;
-            // player.data.performance.equipped.mainhand = item;
+            player.data.performance.equipped.mainhand = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
 
           drawGenus({ player });
-          drawEquip();  
+          drawEquipmentSection();
           break;
         case 'legs':
-          if (equip.legs.slot) {
-            const prev = equip.legs.slot;
+          if (player.data.performance.equipped.legs !== 'empty') {
+            const prev = player.data.performance.equipped.legs;
             if (prev.id !== item.id) {
-              equip.legs.slot = null;
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
-              // player.data.performance.equipped.legs = 'empty';
+              player.data.performance.equipped.legs = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
 
-          if (equip.legs.slot === null) {
-            equip.legs.slot = item;
-            item.dx = equip.legs.x;
-            item.dy = equip.legs.y;
+          if (player.data.performance.equipped.legs = 'empty') {
+            item.dx = equipmentSlotLocations.legs.x;
+            item.dy = equipmentSlotLocations.legs.y;
             item.scale = 0.5;
-            // player.data.performance.equipped.legs = item;
+            player.data.performance.equipped.legs = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
 
           drawGenus({ player });
-          drawEquip();
+          drawEquipmentSection();
           break;
         case 'feet':
-          if (equip.feet.slot) {
-            const prev = equip.feet.slot;
+          if (player.data.performance.equipped.feet !== 'empty') {
+            const prev = player.data.performance.equipped.feet;
             if (prev.id !== item.id) {
-              equip.feet.slot = null;
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
-              // player.data.performance.equipped.feet = 'empty';
+              player.data.performance.equipped.feet = 'empty';
               items.push(prev);
               equipped.splice(equipped.indexOf(prev), 1);
             };
           };
 
-          if (equip.feet.slot === null) {
-            equip.feet.slot = item;
-            item.dx = equip.feet.x;
-            item.dy = equip.feet.y;
+          if (player.data.performance.equipped.feet = 'empty') {
+            item.dx = equipmentSlotLocations.feet.x;
+            item.dy = equipmentSlotLocations.feet.y;
             item.scale = 0.5;
-            // player.data.performance.equipped.feet = item;
+            player.data.performance.equipped.feet = item;
             equipped.push(item);
             items.splice(items.indexOf(item), 1);
           };
 
           drawGenus({ player });
-          drawEquip();
+          drawEquipmentSection();
           break;
         default: break;
       };
     };
   };
 
-  const resetEquipSlot = (item) => {
+  const resetEquipmentSlot = (item) => {
     switch(item.type) {
       case 'neck':
-        equip.neck.slot = null;
+        player.data.performance.equipped.neck = 'empty';
         break;
       case 'head':
-        equip.head.slot = null;
+        player.data.performance.equipped.head = 'empty';
         break;
       case 'back':
-        equip.back.slot = null;
+        player.data.performance.equipped.back = 'empty';
         break;
       case 'chest':
-        equip.chest.slot = null;
+        player.data.performance.equipped.chest = 'empty';
         break;
       case 'offhand':
-        equip.offhand.slot = null;
+        player.data.performance.equipped.offhand = 'empty';
         break;
       case 'mainhand':
-        equip.mainhand.slot = null;  
+        player.data.performance.equipped.mainhand = 'empty';
         break;
       case 'legs':
-        equip.legs.slot = null;
+        player.data.performance.equipped.legs = 'empty';
         break;
       case 'feet':
-        equip.feet.slot = null;
+        player.data.performance.equipped.feet = 'empty';
         break;
       default: break;
     };
   };
+
+  // const drawInventorySection = (backpack = 'empty') => {
+  //   if (currentMenu === 'inventorybtn') {
+  //     const inventoryScroll = (inventory, toggle = 'up', first = 24, second = 12) => {
+  //       if (toggle === 'up') {
+  //         for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
+  //           const x = i % 6 * 32;
+  //           const y = Math.floor(i / 6) * 32;
+  //           if (i < first) {
+  //             ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
+  //           };
+  //           if (inventory[i]) {
+  //             const item = inventory[i];
+  //             ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
+  //           };
+  //         };
+  //       };
+
+  //       if (toggle === 'down') {
+  //         for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
+  //           const x = i % 6 * 32;
+  //           const y = Math.floor(i / 6) * 32;
+  //           if (i < second) {
+  //             ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
+  //           };
+  //           if (inventory[i + first - 1]) {
+  //             const item = inventory[i + first - 1];
+  //             ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
+  //           };
+  //         };
+  //       };
+  //     };
+
+  //     ctx.clearRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 448);
+  //     ctx.fillStyle = '#fff';
+  //     ctx.fillRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 448);
+      
+  //     switch (backpack) {
+  //       case 'backpack':
+  //         inventoryContainerSizes.open.backpack = true;
+  //         ctx.drawImage(
+  //           ui,
+  //           0,
+  //           256,
+  //           ui.size,
+  //           ui.size,
+  //           inventoryContainerSizes.inventorySection.x,
+  //           inventoryContainerSizes.inventorySection.y,
+  //           ui.size,
+  //           ui.size
+  //         );
+
+  //         inventoryScroll(inventory);
+  //         break;
+  //       case 'labeledbackpack':
+  //         inventoryContainerSizes.open.backpack = true;
+  //         ctx.drawImage(
+  //           ui,
+  //           0,
+  //           288,
+  //           ui.size,
+  //           ui.size,
+  //           inventoryContainerSizes.inventorySection.x,
+  //           inventoryContainerSizes.inventorySection.y,
+  //           ui.size,
+  //           ui.size
+  //         );
+
+  //         inventoryScroll(inventory);
+  //         break;
+  //       case 'enchantedbackpack':
+  //         inventoryContainerSizes.open.backpack = true;
+  //         ctx.drawImage(
+  //           ui,
+  //           32,
+  //           256,
+  //           ui.size,
+  //           ui.size,
+  //           inventoryContainerSizes.inventorySection.x,
+  //           inventoryContainerSizes.inventorySection.y,
+  //           ui.size,
+  //           ui.size
+  //         );
+
+  //         inventoryScroll(inventory);
+  //         break;
+  //       case 'labeledenchantedbackpack':
+  //         inventoryContainerSizes.open.backpack = true;
+  //         ctx.drawImage(
+  //           ui,
+  //           32,
+  //           288,
+  //           ui.size,
+  //           ui.size,
+  //           inventoryContainerSizes.inventorySection.x,
+  //           inventoryContainerSizes.inventorySection.y,
+  //           ui.size,
+  //           ui.size
+  //         );
+
+  //         inventoryScroll(inventory);
+  //         break;
+  //       case 'empty':
+  //         inventoryContainerSizes.open.backpack = false;
+  //         break;
+  //     };
+  //   };
+  // };
 
   const isInInventoryArea = (mouseX, mouseY) => {
     return (
@@ -1031,34 +895,162 @@ window.addEventListener('load', (event) => {
     );
   };
 
-  const checkStance = (mouseX, mouseY) => {
-    if (
-      mouseX >= ui.buttons.stances.attackInactive.dx &&
-      mouseX <= ui.buttons.stances.attackInactive.dx + ui.buttons.stances.attackInactive.size * ui.buttons.stances.attackInactive.scale &&
-      mouseY >= ui.buttons.stances.attackInactive.dy &&
-      mouseY <= ui.buttons.stances.attackInactive.dy + ui.buttons.stances.attackInactive.size * ui.buttons.stances.attackInactive.scale
-    ) {
-      return 'attack';
-    };
-
-    if (
-      mouseX >= ui.buttons.stances.defendInactive.dx &&
-      mouseX <= ui.buttons.stances.defendInactive.dx + ui.buttons.stances.defendInactive.size * ui.buttons.stances.defendInactive.scale &&
-      mouseY >= ui.buttons.stances.defendInactive.dy &&
-      mouseY <= ui.buttons.stances.defendInactive.dy + ui.buttons.stances.defendInactive.size * ui.buttons.stances.defendInactive.scale
-    ) {
-      return 'defend';
-    };
-
-    if (
-      mouseX >= ui.buttons.stances.passiveInactive.dx &&
-      mouseX <= ui.buttons.stances.passiveInactive.dx + ui.buttons.stances.passiveInactive.size * ui.buttons.stances.passiveInactive.scale &&
-      mouseY >= ui.buttons.stances.passiveInactive.dy &&
-      mouseY <= ui.buttons.stances.passiveInactive.dy + ui.buttons.stances.passiveInactive.size * ui.buttons.stances.passiveInactive.scale
-    ) {
-      return 'passive';
+  // Right Side - Enemy Section
+  const drawStanceSection = (mouseX, mouseY, stance) => {
+    if (currentMenu === 'listbtn') {
+      ctx.clearRect(screen.width, 640, 192, 64);
+      ctx.drawImage(ui, ui.buttons.stances.attackInactive.sx, ui.buttons.stances.attackInactive.sy, 96, 32, screen.width, 640, 192, 64);
+      switch(stance) {
+        case 'attack':
+          ctx.drawImage(
+            ui,
+            ui.buttons.stances.attackActive.sx,
+            ui.buttons.stances.attackActive.sy,
+            ui.buttons.stances.attackActive.size,
+            ui.buttons.stances.attackActive.size,
+            ui.buttons.stances.attackActive.dx,
+            ui.buttons.stances.attackActive.dy,
+            ui.buttons.stances.attackActive.size * ui.buttons.stances.attackActive.scale,
+            ui.buttons.stances.attackActive.size * ui.buttons.stances.attackActive.scale
+          );
+          break;
+        case 'defend':
+          ctx.drawImage(
+            ui,
+            ui.buttons.stances.defendActive.sx,
+            ui.buttons.stances.defendActive.sy,
+            ui.buttons.stances.defendActive.size,
+            ui.buttons.stances.defendActive.size,
+            ui.buttons.stances.defendActive.dx,
+            ui.buttons.stances.defendActive.dy,
+            ui.buttons.stances.defendActive.size * ui.buttons.stances.defendActive.scale,
+            ui.buttons.stances.defendActive.size * ui.buttons.stances.defendActive.scale
+          );
+          break;
+        case 'passive':
+          ctx.drawImage(
+            ui,
+            ui.buttons.stances.passiveActive.sx,
+            ui.buttons.stances.passiveActive.sy,
+            ui.buttons.stances.passiveActive.size,
+            ui.buttons.stances.passiveActive.size,
+            ui.buttons.stances.passiveActive.dx,
+            ui.buttons.stances.passiveActive.dy,
+            ui.buttons.stances.passiveActive.size * ui.buttons.stances.passiveActive.scale,
+            ui.buttons.stances.passiveActive.size * ui.buttons.stances.passiveActive.scale
+          );
+          break;
+        default: break;
+      };
     };
   };
+
+  const checkStance = (mouseX, mouseY) => {
+    if (currentMenu === 'listbtn') {
+      if (
+        mouseX >= ui.buttons.stances.attackInactive.dx &&
+        mouseX <= ui.buttons.stances.attackInactive.dx + ui.buttons.stances.attackInactive.size * ui.buttons.stances.attackInactive.scale &&
+        mouseY >= ui.buttons.stances.attackInactive.dy &&
+        mouseY <= ui.buttons.stances.attackInactive.dy + ui.buttons.stances.attackInactive.size * ui.buttons.stances.attackInactive.scale
+      ) {
+        return 'attack';
+      };
+  
+      if (
+        mouseX >= ui.buttons.stances.defendInactive.dx &&
+        mouseX <= ui.buttons.stances.defendInactive.dx + ui.buttons.stances.defendInactive.size * ui.buttons.stances.defendInactive.scale &&
+        mouseY >= ui.buttons.stances.defendInactive.dy &&
+        mouseY <= ui.buttons.stances.defendInactive.dy + ui.buttons.stances.defendInactive.size * ui.buttons.stances.defendInactive.scale
+      ) {
+        return 'defend';
+      };
+  
+      if (
+        mouseX >= ui.buttons.stances.passiveInactive.dx &&
+        mouseX <= ui.buttons.stances.passiveInactive.dx + ui.buttons.stances.passiveInactive.size * ui.buttons.stances.passiveInactive.scale &&
+        mouseY >= ui.buttons.stances.passiveInactive.dy &&
+        mouseY <= ui.buttons.stances.passiveInactive.dy + ui.buttons.stances.passiveInactive.size * ui.buttons.stances.passiveInactive.scale
+      ) {
+        return 'passive';
+      };
+    };
+  };
+
+  // Create Items
+  const initItem = (id, type, name, sx, sy, dx, dy, scale = 1) => {
+    const rpgItem = new Item(id, type, name, sx, sy, dx, dy, scale);
+    
+    for (const category in resources.itemData) {
+      if (category === type) {
+        for (const item in resources.itemData[category]) {
+          if (item === name) {
+            for (const property in resources.itemData[category][item]) {
+              rpgItem[property] = resources.itemData[category][item][property];
+            };
+          };
+        };
+      };
+    };
+    console.log(`${rpgItem.name} created - `, rpgItem);
+
+    if (isInEquipmentSection(rpgItem)) {
+      equipped.push(rpgItem);
+    } else {
+      items.push(rpgItem);
+    };
+  };
+
+  // Move Items In Range of Player
+  const isInRangeOfPlayer = (objX, objY) => {
+    return (
+      objX >= screen.width / 2 - 96 &&
+      objX < screen.width / 2 + 96 &&
+      objY >= screen.height / 2 - 96 &&
+      objY < screen.height / 2 + 96
+    );
+  };
+  
+  const isMouseOverItem = (mouseX, mouseY, item) => {
+    return (
+      mouseX >= item.dx &&
+      mouseX <= item.dx + item.size * item.scale &&
+      mouseY >= item.dy &&
+      mouseY <= item.dy + item.size * item.scale
+    );
+  };
+
+  const findItemUnderMouse = (mouseX, mouseY, array) => {
+    canvas.style.cursor = 'grab';
+    for (let i = array.length - 1 ; i >= 0 ; i--) {
+      const currentItem = array[i];
+      if (isMouseOverItem(mouseX, mouseY, currentItem)) {
+        return currentItem;
+      };
+    };
+    return null;
+  };
+
+  // const loadEquippedItems = () => {
+  //   if (player.data.performance.equipped.back) {
+  //     const item = player.data.performance.equipped.back;
+  //     initItem(
+  //       item.id,
+  //       item.type,
+  //       item.name,
+  //       item.sx,
+  //       item.sy,
+  //       player.destination.dx + 16,
+  //       player.destination.dy + 16
+  //     )
+  //     const newItem = items.find(piece => piece.id === item.id);
+  //     newItem.scale = 0.5;
+  //     newItem.dx = equip.back.x;
+  //     newItem.dy = equip.back.y;
+  //     equip.back.slot = newItem;
+  //     equipped.push(newItem);
+  //     items.splice(items.indexOf(newItem), 1);
+  //   };
+  // };
   
   // Event Listeners
   addEventListener('mousedown', (e) => {
@@ -1077,7 +1069,7 @@ window.addEventListener('load', (event) => {
         }; 
       };
   
-      if (selectedItem && isInPlayerRange(selectedItem.dx, selectedItem.dy)) {
+      if (selectedItem && isInRangeOfPlayer(selectedItem.dx, selectedItem.dy)) {
         selectedItem.isDragging = true;
         canvas.style.cursor = 'grabbing';
         originalItemPosition = {
@@ -1086,28 +1078,28 @@ window.addEventListener('load', (event) => {
         };
       };
   
-      if (checkToggle(mouseX, mouseY)) {
-        currentMenu = checkToggle(mouseX, mouseY);
+      if (checkMenuToggle(mouseX, mouseY)) {
+        currentMenu = checkMenuToggle(mouseX, mouseY);
         drawRightSideUI();
       };
   
-      for (let btn in ui.buttons.menu) {
-        if (isMouseOverMapScrollButton(mouseX, mouseY, ui.buttons.menu[btn])) {
+      for (const btn in ui.buttons.mapSectionScroll) {
+        if (isMouseOverButton(mouseX, mouseY, ui.buttons.mapSectionScroll[btn])) {
           if (btn == 'activeDown') {
-            btnToggle = true;
+            mapContentButton = true;
             ctx.clearRect(screen.width, 256, 192, 448);
             drawMapContentSection();
           } else {
-            btnToggle = false;
+            mapContentButton = false;
             ctx.clearRect(screen.width, 256, 192, 448);
             drawMapContentSection();
           };
         };
       };
       
-      if (currentMenu === 'inventorybtn' && checkStance(mouseX, mouseY)) {
+      if (currentMenu === 'listbtn' && checkStance(mouseX, mouseY)) {
         stance = checkStance(mouseX, mouseY);
-        drawStance(mouseX, mouseY, stance);
+        drawStanceSection(mouseX, mouseY, stance);
       };
     };
   });
@@ -1118,7 +1110,7 @@ window.addEventListener('load', (event) => {
       const mouseY = e.clientY - canvas.getBoundingClientRect().top;
       const selectedItem = findItemUnderMouse(mouseX, mouseY, items);
 
-      if (selectedItem && !selectedItem.isDragging) {
+      if (selectedItem && !selectedItem.isDragging && currentMenu !== 'mapbtn') {
         switch(selectedItem.type) {
           case 'back':
             itemData.innerHTML = `
@@ -1240,7 +1232,7 @@ window.addEventListener('load', (event) => {
           ctx.clearRect(150, 20, screen.width - 300, screen.height - 40);  
           fillLinesOfText(content.area, content.description, 26);
           ctx.drawImage(mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40);
-          ctx.drawImage(ui, 96, 288, 32, 32, content.location.x, content.location.y, 32, 32)
+          ctx.drawImage(ui, 96, 288, 32, 32, content.mapx, content.mapy, 32, 32)
         };
       };
     };
@@ -1249,7 +1241,7 @@ window.addEventListener('load', (event) => {
   addEventListener('mouseup', (e) => {
     if (form.closed) {
       items.forEach(item => {
-        if (item.isDragging && isInPlayerRange(item.dx, item.dy)) {
+        if (item.isDragging && isInRangeOfPlayer(item.dx, item.dy)) {
           let posX = e.clientX - canvas.getBoundingClientRect().left;
           let posY = e.clientY - canvas.getBoundingClientRect().top;
           item.dx = Math.floor(posX / 64) * 64;
@@ -1259,19 +1251,18 @@ window.addEventListener('load', (event) => {
             items.splice(items.indexOf(item), 1);
           } else if (
             collisionDetect(item.dx, item.dy)
-
             // --- check if item is outside of visible area
-
           ) {
             item.dx = originalItemPosition.x;
             item.dy = originalItemPosition.y;
           };
-
+          
           item.isDragging = false;
-          if (currentMenu === 'inventorybtn') {
+          drawGenus({ player });
+          
+          if (isInEquipmentSection(item)) {
             handleEquipping(item);
           };
-          drawGenus({ player });
         };
       });
 
@@ -1284,9 +1275,9 @@ window.addEventListener('load', (event) => {
             item.dy = Math.floor(posY / 64) * 64;
 
             if (waterDetect(item.dx, item.dy)) {
-              resetEquipSlot(item);
+              resetEquipmentSlot(item);
               equipped.splice(equipped.indexOf(item), 1);
-              drawEquip();
+              drawEquipmentSection();
             } else if (collisionDetect(item.dx, item.dy)) {
               item.dx = originalItemPosition.x;
               item.dy = originalItemPosition.y;
@@ -1300,39 +1291,11 @@ window.addEventListener('load', (event) => {
             ) {
               item.scale = 1;
               item.isDragging = false;
+              resetEquipmentSlot(item);
               items.push(item);
-              resetEquipSlot(item);
-              equipped.splice(equipped.indexOf(item), 1);
-              switch(item.type) {
-                case 'back':
-                  player.data.performance.equipped.back = 'empty';
-                  drawInventory();
-                  break;
-                case 'neck':
-                  player.data.performance.equipped.neck = 'empty';
-                  break;
-                case 'head':
-                  player.data.performance.equipped.head = 'empty';
-                  break;
-                case 'chest':
-                  player.data.performance.equipped.chest = 'empty';
-                  break;
-                case 'legs':
-                  player.data.performance.equipped.legs = 'empty';
-                  break;
-                case 'feet':
-                  player.data.performance.equipped.feet = 'empty';
-                  break;
-                case 'mainhand':
-                  player.data.performance.equipped.mainhand = 'empty';
-                  break;
-                case 'offhand':
-                  player.data.performance.equipped.offhand = 'empty';
-                  break;
-              };
-              
+              equipped.splice(equipped.indexOf(item), 1);              
               drawGenus({ player });
-              drawEquip();
+              drawEquipmentSection();
             };
           };
         });

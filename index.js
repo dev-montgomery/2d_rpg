@@ -60,32 +60,32 @@ window.addEventListener('load', (event) => {
   const upperTiles = [ 576, 577, 578, 579, 601, 602, 603, 604 ];
   const waterTiles = [ 1, 2, 3, 4, 5, 6, 7, 8 ];
   const mapContentsGenus = {
-    1: { x: 493, y: 588, area: "The Genus Temple", description: "An antiquated sanctuary said to have been constructed when the gods wandered the Oasis. In service to the old world, warpriest Heremal welcomes new generations of warriors." },
-    2: { x: 530, y: 545, area: "Willow's Rest", description: "It lacks charm, comfort, and cleanliness... but it does have beds." },
-    3: { x: 489, y: 549, area: "Spell's Antica", description: "Unleash the power within and embark on a journey where every incantation opens a door of possibility. Your adventure in the arcane begins here." },
-    4: { x: 451, y: 534, area: "Textiles and Tools", description: "Your clothes and your tools are a reflection of you. Begin your journey with the right weapon, some clothes, and a fishing pole so you won't go hungry." },
-    5: { x: 454, y: 557, area: "Genus Harvest", description: "Unique foods offer a unique experience. The right meal can fill you with the warmth of a thousand hearths. The wrong one can send you on a gastronomic adventure." },
-    6: { x: 525, y: 420, area: "House Militem", description: "Set forth into the world with a foundation of physical prowess as a knight of the East Oasis. A symbol of strength and valor. Their tales are sung by bards. Their deeds, etched into the tapestry of the Oasis." },
-    7: { x: 506, y: 444, area: "Pillar of The Militem", description: "Etched on a plaque near the base: \"Arm Day, every day.\" - Knight Aalok" },
-    8: { x: 456, y: 496, area: "House Arcus", description: "The archer of the East Oasis is the harbinger of swift and precise justice. A symbol of courage and independence. Every arrow, shaping the outcome on the battlefield." },
-    9: { x: 476, y: 472, area: "Pillar of The Arcus", description: "Etched on a plaque near the base: \"Pew Pew Pew!\" - Guy With Bow" },
-    10: { x: 456, y: 420, area: "House Maleficus", description: "Those of the East Oasis who embrace the arcane seek the rawest form of power. Many fear it like the storm, but never has an arrow broken a storm. Never has a shield stopped its path." },
-    11: { x: 476, y: 444, area: "Pillar of The Maleficus", description: "Etched on a plaque near the base: \"Ancient spirits of evil...\" - Mumm-Ra" },
-    12: { x: 525, y: 496, area: "House Medicus", description: "Discover the power derived from nature as a guardian of its secrets. To be a harbinger of life is to also be an arbiter of death." },
-    13: { x: 506, y: 472, area: "Pillar of The Medicus", description: "Etched on a plaque near the base: \"We surreptitiously live surrounded by magic... in the petals. the leaves, the roots of Oasis trees. Those who take the time to appreciate it are bound to learn from it.\" - Riker" },
-    14: { x: 403, y: 477, area: "Swiftpost: Genus", description: "Purchase a letter to send to a friend or a parcel to ship items. The Swiftpost is where you may also purchase labels for your backpacks." },
-    15: { x: 395, y: 433, area: "Depot: Genus", description: "A place to hang your rope, stash your shovel, deposit your coin, and do business with others; however, buyer beware. Trades are not guaranteed." },
-    16: { x: 458, y: 386, area: "Feybrew Flasks", description: "A wise man once said, \"buy some flasks.\" These flasks will meet your needs. A quick heal, some desired energy, a cure for what ails you. You'll be hard-pressed to find more suitable potions on Genus." },
-    17: { x: 511, y: 380, area: "Genus Weaponsmith", description: "If you are finding your adventures across Genus difficult, it may very well be because you are ill equipped. Purchase a finer weapon and mind your skills. Maybe visit the armory." },
-    18: { x: 571, y: 395, area: "Genus Armory", description: "For a hefty price, you may acquire some of the island's finest armor. For a moderate price you can buy something else." },
-    19: { x: 585, y: 435, area: "The Ugly Door Tavern", description: "\"Where's this ugly door?\" That's not important. Enter and enjoy a bad selection of liquor. It's the best." },
-    20: { x: 575, y: 482, area: "Ye Old Curio", description: "Want to see the Troll King's Cudgel? Or a necklace from a dig of an ancient Merk city? What about the horns of a Minos? Ye Old Curio is a store filled with curious items found across Genus." },
-    21: { x: 285, y: 462, area: "Westbridge", description: "The bridge in the west is currently inaccessible." },
-    22: { x: 660, y: 462, area: "Eastbridge", description: "The bridge in the east is currently inaccessible." },
-    23: { x: 250, y: 80, area: "The Poison Fields", description: "Beware the spiders in the poison fields. You may be strong enough to handle the spiders, but their poison often proves deadly. On a separate note, The Poison Fields is the only area the Genus Rose grows." },
-    24: { x: 560, y: 270, area: "The Fanged Glen", description: "North of town is a spacious area known for its wolf population. Be careful running into packs of wolves. It becomes exponentially difficult to defend against multiple foes." },
-    25: { x: 252, y: 360, area: "The River Den", description: "Discover the ocean river below, but beware the area's rats and spiders that roam the den." },
-    26: { x: 190, y: 210, area: "The Grottos", description: "Some dangerous creatures can be found in the light of day. More fearsome creatures lurk in its shadows. There are long told tales of a Troll King somewhere beneathe the islands. Beware in the Grottos." } 
+    1: { mapx: 493, mapy: 588, area: "The Genus Temple", description: "An antiquated sanctuary said to have been constructed when the gods wandered the Oasis. In service to the old world, warpriest Heremal welcomes new generations of warriors." },
+    2: { mapx: 530, mapy: 545, area: "Willow's Rest", description: "It lacks charm, comfort, and cleanliness... but it does have beds." },
+    3: { mapx: 489, mapy: 549, area: "Spell's Antica", description: "Unleash the power within and embark on a journey where every incantation opens a door of possibility. Your adventure in the arcane begins here." },
+    4: { mapx: 451, mapy: 534, area: "Textiles and Tools", description: "Your clothes and your tools are a reflection of you. Begin your journey with the right weapon, some clothes, and a fishing pole so you won't go hungry." },
+    5: { mapx: 454, mapy: 557, area: "Genus Harvest", description: "Unique foods offer a unique experience. The right meal can fill you with the warmth of a thousand hearths. The wrong one can send you on a gastronomic adventure." },
+    6: { mapx: 525, mapy: 420, area: "House Militem", description: "Set forth into the world with a foundation of physical prowess as a knight of the East Oasis. A symbol of strength and valor. Their tales are sung by bards. Their deeds, etched into the tapestry of the Oasis." },
+    7: { mapx: 506, mapy: 444, area: "Pillar of The Militem", description: "Etched on a plaque near the base: \"Arm Day, every day.\" - Knight Aalok" },
+    8: { mapx: 456, mapy: 496, area: "House Arcus", description: "The archer of the East Oasis is the harbinger of swift and precise justice. A symbol of courage and independence. Every arrow, shaping the outcome on the battlefield." },
+    9: { mapx: 476, mapy: 472, area: "Pillar of The Arcus", description: "Etched on a plaque near the base: \"Pew Pew Pew!\" - Guy With Bow" },
+    10: { mapx: 456, mapy: 420, area: "House Maleficus", description: "Those of the East Oasis who embrace the arcane seek the rawest form of power. Many fear it like the storm, but never has an arrow broken a storm. Never has a shield stopped its path." },
+    11: { mapx: 476, mapy: 444, area: "Pillar of The Maleficus", description: "Etched on a plaque near the base: \"Ancient spirits of evil...\" - Mumm-Ra" },
+    12: { mapx: 525, mapy: 496, area: "House Medicus", description: "Discover the power derived from nature as a guardian of its secrets. To be a harbinger of life is to also be an arbiter of death." },
+    13: { mapx: 506, mapy: 472, area: "Pillar of The Medicus", description: "Etched on a plaque near the base: \"We surreptitiously live surrounded by magic... in the petals. the leaves, the roots of Oasis trees. Those who take the time to appreciate it are bound to learn from it.\" - Riker" },
+    14: { mapx: 403, mapy: 477, area: "Swiftpost: Genus", description: "Purchase a letter to send to a friend or a parcel to ship items. The Swiftpost is where you may also purchase labels for your backpacks." },
+    15: { mapx: 395, mapy: 433, area: "Depot: Genus", description: "A place to hang your rope, stash your shovel, deposit your coin, and do business with others; however, buyer beware. Trades are not guaranteed." },
+    16: { mapx: 458, mapy: 386, area: "Feybrew Flasks", description: "A wise man once said, \"buy some flasks.\" These flasks will meet your needs. A quick heal, some desired energy, a cure for what ails you. You'll be hard-pressed to find more suitable potions on Genus." },
+    17: { mapx: 511, mapy: 380, area: "Genus Weaponsmith", description: "If you are finding your adventures across Genus difficult, it may very well be because you are ill equipped. Purchase a finer weapon and mind your skills. Maybe visit the armory." },
+    18: { mapx: 571, mapy: 395, area: "Genus Armory", description: "For a hefty price, you may acquire some of the island's finest armor. For a moderate price you can buy something else." },
+    19: { mapx: 585, mapy: 435, area: "The Ugly Door Tavern", description: "\"Where's this ugly door?\" That's not important. Enter and enjoy a bad selection of liquor. It's the best." },
+    20: { mapx: 575, mapy: 482, area: "Ye Old Curio", description: "Want to see the Troll King's Cudgel? Or a necklace from a dig of an ancient Merk city? What about the horns of a Minos? Ye Old Curio is a store filled with curious items found across Genus." },
+    21: { mapx: 285, mapy: 462, area: "Westbridge", description: "The bridge in the west is currently inaccessible." },
+    22: { mapx: 660, mapy: 462, area: "Eastbridge", description: "The bridge in the east is currently inaccessible." },
+    23: { mapx: 250, mapy: 80, area: "The Poison Fields", description: "Beware the spiders in the poison fields. You may be strong enough to handle the spiders, but their poison often proves deadly. On a separate note, the Poison Fields is the only area where the Genus Rose grows." },
+    24: { mapx: 560, mapy: 270, area: "The Fanged Glen", description: "North of town is a spacious area known for its wolf population. Be careful running into packs of wolves. It becomes exponentially difficult to defend against multiple foes." },
+    25: { mapx: 252, mapy: 360, area: "The River Den", description: "Discover the ocean river below, but beware the area's rats and spiders that roam the den." },
+    26: { mapx: 190, mapy: 210, area: "The Grottos", description: "Some dangerous creatures can be found in the light of day. More fearsome creatures lurk in its shadows. There are long told tales of a Troll King somewhere beneathe the islands. Beware in the Grottos." } 
   };
   const equipmentSlotLocations = {
     neck: { x: screen.width + offsetEquip, y: offsetEquip },
@@ -110,7 +110,7 @@ window.addEventListener('load', (event) => {
   // Let Variables - Strings | Bools | Arrays | Objects
   let currentMenu = 'inventorybtn';
   let stance = 'defend';
-  let btnToggle = false;
+  let mapContentButton = false;
   let chatbox = false;
   let boundaries = [], wateries = [];
   let items = [];
@@ -313,6 +313,28 @@ window.addEventListener('load', (event) => {
   };
 
   // Handle Right Side UI
+  const drawRightSideUI = () => {
+    ctx.clearRect(screen.width, 0, 192, 704);
+    drawGenus({ player });
+    switch(currentMenu) {
+      case 'mapbtn':
+        drawMenuSection(currentMenu);
+        drawMapContentSection();
+        break;
+      case 'inventorybtn':
+        drawMenuSection(currentMenu);
+        drawEquipmentSection();
+        // drawInventorySection(player.data.performance.equipped.back.name);
+        // drawStanceSection(0, 0, stance);
+      break;
+      case 'listbtn':
+        drawMenuSection(currentMenu);
+        drawStanceSection(0, 0, stance);
+        break;
+      default: break;
+    };
+  };
+  
   const drawMenuSection = (string) => {
     let current;
     switch(string) {
@@ -343,29 +365,7 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  const drawRightSideUI = () => {
-    ctx.clearRect(screen.width, 0, 192, 704);
-    drawGenus({ player });
-    switch(currentMenu) {
-      case 'mapbtn':
-        drawMenuSection(currentMenu);
-        // drawInterfaceToggleMenu(string);
-        break;
-      case 'inventorybtn':
-        drawMenuSection(currentMenu);
-        drawEquipmentSection(equipped);
-        drawInventorySection(player.data.performance.equipped.back.name);
-        // drawStanceSection(0, 0, stance);
-      break;
-      case 'listbtn':
-        drawMenuSection(currentMenu);
-        drawStanceSection(0, 0, stance);
-        break;
-      default: break;
-    };
-  };
-
-  const checkToggle = (mouseX, mouseY) => {
+  const checkMenuToggle = (mouseX, mouseY) => {
     if (
       mouseX >= ui.buttons.menu.mapbtn.dx &&
       mouseX <= ui.buttons.menu.mapbtn.dx + ui.buttons.menu.mapbtn.size &&
@@ -401,10 +401,11 @@ window.addEventListener('load', (event) => {
       ctx.clearRect(screen.width, 256, 192, 448);
       ctx.drawImage(mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40);
       ctx.font = '1.5rem Arial';
+      ctx.fillStyle = '#fff';
       ctx.fillText('Genus Island', screen.width + 20, 50);
       ctx.font = '1rem Arial';
       ctx.fillText('Town and Outskirts', screen.width + 20, 80);
-      if (!btnToggle) {
+      if (!mapContentButton) {
         ctx.drawImage(ui, ui.buttons.mapSectionScroll.activeUp.sx, ui.buttons.mapSectionScroll.activeUp.sy, ui.buttons.mapSectionScroll.activeUp.size, ui.buttons.mapSectionScroll.activeUp.size, ui.buttons.mapSectionScroll.activeUp.dx, ui.buttons.mapSectionScroll.activeUp.dy, ui.buttons.mapSectionScroll.activeUp.size, ui.buttons.mapSectionScroll.activeUp.size);
         ctx.drawImage(ui, ui.buttons.mapSectionScroll.inactiveDown.sx, ui.buttons.mapSectionScroll.inactiveDown.sy, ui.buttons.mapSectionScroll.inactiveDown.size, ui.buttons.mapSectionScroll.inactiveDown.size, ui.buttons.mapSectionScroll.inactiveDown.dx, ui.buttons.mapSectionScroll.inactiveDown.dy, ui.buttons.mapSectionScroll.inactiveDown.size, ui.buttons.mapSectionScroll.inactiveDown.size);
         let keyCount = 0;
@@ -420,8 +421,7 @@ window.addEventListener('load', (event) => {
   
           if (mapContentsGenus.hasOwnProperty(key)) {
             const mapX = screen.width + 25, mapY = 310 + (20 * keyCount);
-            ctx.fillText( mapContentsGenus[key].area, mapX, mapY );
-            
+            ctx.fillText(mapContentsGenus[key].area, mapX, mapY);
             mapContentsGenus[key].x = mapX;
             mapContentsGenus[key].y = mapY - 12;
             mapContentsGenus[key].width = 130;
@@ -432,7 +432,7 @@ window.addEventListener('load', (event) => {
   
           if(keyCount === 20) break;
         }; 
-      } else if (btnToggle) {
+      } else if (mapContentButton) {
         ctx.drawImage( ui, ui.buttons.mapSectionScroll.inactiveUp.sx, ui.buttons.mapSectionScroll.inactiveUp.sy, ui.buttons.mapSectionScroll.inactiveUp.size, ui.buttons.mapSectionScroll.inactiveUp.size, ui.buttons.mapSectionScroll.inactiveUp.dx, ui.buttons.mapSectionScroll.inactiveUp.dy, ui.buttons.mapSectionScroll.inactiveUp.size, ui.buttons.mapSectionScroll.inactiveUp.size );
         ctx.drawImage( ui, ui.buttons.mapSectionScroll.activeDown.sx, ui.buttons.mapSectionScroll.activeDown.sy, ui.buttons.mapSectionScroll.activeDown.size, ui.buttons.mapSectionScroll.activeDown.size, ui.buttons.mapSectionScroll.activeDown.dx, ui.buttons.mapSectionScroll.activeDown.dy, ui.buttons.mapSectionScroll.activeDown.size, ui.buttons.mapSectionScroll.activeDown.size );
         let keyCount = 0, yAxis = 0;
@@ -467,6 +467,15 @@ window.addEventListener('load', (event) => {
     };
   };
 
+  const isMouseOverButton = (mouseX, mouseY, button) => {
+    return (
+      mouseX >= button.dx &&
+      mouseX <= button.dx + button.size &&
+      mouseY >= button.dy &&
+      mouseY <= button.dy + button.size
+    );
+  };
+
   const findContentUnderMouse = (mouseX, mouseY) => {
     for (const key in mapContentsGenus) {
       const content = mapContentsGenus[key];
@@ -475,6 +484,15 @@ window.addEventListener('load', (event) => {
       };
     };
     return null;
+  };
+
+  const isMouseOverContent = (mouseX, mouseY, content) => {
+    return (
+      mouseX >= content.x &&
+      mouseX <= content.x + content.width &&
+      mouseY >= content.y &&
+      mouseY <= content.y + content.height
+    );
   };
 
   const fillLinesOfText = (name, text, width) => {
@@ -506,31 +524,30 @@ window.addEventListener('load', (event) => {
   };
 
   // Right Side - Inventory Section
-  const drawEquipmentSection = (array) => {
+  const drawEquipmentSection = () => {
     if (currentMenu === 'inventorybtn') {
       ctx.clearRect(screen.width, 0, 192, 192);
       ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
-      array.forEach(item => item.draw(ctx));
-    }
+      equipped.forEach(item => item.draw(ctx));
+    };
   };
 
   const isInEquipmentSection = (item) => {
     return (
-      item.dx < screen.width + 192 &&
-      item.dx + item.size > screen.width &&
-      item.dy < 192 &&
-      item.dy + item.size > 0
+      item.dx > screen.width &&
+      item.dx + item.size < screen.width + 192 &&
+      item.dy > 0 &&
+      item.dy + item.size < 192
     );
   };
 
   const handleEquipping = (item) => {
-    if (isInEquipmentSection(item)) {
+    if (currentMenu === 'inventorybtn') {
       switch(item.type) {
         case 'neck':
           if (player.data.performance.equipped.neck) {
-            const prev = equip.neck.slot;
+            const prev = player.data.performance.equipped.neck;
             if (prev.id !== item.id) {
-              equip.neck.slot = null;
               prev.dx = originalItemPosition.x;
               prev.dy = originalItemPosition.y;
               prev.scale = 1;
@@ -541,9 +558,8 @@ window.addEventListener('load', (event) => {
           };
 
           if (player.data.performance.equipped.neck = 'empty') {
-            equip.neck.slot = item;
-            item.dx = equip.neck.x;
-            item.dy = equip.neck.y;
+            item.dx = equipmentSlotLocations.neck.x;
+            item.dy = equipmentSlotLocations.neck.y;
             item.scale = 0.5;
             player.data.performance.equipped.neck = item;
             equipped.push(item);
@@ -551,202 +567,35 @@ window.addEventListener('load', (event) => {
           };
 
           drawGenus({ player });
-          drawEquip();
+          drawEquipmentSection();
           break;
         case 'head':
-          if (equip.head.slot) {
-            const prev = equip.head.slot;
-            if (prev.id !== item.id) {
-              equip.head.slot = null;
-              prev.dx = originalItemPosition.x;
-              prev.dy = originalItemPosition.y;
-              prev.scale = 1;
-              // player.data.performance.equipped.head = 'empty';
-              items.push(prev);
-              equipped.splice(equipped.indexOf(prev), 1);
-            };
-          };
-
-          if (equip.head.slot === null) {
-            equip.head.slot = item;
-            item.dx = equip.head.x;
-            item.dy = equip.head.y;
-            item.scale = 0.5;
-            // player.data.performance.equipped.head = item;
-            equipped.push(item);
-            items.splice(items.indexOf(item), 1);
-          };
-
-          drawGenus({ player });
-          drawEquip();
+          
           break;
         case 'back':
-          if (equip.back.slot) {
-            const prev = equip.back.slot;
-            if (prev.id !== item.id) {
-              equip.back.slot = null;
-              prev.dx = originalItemPosition.x;
-              prev.dy = originalItemPosition.y;
-              prev.scale = 1;
-              items.push(prev);
-              equipped.splice(equipped.indexOf(prev), 1);
-            };
-          };
           
-          if (equip.back.slot === null) {
-            equip.back.slot = item;
-            item.dx = equip.back.x;
-            item.dy = equip.back.y;
-            item.scale = 0.5;
-            player.data.performance.equipped.back = item;
-            equipped.push(item);
-            items.splice(items.indexOf(item), 1);
-          };
-          drawGenus({ player });
-          drawEquip();
-          drawInventory(player.data.performance.equipped.back.name);
           break;
         case 'chest':
-          if (equip.chest.slot) {
-            const prev = equip.chest.slot;
-            if (prev.id !== item.id) {
-              equip.chest.slot = null;
-              prev.dx = originalItemPosition.x;
-              prev.dy = originalItemPosition.y;
-              prev.scale = 1;
-              // player.data.performance.equipped.chest = 'empty';
-              items.push(prev);
-              equipped.splice(equipped.indexOf(prev), 1);
-            };
-          };
-
-          if (equip.chest.slot === null) {
-            equip.chest.slot = item;
-            item.dx = equip.chest.x;
-            item.dy = equip.chest.y;
-            item.scale = 0.5;
-            // player.data.performance.equipped.chest = item;
-            equipped.push(item);
-            items.splice(items.indexOf(item), 1);
-          };
-
-          drawGenus({ player });
-          drawEquip();
+          
           break;
         case 'offhand':
-          if (equip.offhand.slot) {
-            const prev = equip.offhand.slot;
-            if (prev.id !== item.id) {
-              equip.offhand.slot = null;
-              prev.dx = originalItemPosition.x;
-              prev.dy = originalItemPosition.y;
-              prev.scale = 1;
-              // player.data.performance.equipped.offhand = 'empty';
-              items.push(prev);
-              equipped.splice(equipped.indexOf(prev), 1);
-            };
-          };
-
-          if (equip.offhand.slot === null) {
-            equip.offhand.slot = item;
-            item.dx = equip.offhand.x;
-            item.dy = equip.offhand.y;
-            item.scale = 0.5;
-            // player.data.performance.equipped.offhand = item;
-            equipped.push(item);
-            items.splice(items.indexOf(item), 1);
-          };
-
-          drawGenus({ player });
-          drawEquip();
+          
           break;
         case 'mainhand':
-          if (equip.mainhand.slot) {
-            const prev = equip.mainhand.slot;
-            if (prev.id !== item.id) {
-              equip.mainhand.slot = null;
-              prev.dx = originalItemPosition.x;
-              prev.dy = originalItemPosition.y;
-              prev.scale = 1;
-              // player.data.performance.equipped.mainhand = 'empty';
-              items.push(prev);
-              equipped.splice(equipped.indexOf(prev), 1);
-            };
-          };
-
-          if (equip.mainhand.slot === null) {
-            equip.mainhand.slot = item;
-            item.dx = equip.mainhand.x;
-            item.dy = equip.mainhand.y;
-            item.scale = 0.5;
-            // player.data.performance.equipped.mainhand = item;
-            equipped.push(item);
-            items.splice(items.indexOf(item), 1);
-          };
-
-          drawGenus({ player });
-          drawEquip();  
+          
           break;
         case 'legs':
-          if (equip.legs.slot) {
-            const prev = equip.legs.slot;
-            if (prev.id !== item.id) {
-              equip.legs.slot = null;
-              prev.dx = originalItemPosition.x;
-              prev.dy = originalItemPosition.y;
-              prev.scale = 1;
-              // player.data.performance.equipped.legs = 'empty';
-              items.push(prev);
-              equipped.splice(equipped.indexOf(prev), 1);
-            };
-          };
-
-          if (equip.legs.slot === null) {
-            equip.legs.slot = item;
-            item.dx = equip.legs.x;
-            item.dy = equip.legs.y;
-            item.scale = 0.5;
-            // player.data.performance.equipped.legs = item;
-            equipped.push(item);
-            items.splice(items.indexOf(item), 1);
-          };
-
-          drawGenus({ player });
-          drawEquip();
+          
           break;
         case 'feet':
-          if (equip.feet.slot) {
-            const prev = equip.feet.slot;
-            if (prev.id !== item.id) {
-              equip.feet.slot = null;
-              prev.dx = originalItemPosition.x;
-              prev.dy = originalItemPosition.y;
-              prev.scale = 1;
-              // player.data.performance.equipped.feet = 'empty';
-              items.push(prev);
-              equipped.splice(equipped.indexOf(prev), 1);
-            };
-          };
-
-          if (equip.feet.slot === null) {
-            equip.feet.slot = item;
-            item.dx = equip.feet.x;
-            item.dy = equip.feet.y;
-            item.scale = 0.5;
-            // player.data.performance.equipped.feet = item;
-            equipped.push(item);
-            items.splice(items.indexOf(item), 1);
-          };
-
-          drawGenus({ player });
-          drawEquip();
+          
           break;
         default: break;
       };
     };
   };
 
-  const resetEquipSlot = (item) => {
+  const resetEquipmentSlot = (item) => {
     switch(item.type) {
       case 'neck':
         player.data.performance.equipped.neck = 'empty';
@@ -776,113 +625,113 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  const drawInventorySection = (backpack = 'empty') => {
-    if (currentMenu === 'inventorybtn') {
-      const inventoryScroll = (inventory, toggle = 'up', first = 24, second = 12) => {
-        if (toggle === 'up') {
-          for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
-            const x = i % 6 * 32;
-            const y = Math.floor(i / 6) * 32;
-            if (i < first) {
-              ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
-            };
-            if (inventory[i]) {
-              const item = inventory[i];
-              ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
-            };
-          };
-        };
+  // const drawInventorySection = (backpack = 'empty') => {
+  //   if (currentMenu === 'inventorybtn') {
+  //     const inventoryScroll = (inventory, toggle = 'up', first = 24, second = 12) => {
+  //       if (toggle === 'up') {
+  //         for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
+  //           const x = i % 6 * 32;
+  //           const y = Math.floor(i / 6) * 32;
+  //           if (i < first) {
+  //             ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
+  //           };
+  //           if (inventory[i]) {
+  //             const item = inventory[i];
+  //             ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
+  //           };
+  //         };
+  //       };
 
-        if (toggle === 'down') {
-          for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
-            const x = i % 6 * 32;
-            const y = Math.floor(i / 6) * 32;
-            if (i < second) {
-              ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
-            };
-            if (inventory[i + first - 1]) {
-              const item = inventory[i + first - 1];
-              ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
-            };
-          };
-        };
-      };
+  //       if (toggle === 'down') {
+  //         for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
+  //           const x = i % 6 * 32;
+  //           const y = Math.floor(i / 6) * 32;
+  //           if (i < second) {
+  //             ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
+  //           };
+  //           if (inventory[i + first - 1]) {
+  //             const item = inventory[i + first - 1];
+  //             ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
+  //           };
+  //         };
+  //       };
+  //     };
 
-      ctx.clearRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 448);
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 448);
+  //     ctx.clearRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 448);
+  //     ctx.fillStyle = '#fff';
+  //     ctx.fillRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 448);
       
-      switch (backpack) {
-        case 'backpack':
-          inventoryContainerSizes.open.backpack = true;
-          ctx.drawImage(
-            ui,
-            0,
-            256,
-            ui.size,
-            ui.size,
-            inventoryContainerSizes.inventorySection.x,
-            inventoryContainerSizes.inventorySection.y,
-            ui.size,
-            ui.size
-          );
+  //     switch (backpack) {
+  //       case 'backpack':
+  //         inventoryContainerSizes.open.backpack = true;
+  //         ctx.drawImage(
+  //           ui,
+  //           0,
+  //           256,
+  //           ui.size,
+  //           ui.size,
+  //           inventoryContainerSizes.inventorySection.x,
+  //           inventoryContainerSizes.inventorySection.y,
+  //           ui.size,
+  //           ui.size
+  //         );
 
-          inventoryScroll(inventory);
-          break;
-        case 'labeledbackpack':
-          inventoryContainerSizes.open.backpack = true;
-          ctx.drawImage(
-            ui,
-            0,
-            288,
-            ui.size,
-            ui.size,
-            inventoryContainerSizes.inventorySection.x,
-            inventoryContainerSizes.inventorySection.y,
-            ui.size,
-            ui.size
-          );
+  //         inventoryScroll(inventory);
+  //         break;
+  //       case 'labeledbackpack':
+  //         inventoryContainerSizes.open.backpack = true;
+  //         ctx.drawImage(
+  //           ui,
+  //           0,
+  //           288,
+  //           ui.size,
+  //           ui.size,
+  //           inventoryContainerSizes.inventorySection.x,
+  //           inventoryContainerSizes.inventorySection.y,
+  //           ui.size,
+  //           ui.size
+  //         );
 
-          inventoryScroll(inventory);
-          break;
-        case 'enchantedbackpack':
-          inventoryContainerSizes.open.backpack = true;
-          ctx.drawImage(
-            ui,
-            32,
-            256,
-            ui.size,
-            ui.size,
-            inventoryContainerSizes.inventorySection.x,
-            inventoryContainerSizes.inventorySection.y,
-            ui.size,
-            ui.size
-          );
+  //         inventoryScroll(inventory);
+  //         break;
+  //       case 'enchantedbackpack':
+  //         inventoryContainerSizes.open.backpack = true;
+  //         ctx.drawImage(
+  //           ui,
+  //           32,
+  //           256,
+  //           ui.size,
+  //           ui.size,
+  //           inventoryContainerSizes.inventorySection.x,
+  //           inventoryContainerSizes.inventorySection.y,
+  //           ui.size,
+  //           ui.size
+  //         );
 
-          inventoryScroll(inventory);
-          break;
-        case 'labeledenchantedbackpack':
-          inventoryContainerSizes.open.backpack = true;
-          ctx.drawImage(
-            ui,
-            32,
-            288,
-            ui.size,
-            ui.size,
-            inventoryContainerSizes.inventorySection.x,
-            inventoryContainerSizes.inventorySection.y,
-            ui.size,
-            ui.size
-          );
+  //         inventoryScroll(inventory);
+  //         break;
+  //       case 'labeledenchantedbackpack':
+  //         inventoryContainerSizes.open.backpack = true;
+  //         ctx.drawImage(
+  //           ui,
+  //           32,
+  //           288,
+  //           ui.size,
+  //           ui.size,
+  //           inventoryContainerSizes.inventorySection.x,
+  //           inventoryContainerSizes.inventorySection.y,
+  //           ui.size,
+  //           ui.size
+  //         );
 
-          inventoryScroll(inventory);
-          break;
-        case 'empty':
-          inventoryContainerSizes.open.backpack = false;
-          break;
-      };
-    };
-  };
+  //         inventoryScroll(inventory);
+  //         break;
+  //       case 'empty':
+  //         inventoryContainerSizes.open.backpack = false;
+  //         break;
+  //     };
+  //   };
+  // };
 
   const isInInventoryArea = (mouseX, mouseY) => {
     return (
@@ -1004,7 +853,7 @@ window.addEventListener('load', (event) => {
   };
 
   // Move Items In Range of Player
-  const inInRangeOfPlayer = (objX, objY) => {
+  const isInRangeOfPlayer = (objX, objY) => {
     return (
       objX >= screen.width / 2 - 96 &&
       objX < screen.width / 2 + 96 &&
@@ -1031,24 +880,6 @@ window.addEventListener('load', (event) => {
       };
     };
     return null;
-  };
-
-  const isMouseOverButton = (mouseX, mouseY, obj) => {
-    return (
-      mouseX >= obj.dx &&
-      mouseX <= obj.dx + obj.size &&
-      mouseY >= obj.dy &&
-      mouseY <= obj.dy + obj.size
-    );
-  };
-
-  const isMouseOverContent = (mouseX, mouseY, content) => {
-    return (
-      mouseX >= content.x &&
-      mouseX <= content.x + content.size &&
-      mouseY >= content.y &&
-      mouseY <= content.y + content.size
-    );
   };
 
   // const loadEquippedItems = () => {
@@ -1090,7 +921,7 @@ window.addEventListener('load', (event) => {
         }; 
       };
   
-      if (selectedItem && inInRangeOfPlayer(selectedItem.dx, selectedItem.dy)) {
+      if (selectedItem && isInRangeOfPlayer(selectedItem.dx, selectedItem.dy)) {
         selectedItem.isDragging = true;
         canvas.style.cursor = 'grabbing';
         originalItemPosition = {
@@ -1099,26 +930,26 @@ window.addEventListener('load', (event) => {
         };
       };
   
-      if (checkToggle(mouseX, mouseY)) {
-        currentMenu = checkToggle(mouseX, mouseY);
+      if (checkMenuToggle(mouseX, mouseY)) {
+        currentMenu = checkMenuToggle(mouseX, mouseY);
         drawRightSideUI();
       };
   
-      for (let btn in ui.buttons.menu) {
-        if (isMouseOverButton(mouseX, mouseY, ui.buttons.menu[btn])) {
+      for (const btn in ui.buttons.mapSectionScroll) {
+        if (isMouseOverButton(mouseX, mouseY, ui.buttons.mapSectionScroll[btn])) {
           if (btn == 'activeDown') {
-            btnToggle = true;
+            mapContentButton = true;
             ctx.clearRect(screen.width, 256, 192, 448);
             drawMapContentSection();
           } else {
-            btnToggle = false;
+            mapContentButton = false;
             ctx.clearRect(screen.width, 256, 192, 448);
             drawMapContentSection();
           };
         };
       };
       
-      if (currentMenu === 'inventorybtn' && checkStance(mouseX, mouseY)) {
+      if (currentMenu === 'listbtn' && checkStance(mouseX, mouseY)) {
         stance = checkStance(mouseX, mouseY);
         drawStanceSection(mouseX, mouseY, stance);
       };
@@ -1131,7 +962,7 @@ window.addEventListener('load', (event) => {
       const mouseY = e.clientY - canvas.getBoundingClientRect().top;
       const selectedItem = findItemUnderMouse(mouseX, mouseY, items);
 
-      if (selectedItem && !selectedItem.isDragging) {
+      if (selectedItem && !selectedItem.isDragging && currentMenu !== 'mapbtn') {
         switch(selectedItem.type) {
           case 'back':
             itemData.innerHTML = `
@@ -1253,7 +1084,7 @@ window.addEventListener('load', (event) => {
           ctx.clearRect(150, 20, screen.width - 300, screen.height - 40);  
           fillLinesOfText(content.area, content.description, 26);
           ctx.drawImage(mapModal, 0, 0, 1200, 1300, 128, 20, screen.width - 230, screen.height - 40);
-          ctx.drawImage(ui, 96, 288, 32, 32, content.location.x, content.location.y, 32, 32)
+          ctx.drawImage(ui, 96, 288, 32, 32, content.mapx, content.mapy, 32, 32)
         };
       };
     };
@@ -1262,7 +1093,7 @@ window.addEventListener('load', (event) => {
   addEventListener('mouseup', (e) => {
     if (form.closed) {
       items.forEach(item => {
-        if (item.isDragging && inInRangeOfPlayer(item.dx, item.dy)) {
+        if (item.isDragging && isInRangeOfPlayer(item.dx, item.dy)) {
           let posX = e.clientX - canvas.getBoundingClientRect().left;
           let posY = e.clientY - canvas.getBoundingClientRect().top;
           item.dx = Math.floor(posX / 64) * 64;
@@ -1272,18 +1103,15 @@ window.addEventListener('load', (event) => {
             items.splice(items.indexOf(item), 1);
           } else if (
             collisionDetect(item.dx, item.dy)
-
             // --- check if item is outside of visible area
-
           ) {
             item.dx = originalItemPosition.x;
             item.dy = originalItemPosition.y;
+          } else if (isInEquipmentSection(item)) {
+            handleEquipping(item);
           };
 
           item.isDragging = false;
-          if (currentMenu === 'inventorybtn') {
-            handleEquipping(item);
-          };
           drawGenus({ player });
         };
       });
@@ -1297,9 +1125,9 @@ window.addEventListener('load', (event) => {
             item.dy = Math.floor(posY / 64) * 64;
 
             if (waterDetect(item.dx, item.dy)) {
-              resetEquipSlot(item);
+              resetEquipmentSlot(item);
               equipped.splice(equipped.indexOf(item), 1);
-              drawEquip();
+              drawEquipmentSection();
             } else if (collisionDetect(item.dx, item.dy)) {
               item.dx = originalItemPosition.x;
               item.dy = originalItemPosition.y;
@@ -1313,39 +1141,11 @@ window.addEventListener('load', (event) => {
             ) {
               item.scale = 1;
               item.isDragging = false;
+              resetEquipmentSlot(item);
               items.push(item);
-              resetEquipSlot(item);
-              equipped.splice(equipped.indexOf(item), 1);
-              switch(item.type) {
-                case 'back':
-                  player.data.performance.equipped.back = 'empty';
-                  drawInventory();
-                  break;
-                case 'neck':
-                  player.data.performance.equipped.neck = 'empty';
-                  break;
-                case 'head':
-                  player.data.performance.equipped.head = 'empty';
-                  break;
-                case 'chest':
-                  player.data.performance.equipped.chest = 'empty';
-                  break;
-                case 'legs':
-                  player.data.performance.equipped.legs = 'empty';
-                  break;
-                case 'feet':
-                  player.data.performance.equipped.feet = 'empty';
-                  break;
-                case 'mainhand':
-                  player.data.performance.equipped.mainhand = 'empty';
-                  break;
-                case 'offhand':
-                  player.data.performance.equipped.offhand = 'empty';
-                  break;
-              };
-              
+              equipped.splice(equipped.indexOf(item), 1);              
               drawGenus({ player });
-              drawEquip();
+              drawEquipmentSection();
             };
           };
         });

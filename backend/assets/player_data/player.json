@@ -5,7 +5,7 @@
       "name": "Alzaresh",
       "performance": {
         "location": {
-          "x": 93,
+          "x": 94,
           "y": 142
         },
         "lvls": {
@@ -40,22 +40,9 @@
         "equipped": {
           "neck": "empty",
           "head": "empty",
-          "back": {
-            "image": {},
-            "id": 8,
-            "type": "back",
-            "name": "backpack",
-            "sx": 0,
-            "sy": 448,
-            "dx": 976,
-            "dy": 16,
-            "pixelSize": 64,
-            "scale": 0.5,
-            "isDragging": false,
-            "slots": 24,
-            "capacity": 0.5
-          },
-          "hands": "empty",
+          "back": "empty",
+          "mainhand": "empty",
+          "offhand": "empty",
           "chest": "empty",
           "shield": "empty",
           "legs": "empty",
@@ -129,7 +116,8 @@
       "neck": "empty",
       "head": "empty",
       "back": "empty",
-      "hands": "empty",
+      "mainhand": "empty",
+      "offhand": "empty",
       "chest": "empty",
       "shield": "empty",
       "legs": "empty",
@@ -155,7 +143,8 @@
       "17": "empty",
       "18": "empty",
       "19": "empty",
-      "20": "empty"
+      "20": "empty",
+      "21": "empty"
     },
     "stance": {
       "aggressive": false,

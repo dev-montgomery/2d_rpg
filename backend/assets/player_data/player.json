@@ -5,7 +5,7 @@
       "name": "Alzaresh",
       "performance": {
         "location": {
-          "x": 94,
+          "x": 93,
           "y": 142
         },
         "lvls": {
@@ -85,17 +85,17 @@
           },
           "mainhand": {
             "image": {},
-            "id": 13,
+            "id": 5,
             "type": "mainhand",
-            "name": "spear",
-            "sx": 512,
+            "name": "sword",
+            "sx": 320,
             "sy": 64,
             "dx": 848,
             "dy": 144,
             "scale": 0.5,
             "size": 64,
             "isDragging": false,
-            "offense": 3,
+            "offense": 2,
             "speed": 1,
             "capacity": 1.25
           },

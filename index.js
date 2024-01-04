@@ -44,6 +44,13 @@ window.addEventListener('load', (event) => {
       activeUp: { sx: 32, sy: 352, dx: screen.width + 160, dy: 256, size: 32 }
     }
   };
+  ui.containers = {
+    backpack: { x: 0, y: 32 * 8, size: 32 },
+    labeledbackpack: { x: 0, y: 32 * 9, size: 32 },
+    enchantedbackpack: { x: 32, y: 32 * 8, size: 32 },
+    labeledenchantedbackpack: { x: 32, y: 32 * 9, size: 32 },
+    depot: { x: 64, y: 32 * 8, size: 32 },
+  };
 
   const mapModal = new Image();
   mapModal.src = './backend/assets/map_data/genus_01.png';
@@ -63,7 +70,7 @@ window.addEventListener('load', (event) => {
     1: { mapx: 493, mapy: 588, area: "The Genus Temple", description: "An antiquated sanctuary said to have been constructed when the gods wandered the Oasis. In service to the old world, warpriest Heremal welcomes new generations of warriors." },
     2: { mapx: 530, mapy: 545, area: "Willow's Rest", description: "It lacks charm, comfort, and cleanliness... but it does have beds." },
     3: { mapx: 489, mapy: 549, area: "Spell's Antica", description: "Unleash the power within and embark on a journey where every incantation opens a door of possibility. Your adventure in the arcane begins here." },
-    4: { mapx: 451, mapy: 534, area: "Textiles and Tools", description: "Your clothes and your tools are a reflection of you. Begin your journey with the right weapon, some clothes, and a fishing pole so you won't go hungry." },
+    4: { mapx: 451, mapy: 534, area: "Textiles and Tools", description: "Your clothes and your tools are a reflection of you. Begin your journey with the right weapon, some attire, and a fishing pole so you won't go hungry." },
     5: { mapx: 454, mapy: 557, area: "Genus Harvest", description: "Unique foods offer a unique experience. The right meal can fill you with the warmth of a thousand hearths. The wrong one can send you on a gastronomic adventure." },
     6: { mapx: 525, mapy: 420, area: "House Militem", description: "Set forth into the world with a foundation of physical prowess as a knight of the East Oasis. A symbol of strength and valor. Their tales are sung by bards. Their deeds, etched into the tapestry of the Oasis." },
     7: { mapx: 506, mapy: 444, area: "Pillar of The Militem", description: "Etched on a plaque near the base: \"Arm Day, every day.\" - Knight Aalok" },
@@ -110,6 +117,7 @@ window.addEventListener('load', (event) => {
   // Let Variables - Strings | Bools | Arrays | Objects
   let currentMenu = 'inventorybtn';
   let stance = 'defend';
+  let inventoryScroll = false;
   let mapContentButton = false;
   let chatbox = false;
   let boundaries = [], wateries = [];
@@ -329,7 +337,7 @@ window.addEventListener('load', (event) => {
       case 'inventorybtn':
         drawMenuSection(currentMenu);
         drawEquipmentSection();
-        // drawInventorySection(player.data.performance.equipped.back.name);
+        drawInventorySection();
       break;
       case 'listbtn':
         drawMenuSection(currentMenu);
@@ -735,113 +743,65 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  // const drawInventorySection = (backpack = 'empty') => {
-  //   if (currentMenu === 'inventorybtn') {
-  //     const inventoryScroll = (inventory, toggle = 'up', first = 24, second = 12) => {
-  //       if (toggle === 'up') {
-  //         for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
-  //           const x = i % 6 * 32;
-  //           const y = Math.floor(i / 6) * 32;
-  //           if (i < first) {
-  //             ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
-  //           };
-  //           if (inventory[i]) {
-  //             const item = inventory[i];
-  //             ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
-  //           };
-  //         };
-  //       };
+  const drawInventorySection = () => {
+    if (currentMenu === 'inventorybtn') {
+      const backItem = player.data.performance.equipped.back;
+      if (inventoryScroll === false) {
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(screen.width, 256, 192, canvas.height - 256);
+        switch(backItem.name) {
+          case 'backpack':
+            ctx.drawImage( ui, ui.containers.backpack.x, ui.containers.backpack.y, ui.containers.backpack.size, ui.containers.backpack.size, inventoryContainerSizes.inventorySection.x + 3, inventoryContainerSizes.inventorySection.y + 3, ui.containers.backpack.size, ui.containers.backpack.size );
+            break;
+          case 'labeledbackpack':
+            ctx.drawImage( ui, ui.containers.labeledbackpack.x, ui.containers.labeledbackpack.y, ui.containers.labeledbackpack.size, ui.containers.labeledbackpack.size, inventoryContainerSizes.inventorySection.x + 3, inventoryContainerSizes.inventorySection.y + 3, ui.containers.labeledbackpack.size, ui.containers.labeledbackpack.size );
+            break;
+          case 'enchantedbackpack':
+            ctx.drawImage( ui, ui.containers.enchantedbackpack.x, ui.containers.enchantedbackpack.y, ui.containers.enchantedbackpack.size, ui.containers.enchantedbackpack.size, inventoryContainerSizes.inventorySection.x + 3, inventoryContainerSizes.inventorySection.y + 3, ui.containers.enchantedbackpack.size, ui.containers.enchantedbackpack.size );
+            break;
+          case 'labeledenchantedbackpack':
+            ctx.drawImage( ui, ui.containers.labeledenchantedbackpack.x, ui.containers.labeledenchantedbackpack.y, ui.containers.labeledenchantedbackpack.size, ui.containers.labeledenchantedbackpack.size, inventoryContainerSizes.inventorySection.x + 3, inventoryContainerSizes.inventorySection.y + 3, ui.containers.labeledenchantedbackpack.size, ui.containers.labeledenchantedbackpack.size );
+            break;
+          default:
+            const message = '< no backpack equipped >';
+            ctx.fillStyle = 'black';
+            ctx.fillText(message, screen.width + 3, 270);
+            break;
+        };
 
-  //       if (toggle === 'down') {
-  //         for (let i = 0 ; i < resources.itemData.back.backpack.slots ; i++) {
-  //           const x = i % 6 * 32;
-  //           const y = Math.floor(i / 6) * 32;
-  //           if (i < second) {
-  //             ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 288 + y, 32, 32 );
-  //           };
-  //           if (inventory[i + first - 1]) {
-  //             const item = inventory[i + first - 1];
-  //             ctx.drawImage( item, item.sx, item.sy, item.size, item.size, x, y, item.size * 0.5, item.size * 0.5 );
-  //           };
-  //         };
-  //       };
-  //     };
+        for (let i = 0 ; i < backItem.slots ; i++) {
+          const x = i % 6 * 32;
+          const y = Math.floor(i / 6) * 32;
 
-  //     ctx.clearRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 448);
-  //     ctx.fillStyle = '#fff';
-  //     ctx.fillRect(inventoryContainerSizes.location.x, inventoryContainerSizes.location.y, 192, 448);
-      
-  //     switch (backpack) {
-  //       case 'backpack':
-  //         inventoryContainerSizes.open.backpack = true;
-  //         ctx.drawImage(
-  //           ui,
-  //           0,
-  //           256,
-  //           ui.size,
-  //           ui.size,
-  //           inventoryContainerSizes.inventorySection.x,
-  //           inventoryContainerSizes.inventorySection.y,
-  //           ui.size,
-  //           ui.size
-  //         );
+          if (!inventoryContainerSizes.open.container) {
+            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 295 + y, 32, 32 );
+            if (inventory[i]) {
+              const item = inventory[i];
+              item.dx = screen.width + x;
+              item.dy = 295 + y;
+              item.scale = 0.5;
+              ctx.drawImage(item.image, item.sx, item.sy, item.size, item.size, item.dx, item.dy, item.size * item.scale, item.size * item.scale);
+            };
+          };
 
-  //         inventoryScroll(inventory);
-  //         break;
-  //       case 'labeledbackpack':
-  //         inventoryContainerSizes.open.backpack = true;
-  //         ctx.drawImage(
-  //           ui,
-  //           0,
-  //           288,
-  //           ui.size,
-  //           ui.size,
-  //           inventoryContainerSizes.inventorySection.x,
-  //           inventoryContainerSizes.inventorySection.y,
-  //           ui.size,
-  //           ui.size
-  //         );
+        };
+      };
+      // const inventoryContainerSizes = {
+      //   location: { x: screen.width, y: 256, width: 192, height: 169},
+      //   inventorySection: { x: screen.width, y: 256 }, 
+      //   containerSection: { x: screen.width, y: 416 },
+      //   open: { backpack: false, container: false }
+      // };
 
-  //         inventoryScroll(inventory);
-  //         break;
-  //       case 'enchantedbackpack':
-  //         inventoryContainerSizes.open.backpack = true;
-  //         ctx.drawImage(
-  //           ui,
-  //           32,
-  //           256,
-  //           ui.size,
-  //           ui.size,
-  //           inventoryContainerSizes.inventorySection.x,
-  //           inventoryContainerSizes.inventorySection.y,
-  //           ui.size,
-  //           ui.size
-  //         );
-
-  //         inventoryScroll(inventory);
-  //         break;
-  //       case 'labeledenchantedbackpack':
-  //         inventoryContainerSizes.open.backpack = true;
-  //         ctx.drawImage(
-  //           ui,
-  //           32,
-  //           288,
-  //           ui.size,
-  //           ui.size,
-  //           inventoryContainerSizes.inventorySection.x,
-  //           inventoryContainerSizes.inventorySection.y,
-  //           ui.size,
-  //           ui.size
-  //         );
-
-  //         inventoryScroll(inventory);
-  //         break;
-  //       case 'empty':
-  //         inventoryContainerSizes.open.backpack = false;
-  //         break;
-  //     };
-  //   };
-  // };
+      // ui.containers = {
+      //   backpack: { x: 0, y: 32 * 8, size: 32 },
+      //   labeledbackpack: { x: 0, y: 32 * 9, size: 32 },
+      //   enchantedbackpack: { x: 32, y: 32 * 8, size: 32 },
+      //   labeledenchantedbackpack: { x: 32, y: 32 * 9, size: 32 },
+      //   depot: { x: 64, y: 32 * 8, size: 32 },
+      // };
+    };
+  };
 
   const isInInventoryArea = (mouseX, mouseY) => {
     return (
@@ -986,28 +946,6 @@ window.addEventListener('load', (event) => {
     };
     return null;
   };
-
-  // const loadEquippedItems = () => {
-  //   if (player.data.performance.equipped.back) {
-  //     const item = player.data.performance.equipped.back;
-  //     initItem(
-  //       item.id,
-  //       item.type,
-  //       item.name,
-  //       item.sx,
-  //       item.sy,
-  //       player.destination.dx + 16,
-  //       player.destination.dy + 16
-  //     )
-  //     const newItem = items.find(piece => piece.id === item.id);
-  //     newItem.scale = 0.5;
-  //     newItem.dx = equip.back.x;
-  //     newItem.dy = equip.back.y;
-  //     equip.back.slot = newItem;
-  //     equipped.push(newItem);
-  //     items.splice(items.indexOf(newItem), 1);
-  //   };
-  // };
   
   // Event Listeners
   addEventListener('mousedown', (e) => {

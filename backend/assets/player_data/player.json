@@ -70,17 +70,17 @@
           },
           "back": {
             "image": {},
-            "id": 8,
+            "id": 16,
             "type": "back",
-            "name": "backpack",
-            "sx": 0,
+            "name": "enchantedbackpack",
+            "sx": 64,
             "sy": 448,
             "dx": 976,
             "dy": 16,
             "scale": 0.5,
             "size": 64,
             "isDragging": false,
-            "slots": 24,
+            "slots": 36,
             "capacity": 0.5
           },
           "mainhand": {
@@ -153,7 +153,7 @@
           }
         },
         "inventory": [],
-        "stance": "passive"
+        "stance": "aggressive"
       }
     }
   ],

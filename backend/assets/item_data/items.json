@@ -1,18 +1,18 @@
 { 
   "container":{
     "depot":{
-      "slots":50,
+      "slots":36,
       "capacity":"n/a"
     }
   },
   "back":{
     "backpack":{
-      "slots":24,
+      "slots":18,
       "capacity":0.5
     },
     "labledbackpack":{
       "name": null,
-      "slots":24,
+      "slots":18,
       "capacity":0.5
     },
     "enchantedbackpack":{

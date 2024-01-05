@@ -116,7 +116,6 @@ window.addEventListener('load', (event) => {
 
   // Let Variables - Strings | Bools | Arrays | Objects
   let currentMenu = 'inventorybtn';
-  let stance = 'defend';
   let inventoryScroll = false;
   let mapContentButton = false;
   let chatbox = false;
@@ -134,7 +133,6 @@ window.addEventListener('load', (event) => {
 
   // Append Stats
   const appendPlayerData = ({ player }) => {
-    
     document.querySelector('#player-name').textContent = player.data.name;
     document.querySelector('#player-level').textContent = player.data.performance.lvls.lvl;
     document.querySelector('#player-magic-level').textContent = player.data.performance.lvls.mglvl;
@@ -341,7 +339,7 @@ window.addEventListener('load', (event) => {
       break;
       case 'listbtn':
         drawMenuSection(currentMenu);
-        drawStanceSection(0, 0, stance);
+        drawStanceSection(0, 0, player.data.performance.stance);
         break;
       default: break;
     };
@@ -539,7 +537,7 @@ window.addEventListener('load', (event) => {
   const drawEquipmentSection = () => {
     if (currentMenu === 'inventorybtn') {
       ctx.clearRect(screen.width, 0, 192, 192);
-      ctx.drawImage( ui, 0, 0, 192, 192, screen.width, 0, 192, 192 );
+      ctx.drawImage(ui, 0, 0, 192, 192, screen.width, 0, 192, 192);
       equipped.forEach(item => item.draw(ctx));
     };
   };
@@ -746,46 +744,61 @@ window.addEventListener('load', (event) => {
   const drawInventorySection = () => {
     if (currentMenu === 'inventorybtn') {
       const backItem = player.data.performance.equipped.back;
-      if (inventoryScroll === false) {
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(screen.width, 256, 192, canvas.height - 256);
-        switch(backItem.name) {
-          case 'backpack':
-            ctx.drawImage( ui, ui.containers.backpack.x, ui.containers.backpack.y, ui.containers.backpack.size, ui.containers.backpack.size, inventoryContainerSizes.inventorySection.x + 3, inventoryContainerSizes.inventorySection.y + 3, ui.containers.backpack.size, ui.containers.backpack.size );
-            break;
-          case 'labeledbackpack':
-            ctx.drawImage( ui, ui.containers.labeledbackpack.x, ui.containers.labeledbackpack.y, ui.containers.labeledbackpack.size, ui.containers.labeledbackpack.size, inventoryContainerSizes.inventorySection.x + 3, inventoryContainerSizes.inventorySection.y + 3, ui.containers.labeledbackpack.size, ui.containers.labeledbackpack.size );
-            break;
-          case 'enchantedbackpack':
-            ctx.drawImage( ui, ui.containers.enchantedbackpack.x, ui.containers.enchantedbackpack.y, ui.containers.enchantedbackpack.size, ui.containers.enchantedbackpack.size, inventoryContainerSizes.inventorySection.x + 3, inventoryContainerSizes.inventorySection.y + 3, ui.containers.enchantedbackpack.size, ui.containers.enchantedbackpack.size );
-            break;
-          case 'labeledenchantedbackpack':
-            ctx.drawImage( ui, ui.containers.labeledenchantedbackpack.x, ui.containers.labeledenchantedbackpack.y, ui.containers.labeledenchantedbackpack.size, ui.containers.labeledenchantedbackpack.size, inventoryContainerSizes.inventorySection.x + 3, inventoryContainerSizes.inventorySection.y + 3, ui.containers.labeledenchantedbackpack.size, ui.containers.labeledenchantedbackpack.size );
-            break;
-          default:
-            const message = '< no backpack equipped >';
-            ctx.fillStyle = 'black';
-            ctx.fillText(message, screen.width + 3, 270);
-            break;
-        };
+      ctx.clearRect(screen.width, 256, 192, canvas.height - 256);
+      ctx.fillStyle = '#fff';
+      // ctx.fillRect(screen.width, 256, 192, 160); // 160 (24 slot) - 224 (36 slot) - 224 (depot 36 slot)
+      switch(backItem.name) {
+        case 'backpack':
+          inventoryContainerSizes.open.backpack = true;
+          ctx.fillRect(screen.width, 256, 192, 160); // 160 (24 slot) - 224 (36 slot) - 224 (depot 36 slot)
+          ctx.drawImage(ui, ui.containers.backpack.x, ui.containers.backpack.y, ui.containers.backpack.size, ui.containers.backpack.size, inventoryContainerSizes.inventorySection.x, inventoryContainerSizes.inventorySection.y, ui.containers.backpack.size, ui.containers.backpack.size);
+          break;
+        case 'labeledbackpack':
+          inventoryContainerSizes.open.backpack = true;
+          ctx.drawImage(ui, ui.containers.labeledbackpack.x, ui.containers.labeledbackpack.y, ui.containers.labeledbackpack.size, ui.containers.labeledbackpack.size, inventoryContainerSizes.inventorySection.x, inventoryContainerSizes.inventorySection.y, ui.containers.labeledbackpack.size, ui.containers.labeledbackpack.size);
+          break;
+        case 'enchantedbackpack':
+          inventoryContainerSizes.open.backpack = true;
+          ctx.drawImage(ui, ui.containers.enchantedbackpack.x, ui.containers.enchantedbackpack.y, ui.containers.enchantedbackpack.size, ui.containers.enchantedbackpack.size, inventoryContainerSizes.inventorySection.x, inventoryContainerSizes.inventorySection.y, ui.containers.enchantedbackpack.size, ui.containers.enchantedbackpack.size);
+          break;
+        case 'labeledenchantedbackpack':
+          inventoryContainerSizes.open.backpack = true;
+          ctx.drawImage(ui, ui.containers.labeledenchantedbackpack.x, ui.containers.labeledenchantedbackpack.y, ui.containers.labeledenchantedbackpack.size, ui.containers.labeledenchantedbackpack.size, inventoryContainerSizes.inventorySection.x, inventoryContainerSizes.inventorySection.y, ui.containers.labeledenchantedbackpack.size, ui.containers.labeledenchantedbackpack.size);
+          break;
+        default:
+          inventoryContainerSizes.open.backpack = false;
+          const message = '< no backpack equipped >';
+          ctx.fillStyle = 'black';
+          ctx.fillText(message, screen.width + 4, 270);
+          break;
+      };
 
-        for (let i = 0 ; i < backItem.slots ; i++) {
-          const x = i % 6 * 32;
-          const y = Math.floor(i / 6) * 32;
+      for (let i = 0 ; i < backItem.slots ; i++) {
+        const x = i % 6 * 32;
+        const y = Math.floor(i / 6) * 32;
 
-          if (!inventoryContainerSizes.open.container) {
-            ctx.drawImage( ui, 64, 288, 32, 32, screen.width + x, 295 + y, 32, 32 );
-            if (inventory[i]) {
-              const item = inventory[i];
-              item.dx = screen.width + x;
-              item.dy = 295 + y;
-              item.scale = 0.5;
-              ctx.drawImage(item.image, item.sx, item.sy, item.size, item.size, item.dx, item.dy, item.size * item.scale, item.size * item.scale);
-            };
+        // no inventory, no container
+        if (!inventoryContainerSizes.open.backpack && !inventoryContainerSizes.open.container) {
+
+        // yes inventory, no container
+        } else if (inventoryContainerSizes.open.backpack && !inventoryContainerSizes.open.container) {
+          ctx.drawImage(ui, 64, 288, 32, 32, screen.width + x, 289 + y, 32, 32);
+          if (inventory[i]) {
+            const item = inventory[i];
+            item.dx = screen.width + x;
+            item.dy = 295 + y;
+            item.scale = 0.5;
+            ctx.drawImage(item.image, item.sx, item.sy, item.size, item.size, item.dx, item.dy, item.size * item.scale, item.size * item.scale);
           };
+        // yes inventory, yes container
+        } else if (inventoryContainerSizes.open.backpack && inventoryContainerSizes.open.container) {
+
+        // no inventory, yes container
+        } else if (!inventoryContainerSizes.open.backpack && inventoryContainerSizes.open.container) {
 
         };
       };
+
       // const inventoryContainerSizes = {
       //   location: { x: screen.width, y: 256, width: 192, height: 169},
       //   inventorySection: { x: screen.width, y: 256 }, 
@@ -803,13 +816,12 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  const isInInventoryArea = (mouseX, mouseY) => {
-    return (
-      mouseX > screen.width &&
-      mouseX < screen.width + 192 &&
-      mouseY > 256 &&
-      mouseY < screen.height - 64
-    );
+  const handleInventory = (mouseX, mouseY, item) => {
+    const backItem = player.data.performance.equipped.back;
+    for (let i = 0 ; i < backItem.slots ; i++) {
+      const x = i % 6 * 32;
+      const y = Math.floor(i / 6) * 32;
+    };
   };
 
   // Right Side - Enemy Section
@@ -818,7 +830,8 @@ window.addEventListener('load', (event) => {
       ctx.clearRect(screen.width, 640, 192, 64);
       ctx.drawImage(ui, ui.buttons.stances.attackInactive.sx, ui.buttons.stances.attackInactive.sy, 96, 32, screen.width, 640, 192, 64);
       switch(stance) {
-        case 'attack':
+        case 'aggressive':
+          player.data.performance.stance = 'aggressive';
           ctx.drawImage(
             ui,
             ui.buttons.stances.attackActive.sx,
@@ -831,7 +844,8 @@ window.addEventListener('load', (event) => {
             ui.buttons.stances.attackActive.size * ui.buttons.stances.attackActive.scale
           );
           break;
-        case 'defend':
+        case 'defensive':
+          player.data.performance.stance = 'defensive';
           ctx.drawImage(
             ui,
             ui.buttons.stances.defendActive.sx,
@@ -845,6 +859,7 @@ window.addEventListener('load', (event) => {
           );
           break;
         case 'passive':
+          player.data.performance.stance = 'passive';
           ctx.drawImage(
             ui,
             ui.buttons.stances.passiveActive.sx,
@@ -870,7 +885,7 @@ window.addEventListener('load', (event) => {
         mouseY >= ui.buttons.stances.attackInactive.dy &&
         mouseY <= ui.buttons.stances.attackInactive.dy + ui.buttons.stances.attackInactive.size * ui.buttons.stances.attackInactive.scale
       ) {
-        return 'attack';
+        return 'aggressive';
       };
   
       if (
@@ -879,7 +894,7 @@ window.addEventListener('load', (event) => {
         mouseY >= ui.buttons.stances.defendInactive.dy &&
         mouseY <= ui.buttons.stances.defendInactive.dy + ui.buttons.stances.defendInactive.size * ui.buttons.stances.defendInactive.scale
       ) {
-        return 'defend';
+        return 'defensive';
       };
   
       if (
@@ -993,8 +1008,8 @@ window.addEventListener('load', (event) => {
       };
       
       if (currentMenu === 'listbtn' && checkStance(mouseX, mouseY)) {
-        stance = checkStance(mouseX, mouseY);
-        drawStanceSection(mouseX, mouseY, stance);
+        player.data.performance.stance = checkStance(mouseX, mouseY);
+        drawStanceSection(mouseX, mouseY, player.data.performance.stance);
       };
     };
   });

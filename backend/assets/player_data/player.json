@@ -152,33 +152,8 @@
             "isDragging": false
           }
         },
-        "inventory": {
-          "1": "empty",
-          "2": "empty",
-          "3": "empty",
-          "4": "empty",
-          "5": "empty",
-          "6": "empty",
-          "7": "empty",
-          "8": "empty",
-          "9": "empty",
-          "10": "empty",
-          "11": "empty",
-          "12": "empty",
-          "13": "empty",
-          "14": "empty",
-          "15": "empty",
-          "16": "empty",
-          "17": "empty",
-          "18": "empty",
-          "19": "empty",
-          "20": "empty"
-        },
-        "stance": {
-          "aggressive": false,
-          "defensive": true,
-          "passive": false
-        }
+        "inventory": [],
+        "stance": "passive"
       }
     }
   ],
@@ -226,34 +201,8 @@
       "legs": "empty",
       "feet": "empty"
     },
-    "inventory": {
-      "1": "empty",
-      "2": "empty",
-      "3": "empty",
-      "4": "empty",
-      "5": "empty",
-      "6": "empty",
-      "7": "empty",
-      "8": "empty",
-      "9": "empty",
-      "10": "empty",
-      "11": "empty",
-      "12": "empty",
-      "13": "empty",
-      "14": "empty",
-      "15": "empty",
-      "16": "empty",
-      "17": "empty",
-      "18": "empty",
-      "19": "empty",
-      "20": "empty",
-      "21": "empty"
-    },
-    "stance": {
-      "aggressive": false,
-      "defensive": true,
-      "passive": false
-    }
+    "inventory": [],
+    "stance": "defensive"
   },
   "lvlupdata": {
     "statincreases": {

@@ -268,10 +268,10 @@ window.addEventListener('load', (event) => {
     // Draw objects that are located on visible screen
     items.forEach(item => {
       if (
-        item.dx > 0 &&
-        item.dx + item.size < screen.width &&
-        item.dy > 0 &&
-        item.dy + item.size < screen.height
+        item.dx >= 0 &&
+        item.dx + item.size <= screen.width &&
+        item.dy >= 0 &&
+        item.dy + item.size <= screen.height
       ) {
         item.draw(ctx);
       };
@@ -742,12 +742,6 @@ window.addEventListener('load', (event) => {
   };
 
   const drawInventorySection = () => {
-      // const inventoryContainerSizes = {
-      //   location: { x: screen.width, y: 256, width: 192, height: 160},
-      //   inventorySection: { x: screen.width, y: 256, width: 192, height: 224 }, 
-      //   containerSection: { x: screen.width, y: 480, width: 192, height: 224 },
-      //   open: { backpack: false, container: false }
-      // };
     if (currentMenu === 'inventorybtn') {
       const backItem = player.data.performance.equipped.back;
       ctx.clearRect(screen.width, 256, 192, screen.height - 256);
@@ -797,7 +791,6 @@ window.addEventListener('load', (event) => {
             item.dy = 289 + y;
             item.scale = 0.5;
             item.draw(ctx);
-            // ctx.drawImage(item.image, item.sx, item.sy, item.size, item.size, item.dx, item.dy, item.size * item.scale, item.size * item.scale);
           };
         // yes inventory, yes container
         } else if (inventoryContainerSizes.open.backpack && inventoryContainerSizes.open.container) {
@@ -807,14 +800,6 @@ window.addEventListener('load', (event) => {
 
         };
       };
-
-      // ui.containers = {
-      //   backpack: { x: 0, y: 32 * 8, size: 32 },
-      //   labeledbackpack: { x: 0, y: 32 * 9, size: 32 },
-      //   enchantedbackpack: { x: 32, y: 32 * 8, size: 32 },
-      //   labeledenchantedbackpack: { x: 32, y: 32 * 9, size: 32 },
-      //   depot: { x: 64, y: 32 * 8, size: 32 },
-      // };
     };
   };
 
@@ -824,13 +809,13 @@ window.addEventListener('load', (event) => {
       item.dx + item.size > inventoryContainerSizes.inventorySection.x &&
       item.dx < inventoryContainerSizes.inventorySection.x + inventoryContainerSizes.inventorySection.width &&
       item.dy + item.size > inventoryContainerSizes.inventorySection.y &&
-      item.dy < backItem.slots / 6 * 32
+      item.dy < inventoryContainerSizes.inventorySection.y + (backItem.slots / 6 * 32)
     );
   };
 
   const handleInventory = (item) => {
     inventory.push(item);
-    console.log('inventory ', inventory);
+    console.log(`added ${item.name} to inventory`);
     items.splice(items.indexOf(item), 1);
     drawInventorySection();
   };
@@ -950,7 +935,7 @@ window.addEventListener('load', (event) => {
       items.push(rpgItem);
     };
   };
-
+ 
   // Move Items In Range of Player
   const isInRangeOfPlayer = (objX, objY) => {
     return (
@@ -1225,10 +1210,19 @@ window.addEventListener('load', (event) => {
           
           if (isInEquipmentSection(item) && currentMenu === 'inventorybtn') {
             handleEquipping(item);
-          } else if (isInInventorySection(item) && currentMenu === 'inventorybtn') {
-            handleInventory(item);
-            console.log('true');
-          } else if (waterDetect(item.dx, item.dy)) {
+          };
+          
+          if (isInInventorySection(item) && currentMenu === 'inventorybtn') {
+            const spaces = player.data.performance.equipped.back.slots;
+            if (inventory.length < spaces) {
+              handleInventory(item);
+            } else {
+              item.dx = originalItemPosition.x;
+              item.dy = originalItemPosition.y;
+            };
+          };
+          
+          if (waterDetect(item.dx, item.dy)) {
             items.splice(items.indexOf(item), 1);
           } else if (
             collisionDetect(item.dx, item.dy)
@@ -1464,7 +1458,7 @@ window.addEventListener('load', (event) => {
       448  
     );
     // item 8
-    inventory.push(initItem(
+    initItem(
       items.length + 1,
       'back',
       'enchantedbackpack', 
@@ -1472,6 +1466,6 @@ window.addEventListener('load', (event) => {
       448, 
       576,
       384
-    ));
+    );
   }, 500);
 });

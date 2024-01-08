@@ -7,20 +7,28 @@
   },
   "back":{
     "backpack":{
+      "name":"backpack",
+      "inventory":[],
       "slots":18,
       "capacity":0.5
     },
     "labledbackpack":{
-      "name": null,
+      "name":"labeledbackpack",
+      "label":null,
+      "inventory":[],
       "slots":18,
       "capacity":0.5
     },
     "enchantedbackpack":{
+      "name":"enchantedbackpack",
+      "inventory":[],
       "slots":36,
       "capacity":0.5
     },
     "labeledenchantedbackpack":{
-      "name": null,
+      "name":"labeledenchantedbackpack",
+      "label":null,
+      "inventory":[],
       "slots":36,
       "capacity":0.5
     }

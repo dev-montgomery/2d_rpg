@@ -5,8 +5,8 @@
       "name": "Alzaresh",
       "performance": {
         "location": {
-          "x": 94,
-          "y": 143
+          "x": 93,
+          "y": 142
         },
         "lvls": {
           "lvl": 0,
@@ -80,6 +80,39 @@
             "scale": 0.5,
             "size": 64,
             "isDragging": false,
+            "inventory": [
+              {
+                "image": {},
+                "id": 12,
+                "type": "neck",
+                "name": "silver",
+                "sx": 512,
+                "sy": 128,
+                "dx": 832,
+                "dy": 289,
+                "scale": 0.5,
+                "size": 64,
+                "isDragging": false,
+                "offense": 1,
+                "defense": 1
+              },
+              {
+                "image": {},
+                "id": 13,
+                "type": "mainhand",
+                "name": "spear",
+                "sx": 512,
+                "sy": 64,
+                "dx": 864,
+                "dy": 289,
+                "scale": 0.5,
+                "size": 64,
+                "isDragging": false,
+                "offense": 3,
+                "speed": 1,
+                "capacity": 1.25
+              }
+            ],
             "slots": 36,
             "capacity": 0.5
           },

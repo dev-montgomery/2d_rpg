@@ -116,7 +116,6 @@ window.addEventListener('load', (event) => {
 
   // Let Variables - Strings | Bools | Arrays | Objects
   let currentMenu = 'inventorybtn';
-  let inventoryScroll = false;
   let mapContentButton = false;
   let chatbox = false;
   let boundaries = [], wateries = [];
@@ -151,6 +150,12 @@ window.addEventListener('load', (event) => {
         initItem(item.id, item.type, item.name, item.sx, item.sy, item.dx, item.dy, item.scale);
       };
     };
+
+    const inBackPack = player.data.performance.equipped.back.inventory;
+    for (const piece in inBackPack) {
+      const item = inBackPack[piece];
+      initItem(item.id, item.type, item.name, item.sx, item.sy, item.dx, item.dy, item.scale);
+    };
   };
   
   // First render of game happens here after player data loads
@@ -165,14 +170,26 @@ window.addEventListener('load', (event) => {
     form.closed = true;
 
     // Render interface, map, and player after form is submitted
-    setTimeout(() => {
+    const waitForResources = (condition) => {
+      return new Promise((resolve) => {
+        const checkInterval = setInterval(() => {
+          if (condition()) {
+            clearInterval(checkInterval);
+            resolve();
+          };
+        }, 100);
+      });
+    };
+
+    (async () => {
+      await waitForResources(() => typeof resources !== 'undefined');
       canvas.style.background = '#464646';
       document.querySelector('.player-stats').style.display = 'flex';
       document.querySelector('.game-container').style.boxShadow = '0 0 10px black';
       genus.loaded && drawGenus({ player });
       appendPlayerData({ player });
       drawRightSideUI();
-    }, 500);
+    })();
   };
 
   // POST player data to backend json file
@@ -533,7 +550,7 @@ window.addEventListener('load', (event) => {
     };
   };
 
-  // Right Side - Inventory Section
+  // Right Side - Equipment and Inventory Sections
   const drawEquipmentSection = () => {
     if (currentMenu === 'inventorybtn') {
       ctx.clearRect(screen.width, 0, 192, 192);
@@ -782,8 +799,10 @@ window.addEventListener('load', (event) => {
         // no inventory, no container
         if (!inventoryContainerSizes.open.backpack && !inventoryContainerSizes.open.container) {
 
+        };
+        
         // yes inventory, no container
-        } else if (inventoryContainerSizes.open.backpack && !inventoryContainerSizes.open.container) {
+        if (inventoryContainerSizes.open.backpack && !inventoryContainerSizes.open.container) {
           ctx.drawImage(ui, 64, 288, 32, 32, screen.width + x, 289 + y, 32, 32);
           if (inventory[i]) {
             const item = inventory[i];
@@ -792,11 +811,15 @@ window.addEventListener('load', (event) => {
             item.scale = 0.5;
             item.draw(ctx);
           };
+        };
+        
         // yes inventory, yes container
-        } else if (inventoryContainerSizes.open.backpack && inventoryContainerSizes.open.container) {
+        if (inventoryContainerSizes.open.backpack && inventoryContainerSizes.open.container) {
 
+        };
+        
         // no inventory, yes container
-        } else if (!inventoryContainerSizes.open.backpack && inventoryContainerSizes.open.container) {
+        if (!inventoryContainerSizes.open.backpack && inventoryContainerSizes.open.container) {
 
         };
       };
@@ -804,17 +827,20 @@ window.addEventListener('load', (event) => {
   };
 
   const isInInventorySection = (item) => {
-    const backItem = player.data.performance.equipped.back;
+    // const backItem = player.data.performance.equipped.back;
     return (
       item.dx + item.size > inventoryContainerSizes.inventorySection.x &&
       item.dx < inventoryContainerSizes.inventorySection.x + inventoryContainerSizes.inventorySection.width &&
       item.dy + item.size > inventoryContainerSizes.inventorySection.y &&
-      item.dy < inventoryContainerSizes.inventorySection.y + (backItem.slots / 6 * 32)
+      item.dy < inventoryContainerSizes.inventorySection.y + (36 / 6 * 32)
     );
   };
 
   const handleInventory = (item) => {
+    const backItem = player.data.performance.equipped.back;
+
     inventory.push(item);
+    backItem.inventory.push(item);
     console.log(`added ${item.name} to inventory`);
     items.splice(items.indexOf(item), 1);
     drawInventorySection();
@@ -931,6 +957,8 @@ window.addEventListener('load', (event) => {
 
     if (isInEquipmentSection(rpgItem)) {
       equipped.push(rpgItem);
+    } else if (isInInventorySection(rpgItem)) {
+      inventory.push(rpgItem);
     } else {
       items.push(rpgItem);
     };
@@ -1190,8 +1218,8 @@ window.addEventListener('load', (event) => {
             ) {
               item.scale = 1;
               item.isDragging = false;
-              resetEquipmentSlot(item);
               items.push(item);
+              resetEquipmentSlot(item);
               equipped.splice(equipped.indexOf(item), 1);              
               drawGenus({ player });
               drawEquipmentSection();
@@ -1213,8 +1241,8 @@ window.addEventListener('load', (event) => {
           };
           
           if (isInInventorySection(item) && currentMenu === 'inventorybtn') {
-            const spaces = player.data.performance.equipped.back.slots;
-            if (inventory.length < spaces) {
+            const backItem = player.data.performance.equipped.back;
+            if (backItem.inventory.length < backItem.slots) {
               handleInventory(item);
             } else {
               item.dx = originalItemPosition.x;
